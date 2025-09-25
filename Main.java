@@ -8,5 +8,7 @@ class Main {
         System.out.println("You entered: " + number);
         
         scan.close();
+
+        return;
     }
 }
