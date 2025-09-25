@@ -189,28 +189,47 @@ class Narration{
 
     // Shop Narration
     public static void shopNarration() {
-    String[] shop = {
-        "You follow a winding path until a modest stone building comes into view. Its windows glow faintly, and a worn wooden sign hangs overhead — 'Provisions'.",
-
-        "The spirit appears beside you, its form calm against the quiet sway of trees.",
-        
-        "\"This is the academy\'s supply shop,\" it says. \"Here, students exchange earned coin for tools of survival — weapons, potions, and the occasional rarity.\"",
-        
-        "\"The blades offered within are not forged for vanity. They are made to defend, to endure, and when necessary — to end.\"",
-        
-        "\"Potions line the shelves too. Restoratives, enhancers, mixtures drawn from the deeper knowledge of the academy\'s alchemists. Each serves a purpose — if used wisely.\"",
-        
-        "\"Your currency is merit earned — through trials, tasks, and time. Spend it with intention. Not everything you need will be here twice.\"",
-        
-        "The spirit\'s gaze lingers on the door before fading again into the still air.",
-        
-        "You step forward. The scent of old leather, steel, and something faintly herbal greets you as the shop door creaks open."
-    };
+        String[] shop = {
+            "The spirit appears beside you, its form calm against the quiet sway of trees.",
+            
+            "\"This is the academy\'s supply shop,\" it says. \"Here, students exchange earned coin for tools of survival — weapons, potions, and the occasional rarity.\"",
+            
+            "\"The blades offered within are not forged for vanity. They are made to defend, to endure, and when necessary — to end.\"",
+            
+            "\"Potions line the shelves too. Restoratives, enhancers, mixtures drawn from the deeper knowledge of the academy\'s alchemists. Each serves a purpose — if used wisely.\"",
+            
+            "\"Your currency is merit earned — through trials, tasks, and time. Spend it with intention. Not everything you need will be here twice.\"",
+            
+            "The spirit\'s gaze lingers on the door before fading again into the still air.",
+            
+            "You step forward. The scent of old leather, steel, and something faintly herbal greets you as the shop door creaks open."
+        };
     
     playSection(shop);
     
     }
 
-    
+    // Inventory Narration
+    public static void inventoryNarration() {
+        String[] inventory = {
+            "The spirit emerges without a sound, its form quiet and steady beside you.",
+
+            "\"All that you carry tells a story,\" it begins. \"Not just of what you’ve gathered — but of what you’ve chosen to keep.\"",
+            
+            "\"Your inventory is more than a sack of tools. It holds your weapons, potions, relics — the fragments of your journey so far.\"",
+            
+            "\"Some items will aid you in battle. Others may offer insight, or protection, or... choices you do not yet understand.\"",
+            
+            "\"Know this — your space is not endless. What you carry reflects what you value. Choose wisely, discard carefully.\"",
+            
+            "The spirit lingers a moment longer, then drifts away — leaving you with your pack, your thoughts, and the quiet shifting of leaves overhead."
+        };
+        
+        playSection(inventory);
+
+    }
+
+
+
     
 }
