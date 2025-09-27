@@ -14,8 +14,7 @@ class StartMenu extends Narration {
     static boolean hasVisitedPrologue = false;
 
     public void displayStartMenu(){
-        CharacterMenu characterMenuHandler = new CharacterMenu();
-        Menu mainMenuHandler = new Menu();
+        //Menu mainMenuHandler = new Menu();
 
         System.out.println("+------------------------------+");
         System.out.println("|        Mystvale Academy      |");
@@ -44,9 +43,7 @@ class StartMenu extends Narration {
                     hasVisitedPrologue = true;
                 }
 
-                characterMenuHandler.chooseCharacterMenu();
-                mainMenuHandler.defaultMainMenu();
-
+                //mainMenuHandler.defaultMainMenu();
                 break;
 
             case "2":
@@ -345,51 +342,41 @@ class AcademyMenu extends Menu{
                     System.out.println("└─────────────────────────────┘");
                     System.out.println();
             }
-        }
-         
+        }    
     }
 }
 
 class CharacterMenu extends Narration{
     public void chooseCharacterMenu(){
-            System.out.println("+------------------------------+");
-            System.out.println("|      Choose a character      |");
-            System.out.println("|------------------------------|");
-            System.out.println("|  1. Swordsman                |");
-            System.out.println("|  2. Gunner                   |");
-            System.out.println("|  3. Mage                     |");
-            System.out.println("+------------------------------+");
-            System.out.print("  Enter your choice: ");
+        System.out.println("+------------------------------+");
+        System.out.println("|      Choose a character      |");
+        System.out.println("|------------------------------|");
+        System.out.println("|  1. Swordsman                |");
+        System.out.println("|  2. Gunner                   |");
+        System.out.println("|  3. Mage                     |");
+        System.out.println("+------------------------------+");
+        System.out.print("  Enter your choice: ");
 
-            char characterChoice = scanner.next().charAt(0);
+        char characterChoice = scanner.next().charAt(0);
 
-            switch(characterChoice){
-                case '1':
-                    
-                    choiceSwordsman();
-
+        switch(characterChoice){
+            case '1':            
+                choiceSwordsman();
                 break;
 
-                case '2':
-                    
-                    choiceGunner();
-
+            case '2':
+                choiceGunner();
                 break;
 
-                case '3':
-                    
-                    choiceMage();
-
-            
+            case '3':    
+                choiceMage();
                 break;
 
-                default:
+            default:
                 System.out.println("┌─────────────────────────────┐");
                 System.out.println("│  Invalid choice. Try again! │");
                 System.out.println("└─────────────────────────────┘");
-
-
-            }
-
+                chooseCharacterMenu();
+        }    
     }
 }

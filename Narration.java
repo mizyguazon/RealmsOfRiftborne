@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-class Narration{
+public class Narration{
     static Scanner scanner = new Scanner(System.in);
 
     // Narration for Prologue
@@ -12,7 +12,7 @@ class Narration{
             
             "You wake with a start, not in your room, but in a place you\'ve never seen before. \nThe air is sharp and crisp, carrying the faint scent of pine and old stone. A pale moon hangs above an endless forest, \nits silver light spilling over a towering structure in the distance - an academy, its spires reaching for the sky.",
             
-            "As you take a cautious step forward, a presence brushes against you—weightless, yet undeniable. \nA wandering spirit materializes from the air itself, its form shifting like smoke caught in a breeze. \nIts voice is calm, distant, but warm enough to ease the unease clawing at your chest.",
+            "As you take a cautious step forward, a presence brushes against you. Weightless, yet undeniable. \nA wandering spirit materializes from the air itself, its form shifting like smoke caught in a breeze. \nIts voice is calm, distant, but warm enough to ease the unease clawing at your chest.",
             
             "\"Welcome, lost one,\" it says. \"This is Mystvale Academy… a place where magic is studied, honed, \nand wielded against the forces beyond these walls. You now stand on the threshold of its trials.\"",
             
@@ -184,7 +184,6 @@ class Narration{
         }
         
         System.out.println(); 
-        
     }
 
     // Shop Narration
@@ -206,7 +205,6 @@ class Narration{
         };
     
     playSection(shop);
-    
     }
 
     // Inventory Narration
@@ -224,123 +222,114 @@ class Narration{
             
             "The spirit lingers a moment longer, then drifts away — leaving you with your pack, your thoughts, and the quiet shifting of leaves overhead."
         };
-        
-        playSection(inventory);
 
+        playSection(inventory);
     }
 
     public static void choiceSwordsman(){
-                System.out.println();
-                System.out.println("┌────────────────────┐");
-                System.out.println("│  Player Character  │");
-                System.out.println("└────────────────────┘");
-                System.out.println("Kael Solmere");
-                System.out.println("Age: 15");
-                System.out.println("Personality: Intense, Brooding, Fiercely Loyal");
-                System.out.println("Grade Level: First Year Student");
-                System.out.println("Fun Fact: Siblings with Aria Caelith");
-                System.out.println("The siblings aim to master their respective skills, uncover the truth about their family\'s past, \nand bring the “Kim Morvain” to justice. They rely on each other\'s strengths to overcome challenges \nand support each other in their quest for revenge and redemption.");
-                System.out.println();
+        System.out.println();
+        System.out.println("┌────────────────────┐");
+        System.out.println("│  Player Character  │");
+        System.out.println("└────────────────────┘");
+        System.out.println("Kael Solmere");
+        System.out.println("Age: 15");
+        System.out.println("Personality: Intense, Brooding, Fiercely Loyal");
+        System.out.println("Grade Level: First Year Student");
+        System.out.println("Fun Fact: Siblings with Aria Caelith");
+        System.out.println("The siblings aim to master their respective skills, uncover the truth about their family\'s past, \nand bring the “Kim Morvain” to justice. They rely on each other\'s strengths to overcome challenges \nand support each other in their quest for revenge and redemption.");
+        System.out.println();
                 
-                System.out.println("┌───────────────────────────────────────────┐");
-                System.out.println("│  Swordsman (MAX LVL: 60)                  │");
-                System.out.println("│  Basic Attack - Blade Dance               │");
-                System.out.println("│  Skill - Blinding Silhouette              │");
-                System.out.println("│  Ultimate - Shattered Sun                 │");
-                System.out.println("│                                           │");
-                System.out.println("│  HP (Health Points): 4000                 │");
-                System.out.println("│  MP (Mana Points):    500                 │");
-                System.out.println("│  ATK (Attack):        400                 │");
-                System.out.println("│  DEF (Defence):       250                 │");
-                System.out.println("│  SPD (Speed):         180                 │");
-                System.out.println("└───────────────────────────────────────────┘");
-                System.out.println();
-                
-                System.out.println("┌──────────────┐");
-                System.out.println("│  Backstory   │");
-                System.out.println("└──────────────┘");
+        System.out.println("┌───────────────────────────────────────────┐");
+        System.out.println("│  Swordsman (MAX LVL: 60)                  │");
+        System.out.println("│  Basic Attack -                           │");
+        System.out.println("│  Skill 1 -                                │");
+        System.out.println("│  Skill 2 -                                │");
+        System.out.println("│  Ultimate -                               │");
+        System.out.println("│                                           │");
+        System.out.println("│  HP (Health Points): 4000                 │");
+        System.out.println("│  MP (Mana Points):    500                 │");
+        System.out.println("│  ATK (Attack):        400                 │");
+        System.out.println("│  DEF (Defence):       250                 │");
+        System.out.println("│  SPD (Speed):         180                 │");
+        System.out.println("└───────────────────────────────────────────┘");
+        System.out.println();
         
-                System.out.println("Driven by a desire for revenge against the “Kim Morvain, \nThe Dark Sorcerer” who destroyed their family\'s reputation and killed their parents.");
-            
-                
+        System.out.println("┌──────────────┐");
+        System.out.println("│  Backstory   │");
+        System.out.println("└──────────────┘");
         
+        System.out.println("Driven by a desire for revenge against the Kim Morvain, \nThe Dark Sorcerer” who destroyed their family\'s reputation and killed their parents.");
     }
     
     public static void choiceGunner() {
-                System.out.println();
-                System.out.println("┌────────────────────┐");
-                System.out.println("│  Player Character  │");
-                System.out.println("└────────────────────┘");
+        System.out.println();
+        System.out.println("┌────────────────────┐");
+        System.out.println("│  Player Character  │");
+        System.out.println("└────────────────────┘");
             
-                System.out.println("Aria Caelith (Mother\'s Surname)");
-                System.out.println("Age: 15");
-                System.out.println("Personality: Quick-Witted, Resourceful, Fiercely Protective of Kael");
-                System.out.println("Grade Level: First Year Student");
-                System.out.println("Fun Fact: Siblings with Kael Solmere");
-                System.out.println("The siblings aim to master their respective skills, uncover the truth about their family's past, \nand bring the “Kim Morvain” to justice. They rely on each other's strengths to overcome challenges \nand support each other in their quest for revenge and redemption.");
-                System.out.println();
-
+        System.out.println("Aria Caelith (Mother\'s Surname)");
+        System.out.println("Age: 15");
+        System.out.println("Personality: Quick-Witted, Resourceful, Fiercely Protective of Kael");
+        System.out.println("Grade Level: First Year Student");
+        System.out.println("Fun Fact: Siblings with Kael Solmere");
+        System.out.println("The siblings aim to master their respective skills, uncover the truth about their family's past, \nand bring the “Kim Morvain” to justice. They rely on each other's strengths to overcome challenges \nand support each other in their quest for revenge and redemption.");
+        System.out.println();
                 
-                System.out.println("┌───────────────────────────────────────────┐");
-                System.out.println("│  Gunner (MAX LVL: 60)                     │");
-                System.out.println("│  Basic Attack -                           │");
-                System.out.println("│  Skill -                                  │");
-                System.out.println("│  Ultimate -                               │");
-                System.out.println("│                                           │");
-                System.out.println("│  HP (Health Points): 2500                 │");
-                System.out.println("│  MP (Mana Points):   1000                 │");
-                System.out.println("│  ATK (Attack):        500                 │");
-                System.out.println("│  DEF (Defence):       125                 │");
-                System.out.println("│  SPD (Speed):         220                 │");
-                System.out.println("└───────────────────────────────────────────┘");
-                System.out.println();
+        System.out.println("┌───────────────────────────────────────────┐");
+        System.out.println("│  Gunner (MAX LVL: 60)                     │");
+        System.out.println("│  Basic Attack                             │");
+        System.out.println("│  Skill 1 -                                │");
+        System.out.println("│  Skill 2 -                                │");
+        System.out.println("│  Ultimate -                               │");
+        System.out.println("│                                           │");
+        System.out.println("│  HP (Health Points): 2500                 │");
+        System.out.println("│  MP (Mana Points):   1000                 │");
+        System.out.println("│  ATK (Attack):        500                 │");
+        System.out.println("│  DEF (Defence):       125                 │");
+        System.out.println("│  SPD (Speed):         220                 │");
+        System.out.println("└───────────────────────────────────────────┘");
+        System.out.println();
             
-                System.out.println("┌──────────────┐");
-                System.out.println("│  Backstory   │");
-                System.out.println("└──────────────┘");
-                System.out.println("A skilled gunner with a talent for inventing and modifying firearms.");
-                System.out.println();
-            
-               
+        System.out.println("┌──────────────┐");
+        System.out.println("│  Backstory   │");
+        System.out.println("└──────────────┘");
+        System.out.println("A skilled gunner with a talent for inventing and modifying firearms.");
+        System.out.println();   
     }
     
     public static void choiceMage() {
+        System.out.println();
+        System.out.println("┌────────────────────┐");
+        System.out.println("│  Player Character  │");
+        System.out.println("└────────────────────┘");
 
-                System.out.println();
-                System.out.println("┌────────────────────┐");
-                System.out.println("│  Player Character  │");
-                System.out.println("└────────────────────┘");
-
-                
-                System.out.println("Selene Arclight");
-                System.out.println("Age: 15");
-                System.out.println("Personality: Prideful");
-                System.out.println("Grade Level: First Year Student");
-                System.out.println("Fun Fact: To be followed...");
-                System.out.println();
-                
-                
-                System.out.println("┌───────────────────────────────────────────┐");
-                System.out.println("│  Mage (MAX LVL: 60)                       │");
-                System.out.println("│  Basic Attack - Stellar Shard             │");
-                System.out.println("│  Skill - Chains of Starlight              │");
-                System.out.println("│  Ultimate - Astral Cataclysm              │");
-                System.out.println("│                                           │");
-                System.out.println("│  HP (Health Points): 3200                 │");
-                System.out.println("│  MP (Mana Points):    600                 │");
-                System.out.println("│  ATK (Attack):        350                 │");
-                System.out.println("│  DEF (Defence):       180                 │");
-                System.out.println("│  SPD (Speed):         300                 │");
-                System.out.println("└───────────────────────────────────────────┘");
-                System.out.println();
+        System.out.println("Selene Arclight");
+        System.out.println("Age: 15");
+        System.out.println("Personality: Prideful");
+        System.out.println("Grade Level: First Year Student");
+        System.out.println("Fun Fact: To be followed...");
+        System.out.println();
             
-                System.out.println("┌──────────────┐");
-                System.out.println("│  Backstory   │");
-                System.out.println("└──────────────┘");
-                System.out.println("Born into the prestigious mage family, Arclight, as the legitimate eldest child, \nSelene was expected to inherit the family head’s mantle. Until her father brought \nhome a young boy claiming that he is her brother, and that she should support him \nin becoming the next head of the family.");
-                System.out.println("Determined to reclaim her status as heir, she enrolled in the academy. Her goal? \nTo learn everything the academy has to offer and achieve something so great \nthat even her father can’t deny her worth. \nAnd killing the “Kim Morvain” seems just right for that.");
-                System.out.println();
-        }
-
-
+        System.out.println("┌───────────────────────────────────────────┐");
+        System.out.println("│  Mage (MAX LVL: 60)                       │");
+        System.out.println("│  Basic Attack                             │");
+        System.out.println("│  Skill 1 - Stellar Shard                  │");
+        System.out.println("│  Skill 2- Chains of Starlight             │");
+        System.out.println("│  Ultimate - Astral Cataclysm              │");
+        System.out.println("│                                           │");
+        System.out.println("│  HP (Health Points): 3200                 │");
+        System.out.println("│  MP (Mana Points):    600                 │");
+        System.out.println("│  ATK (Attack):        350                 │");
+        System.out.println("│  DEF (Defence):       180                 │");
+        System.out.println("│  SPD (Speed):         300                 │");
+        System.out.println("└───────────────────────────────────────────┘");
+        System.out.println();
+            
+        System.out.println("┌──────────────┐");
+        System.out.println("│  Backstory   │");
+        System.out.println("└──────────────┘");
+        System.out.println("Born into the prestigious mage family, Arclight, as the legitimate eldest child, \nSelene was expected to inherit the family head’s mantle. Until her father brought \nhome a young boy claiming that he is her brother, and that she should support him \nin becoming the next head of the family.");
+        System.out.println("Determined to reclaim her status as heir, she enrolled in the academy. Her goal? \nTo learn everything the academy has to offer and achieve something so great \nthat even her father can’t deny her worth. \nAnd killing the “Kim Morvain” seems just right for that.");
+        System.out.println();
+    }
 }
