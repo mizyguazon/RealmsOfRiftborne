@@ -9,69 +9,7 @@ import java.util.Scanner;
 // Inventory
 // Select Character Prompt
 
-class StartMenu extends Narration { 
-    
-    static Scanner scan = new Scanner(System.in);
-    static boolean hasVisitedPrologue = false;
-
-    public void displayStartMenu(){
-        CharacterMenu charHandler = new CharacterMenu();
-        Menu menu = new Menu();
-
-        boolean play = true;
-
-        while(play){
-            System.out.println("+------------------------------+");
-            System.out.println("|        Mystvale Academy      |");
-            System.out.println("+------------------------------+");
-            System.out.println("|    A Text-Based Adventure    |");
-            System.out.println("|  in a World of Sorcery and   |");
-            System.out.println("|         Shadowed Halls       |");
-            System.out.println("+------------------------------+");
-            System.out.println("|          1. Start Game       |");
-            System.out.println("|          2. Exit Game        |");
-            System.out.println("+------------------------------+");
-            System.out.print("Enter your choice (1-2): ");
-
-            String startMenuChoice = scan.nextLine();
-
-            switch (startMenuChoice) {
-                case "1":
-                    System.out.println("┌─────────────────────────┐");
-                    System.out.println("│   Starting the game...  │");
-                    System.out.println("└─────────────────────────┘");
-                    System.out.println();
-
-                    if(!hasVisitedPrologue){
-                        prologueNarration();
-                        charHandler.chooseCharacterMenu();
-                        hasVisitedPrologue = true;
-                        play = false;
-                    }
-                    menu.defaultMainMenu();
-                    //fix menu mechanism. all behaviors will start at start menu;
-                    //characterMenuHandler.chooseCharacterMenu();
-                    break;
-
-                case "2":
-                    System.out.println("┌───────────┐");
-                    System.out.println("│  Goodbye! │");
-                    System.out.println("└───────────┘");
-                    System.out.println();
-                    play = false;
-                    return;
-
-                default:
-                    System.out.println("┌─────────────────────────────┐");
-                    System.out.println("│  Invalid choice. Try again! │");
-                    System.out.println("└─────────────────────────────┘");
-                    displayStartMenu();
-            }
-        }
-    }
-}
-
-class Menu extends Narration {
+public class Menu extends Narration {
     static Scanner scanner = new Scanner(System.in);
 
     //Change these variables to private once encasulation is implemented (i think)
@@ -90,6 +28,7 @@ class Menu extends Narration {
     public void defaultMainMenu(){
         boolean runMainMenu = true;
         AcademyMenu handler = new AcademyMenu();
+        ForestOfReverie forest = new ForestOfReverie();
         
         while(runMainMenu){
             System.out.println("+------------------------------------------+");
@@ -98,9 +37,9 @@ class Menu extends Narration {
             System.out.println("| 1. Go to Academy                         |");
             System.out.println("| 2. Shop                                  |");
             System.out.println("| 3. Inventory                             |");
-            System.out.println("| 4. Area 1                                |");
-            System.out.println("| 5. Area 2                                |");
-            System.out.println("| 6. Area 3                                |");
+            System.out.println("| 4. The Forest of Reverie                 |");
+            System.out.println("| 5. The Reverie Edge                      |");
+            System.out.println("| 6. The Forsaken Lands                    |");
             System.out.println("| 7. Exit Game                             |");
             System.out.println("+------------------------------------------+");
             System.out.println("      ┌──────────────────────────────┐");
@@ -172,6 +111,8 @@ class Menu extends Narration {
                         area1Narration();
                         hasVisitedArea1 = true;
                     }
+
+                    forest.enter();
                     
                     break;
                     
@@ -249,6 +190,68 @@ class Menu extends Narration {
         
     }
     
+}
+
+class StartMenu extends Narration { 
+    
+    static Scanner scan = new Scanner(System.in);
+    static boolean hasVisitedPrologue = false;
+
+    public void displayStartMenu(){
+        CharacterMenu charHandler = new CharacterMenu();
+        Menu menu = new Menu();
+
+        boolean play = true;
+
+        while(play){
+            System.out.println("+------------------------------+");
+            System.out.println("|        Mystvale Academy      |");
+            System.out.println("+------------------------------+");
+            System.out.println("|    A Text-Based Adventure    |");
+            System.out.println("|  in a World of Sorcery and   |");
+            System.out.println("|         Shadowed Halls       |");
+            System.out.println("+------------------------------+");
+            System.out.println("|          1. Start Game       |");
+            System.out.println("|          2. Exit Game        |");
+            System.out.println("+------------------------------+");
+            System.out.print("Enter your choice (1-2): ");
+
+            String startMenuChoice = scan.nextLine();
+
+            switch (startMenuChoice) {
+                case "1":
+                    System.out.println("┌─────────────────────────┐");
+                    System.out.println("│   Starting the game...  │");
+                    System.out.println("└─────────────────────────┘");
+                    System.out.println();
+
+                    if(!hasVisitedPrologue){
+                        prologueNarration();
+                        charHandler.chooseCharacterMenu();
+                        hasVisitedPrologue = true;
+                        play = false;
+                    }
+                    menu.defaultMainMenu();
+                    //fix menu mechanism. all behaviors will start at start menu;
+                    //characterMenuHandler.chooseCharacterMenu();
+                    break;
+
+                case "2":
+                    System.out.println("┌───────────┐");
+                    System.out.println("│  Goodbye! │");
+                    System.out.println("└───────────┘");
+                    System.out.println();
+                    play = false;
+                    return;
+
+                default:
+                    System.out.println("┌─────────────────────────────┐");
+                    System.out.println("│  Invalid choice. Try again! │");
+                    System.out.println("└─────────────────────────────┘");
+                    displayStartMenu();
+            }
+        }
+    }
 }
 
 class AcademyMenu extends Menu{
