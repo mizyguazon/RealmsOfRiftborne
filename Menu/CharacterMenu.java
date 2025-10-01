@@ -41,6 +41,7 @@ public class CharacterMenu extends Narration{
                 System.out.println("│  Invalid choice. Try again! │");
                 System.out.println("└─────────────────────────────┘");
                 chooseCharacterMenu();
-        }    
+        }
+        scanner.close();    
     }
 }

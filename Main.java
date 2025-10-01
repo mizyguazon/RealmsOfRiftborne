@@ -1,5 +1,3 @@
-package Main;
-
 import Menu.StartMenu;
 import java.util.Scanner;
 

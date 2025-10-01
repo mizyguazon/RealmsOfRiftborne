@@ -366,10 +366,10 @@ public class Narration{
                 return;
 
             case 'n':
+                System.out.println();
                 System.out.println("┌──────────────────────────────────────────────┐");
                 System.out.println("│        Press ENTER to continue...            │");
                 System.out.println("└──────────────────────────────────────────────┘");
-                scanner.nextLine();
 
                 for (int i = 0; i < section.length; i++) {
                     scanner.nextLine();

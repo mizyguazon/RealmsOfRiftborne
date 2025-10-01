@@ -19,7 +19,6 @@ public class Menu extends Narration {
         boolean runMainMenu = true;
         AcademyMenu handler = new AcademyMenu();
         ForestOfReverie forest = new ForestOfReverie();
-        Narration narrationHandler = new Narration();
         
         while(runMainMenu){
             System.out.println("+------------------------------------------+");
