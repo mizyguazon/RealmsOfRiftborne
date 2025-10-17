@@ -142,7 +142,6 @@ public class BattleMechanic {
     }
 
     public static void enemyCastAttack(Hero player, Boss enemy) { 
-        int damage = 0;
         System.out.println("Enemy's turn:");
 
         while (true) { // loop until enemy does a valid action
@@ -151,16 +150,12 @@ public class BattleMechanic {
             switch (choice) {
                 case 1:
                     // Basic attack is always valid
-                    damage = enemy.basicAttack() - player.getDefense()/2;
-                    System.out.println(enemy.getName() + " used Basic Attack!");
-                    System.out.println("Basic Attack deals " + (int) Math.round(damage) + " damage!");
+                    enemy.basicAttack(player);
                     break;
 
                 case 2:
                     if (enemy.getMana() >= enemy.getManaCostSkill1() && enemy.getCooldown1() == 0) {
-                        damage = enemy.skill1() - player.getDefense()/2;
-                        System.out.println(enemy.getName() + " used " + enemy.getSkill1() + "!");
-                        System.out.println(enemy.getSkill1() + " deals " + (int) Math.round(damage) + " damage!");
+                        enemy.skill1(player);
                     } else {
                         continue; // try another choice
                     }
@@ -168,9 +163,7 @@ public class BattleMechanic {
 
                 case 3:
                     if (enemy.getMana() >= enemy.getManaCostSkill2() && enemy.getCooldown2() == 0) {
-                        damage = enemy.skill2() - player.getDefense()/2;
-                        System.out.println(enemy.getName() + " used " + enemy.getSkill2() + "!");
-                        System.out.println(enemy.getSkill2() + " deals " + (int) Math.round(damage) + " damage!");
+                        enemy.skill2(player);
                     } else {
                         continue;
                     }
@@ -178,9 +171,7 @@ public class BattleMechanic {
 
                 case 4:
                     if (enemy.getMana() >= enemy.getManaCostSkill3() && enemy.getCooldown3() == 0) {
-                        damage = enemy.skill3() - player.getDefense()/2;
-                        System.out.println(enemy.getName() + " used " + enemy.getSkill3() + "!");
-                        System.out.println(enemy.getSkill3() + " deals " + (int) Math.round(damage) + " damage!");
+                        enemy.skill3(player);
                     } else {
                         continue;
                     }
@@ -188,9 +179,7 @@ public class BattleMechanic {
 
                 case 5:
                     if (enemy.getMana() >= enemy.getManaCostUltimate() && enemy.getCooldownU() == 0) {
-                        damage = enemy.ultimate() - player.getDefense()/2;
-                        System.out.println(enemy.getName() + " used " + enemy.getUltimate() + "!");
-                        System.out.println(enemy.getUltimate() + " deals " + (int) Math.round(damage) + " damage!");
+                        enemy.ultimate(player);
                     } else {
                         continue;
                     }
@@ -200,9 +189,6 @@ public class BattleMechanic {
             // If we reached here → attack was valid
             break;
         }
-
-        // Apply damage to player
-        player.setHp(player.getHp() - damage);
     }
 
     public static void reducePlayerCooldown(Hero player){
@@ -223,6 +209,8 @@ public class BattleMechanic {
         origMana = player.getMana();
         enemyOrigHp = enemy.getHp();
         enemyOrigMana = enemy.getMana();
+        player.setManaCap(player.getMana());
+        enemy.setManaCap(enemy.getMana());
     }
 
     public static void restoreStats(Hero player, Boss enemy){

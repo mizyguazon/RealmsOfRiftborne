@@ -1,5 +1,7 @@
 package Boss;
 
+import Hero.*;
+
 public class Boss {
     private int hp;
     private int attack;
@@ -7,66 +9,50 @@ public class Boss {
     private int defense;
     private int speed;
     private String name;
-    private String skill1;
-    private String skill2;
-    private String skill3;
-    private String ultimate;
-    private int manaCostSkill1;
-    private int manaCostSkill2;
-    private int manaCostSkill3;
-    private int manaCostUltimate;
+    private String skill1, skill2, skill3, ultimate;
+    private int manaCostSkill1, manaCostSkill2, manaCostSkill3, manaCostUltimate;
     private int cooldown1 = 0;
     private int cooldown2 = 0;
     private int cooldown3 = 0;
     private int cooldownU = 0; 
-    private int skillCd1;
-    private int skillCd2;
-    private int skillCd3;
-    private int skillCdU;
-    private int maxMana;
+    private int skillCd1, skillCd2, skillCd3, skillCdU;
+    private int manaCap;
 
     public Boss() {
 
     }
 
-    public Boss(int hp, int attack, int mana, int defense, int speed, String name, String skill1, String skill2, String skill3, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostSkill3, int manaCostUltimate, int skillCd1, int skillCd2, int skillCd3 ,int skillCdU) {
+    public Boss(int hp, int attack, int mana, int defense, int speed, String name){
         this.hp = hp;
         this.attack = attack;
         this.mana = mana;
         this.defense = defense;
         this.speed = speed;
         this.name = name;
-        this.skill1 = skill1;
-        this.skill2 = skill2;
-        this.skill3 = skill3;
-        this.ultimate = ultimate;
-        this.manaCostSkill1 = manaCostSkill1;
-        this.manaCostSkill2 = manaCostSkill2;
-        this.manaCostSkill3 = manaCostSkill3;
-        this.manaCostUltimate = manaCostUltimate;
-        this.maxMana = mana;
-        this.skillCd1 = skillCd1;
-        this.skillCd2 = skillCd2;
-        this.skillCd3 = skillCd3;
-        this.skillCdU = skillCdU;
     }
 
-    public int basicAttack() {
+    public void basicAttack(Hero hero) {
         double damage = getAttack() * 1.1;
 
-        double manaRecovery = maxMana * 0.2;
+        double manaRecovery = getManaCap() * 0.2;
 
-        if(manaRecovery+getMana() > maxMana){
-            setMana(maxMana);
+        if(manaRecovery+getMana() > getManaCap()){
+            setMana(getManaCap());
         } else {
             int addMana = (int) manaRecovery + getMana();
             setMana(addMana);
         }
-        
-        return (int) Math.round(damage);
+
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
+
+        System.out.println(getName() + " used Basic Attack!");
+        System.out.println("Basic Attack deals " + damageDealt + " damage!");
+
+
+        hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public int skill1(){
+    public void skill1(Hero hero){
         setCooldown1(skillCd1);
 
         double damage = getAttack() * 1.5;
@@ -74,21 +60,34 @@ public class Boss {
         int manaReduce = getMana() - manaCostSkill1;
         setMana(manaReduce);
 
-        return (int) Math.round(damage);
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
+
+
+        System.out.println(getName() + " used " + skill1 + "!");
+        System.out.println(skill1 + " deals " + damageDealt + " damage!");
+
+
+        hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public int skill2(){
+    public void skill2(Hero hero){
         setCooldown2(skillCd2);
 
         double damage = getAttack() * 1.8;
 
         int manaReduce = getMana() - manaCostSkill2;
         setMana(manaReduce);
+
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
+
+
+        System.out.println(getName() + " used " + skill2 + "!");
+        System.out.println(skill2 + " deals " + damageDealt + " damage!");
         
-        return (int) Math.round(damage);
+        hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public int skill3(){
+    public void skill3(Hero hero){
         setCooldown3(skillCd3);
 
         double damage = getAttack() * 1.9;
@@ -96,10 +95,16 @@ public class Boss {
         int manaReduce = getMana() - manaCostSkill3;
         setMana(manaReduce);
 
-        return (int) Math.round(damage);
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
+
+
+        System.out.println(getName() + " used " + skill3 + "!");
+        System.out.println(skill3 + " deals " + damageDealt + " damage!");
+
+        hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public int ultimate(){
+    public void ultimate(Hero hero){
         setCooldownU(skillCdU);
 
         double damage = getAttack() * 2.3;
@@ -107,7 +112,12 @@ public class Boss {
         int manaReduce = getMana() - manaCostUltimate;
         setMana(manaReduce);
 
-        return (int) Math.round(damage);
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
+
+        System.out.println(getName() + " used " + ultimate + "!");
+        System.out.println(ultimate + " deals " + damageDealt + " damage!");
+        
+        hero.setHp(hero.getHp() - damageDealt);
     }
 
 
@@ -146,6 +156,10 @@ public class Boss {
 
     public void setCooldownU(int cdU) {
         cooldownU = cdU;
+    }
+
+    public void setManaCap(int manaCap){
+        this.manaCap = manaCap;
     }
 
     // Getters
@@ -219,5 +233,9 @@ public class Boss {
 
     public int getCooldownU() {
         return cooldownU;
+    }
+
+    public int getManaCap(){
+        return manaCap;
     }
 }

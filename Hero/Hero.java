@@ -25,6 +25,7 @@ public class Hero {
     private int skillCd2;
     private int skillCdU;
     private int manaCap;
+    private int gold;
 
     public Hero(){ 
 
@@ -262,6 +263,10 @@ public class Hero {
         cooldownU = cdU;
     }
 
+    public void setManaCap(int manaCap){
+        this.manaCap = manaCap;
+    }
+
     // level mechanism
     public void levelUp(int gainedExp){
         DecimalFormat df = new DecimalFormat("#,##0");
@@ -397,6 +402,15 @@ public class Hero {
         double k = 1.3; // growth exponent
         int stat = (int) (base + (max - base) * Math.pow((double)(level - 1) / 59, k));
         return stat;
+    }
+
+    // gold mechanics
+    public void setGold(int gold){
+        this.gold = gold;
+    }
+
+    public int getGold(){
+        return gold;
     }
 
     // Javines _________________________________________________________________________________________

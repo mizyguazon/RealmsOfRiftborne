@@ -1,10 +1,9 @@
 package Menu;
 
-import Area.ForestOfReverie;
-import Area.ForsakenLands;
-import Area.ReveriesEdge;
 import Hero.*;
 import Narration.*;
+import Area.*;
+
 import java.util.Scanner;
 
 public class Menu extends Narration {
@@ -20,13 +19,13 @@ public class Menu extends Narration {
             System.out.println("+------------------------------------------+");
             System.out.println("|    --- MYSTVALE ACADEMY MAIN MENU ---    |");
             System.out.println("+------------------------------------------+");
-            System.out.println("| [1] Go to Academy                         |");
-            System.out.println("| [2] Shop                                  |");
-            System.out.println("| [3] Inventory                             |");
-            System.out.println("| [4] The Forest of Reverie                 |");
-            System.out.println("| [5] The Reverie Edge                      |");
-            System.out.println("| [6] The Forsaken Lands                    |");
-            System.out.println("| [7] Exit Game                             |");
+            System.out.println("| [1] Go to Academy                        |");
+            System.out.println("| [2] Shop                                 |");
+            System.out.println("| [3] Inventory                            |");
+            System.out.println("| [4] The Forest of Reverie                |");
+            System.out.println("| [5] The Reverie Edge                     |");
+            System.out.println("| [6] The Forsaken Lands                   |");
+            System.out.println("| [7] Exit Game                            |");
             System.out.println("+------------------------------------------+");
             System.out.println("┌──────────────────────────────┐");
             System.out.println("│   Where do you want to go?   │");
