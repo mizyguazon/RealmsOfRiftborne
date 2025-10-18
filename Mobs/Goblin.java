@@ -1,63 +1,80 @@
 package Mobs;
 
-public class Goblin extends Mobs {
-    private String skill1 = "Throw Rock";
-    private String skill2 = "Rock Barrage";
-    private int manaCostSkill1 = 50;
-    private int manaCostSkill2 = 250;
-    private int manaCapacity = getMana();
+import Hero.Hero;
+
+public abstract class Goblin extends Mobs {
+    private int skillCd1, skillCd2;
 
     public Goblin() {
-        super("Goblin", 1500, 200, 100, 150, 5, 300);
+        super("Goblin", 1500, 200, 100, 150, 5, 300, 300, "Throw Rock", "Rock Barrage", "Unknown", 50, 250, 500);
+        
+        this.skillCd1 = 4;
+        this.skillCd2 = 6;
+
     }
 
     @Override
-    public int basicAttack() {
-        double damage = getAttack(); 
-        System.out.println(getName() + " used Basic Attack!");
-        System.out.println("Basic Attack deals " + damage + " damage!");
-        double manaRecovery = manaCapacity * 0.2;
+    public void basicAttack(Hero hero) {
+        double damage = getAttack() * 1.1;
 
-        if(manaRecovery+getMana() > manaCapacity){
-            setMana(manaCapacity);
+        double manaRecovery = getManaCap() * 0.2;
+
+        if(manaRecovery+getMana() > getManaCap()){
+            setMana(getManaCap());
         } else {
             int addMana = (int) manaRecovery + getMana();
             setMana(addMana);
         }
 
-        return (int) damage;
-    }
-    
-    @Override
-    public int skill1(){
-        double damage = getAttack() * (int) 1.5;
-        System.out.println(getName() + " used " + skill1 + "!");
-        System.out.println(skill1 + " deals " + damage + " damage!");
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-        int manaReduce = getMana() - manaCostSkill1;
+        System.out.println(getName() + " used Basic Attack!");
+        System.out.println("Basic Attack deals " + damageDealt + " damage!");
+
+
+        hero.setHp(hero.getHp() - damageDealt);
+    }
+
+    @Override
+    public void skill1(Hero hero){
+        setCooldown1(skillCd1);
+
+        double damage = getAttack() * 1.5;
+
+        int manaReduce = getMana() - getManaCostSkill1();
         setMana(manaReduce);
 
-        return (int) Math.round(damage);
-    }
-    
-    @Override
-    public int skill2(){
-        double damage = getAttack() * (int) 2.5;
-        System.out.println(getName() + " used " + skill2 + "!");
-        System.out.println(skill2 + " deals " + damage + " damage!");
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-        int manaReduce = getMana() - manaCostSkill2;
+
+        System.out.println(getName() + " used " + getSkill1() + "!");
+        System.out.println(getSkill1() + " deals " + damageDealt + " damage!");
+
+
+        hero.setHp(hero.getHp() - damageDealt);
+    }
+
+    @Override
+    public void skill2(Hero hero){
+        setCooldown2(skillCd2);
+
+        double damage = getAttack() * 1.8;
+
+        int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);
 
-        return (int) Math.round(damage);
+        int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
+
+
+        System.out.println(getName() + " used " + getSkill2() + "!");
+        System.out.println(getSkill2() + " deals " + damageDealt + " damage!");
+        
+        hero.setHp(hero.getHp() - damageDealt);
     }
-    
+
     @Override
-    public int ultimate(){
-        System.out.println(getName() + " has no ultimate skill!");
-
-        return 0; 
-
+    public void ultimate(Hero hero){
+        
     }
 
 

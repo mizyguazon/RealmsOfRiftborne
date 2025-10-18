@@ -18,10 +18,6 @@ public class Boss extends Entity {
     private int skillCd1, skillCd2, skillCd3, skillCdU;
     private int manaCap;
 
-    public Boss() {
-
-    }
-
     public Boss(int hp, int attack, int mana, int defense, int speed, String name, String skill1, String skill2, String skill3, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostSkill3, int manaCostUltimate){
         this.hp = hp;
         this.attack = attack;
