@@ -10,6 +10,7 @@ public abstract class Entity {
     protected int manaCap;
     protected int attack;
     protected int defense;
+    protected int speed;
 
     // === Cooldowns ===
     protected int cooldown1;
@@ -43,11 +44,12 @@ public abstract class Entity {
     }
 
     // === Abstract Methods ===
-    public abstract void basicAttack(Hero hero);
-    public abstract void skill1(Hero hero);
-    public abstract void skill2(Hero hero);
-    public abstract void skill3(Hero hero);
-    public abstract void ultimate(Hero hero);
+    public abstract boolean dodgeHeroAtk(Entity defender, Hero attacker);
+    public abstract void basicAttack(Entity enemy, Hero hero);
+    public abstract void skill1(Entity enemy, Hero hero);
+    public abstract void skill2(Entity enemy, Hero hero);
+    public abstract void skill3(Entity enemy, Hero hero);
+    public abstract void ultimate(Entity enemy, Hero hero);
 
     // === Getters ===
     public String getName() { 
@@ -76,6 +78,10 @@ public abstract class Entity {
 
     public int getDefense() { 
         return defense; 
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 
     public String getSkill1() { 
@@ -153,6 +159,10 @@ public abstract class Entity {
 
     public void setDefense(int defense) { 
         this.defense = defense; 
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
     public void setSkill1(String skill1) { 

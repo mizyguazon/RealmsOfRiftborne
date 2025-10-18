@@ -1,5 +1,7 @@
 package Boss;
 
+import java.text.DecimalFormat;
+
 import Hero.*;
 
 public class Morgrath extends Boss {
@@ -12,9 +14,14 @@ public class Morgrath extends Boss {
         this.skillCd3 = 7;
         this.skillCdU = 9;
     }
+    
+    DecimalFormat df = new DecimalFormat("#,##0");
 
     @Override
-    public void basicAttack(Hero hero) {
+    public void basicAttack(Entity enemy, Hero hero) {
+        System.out.println(getName() + " used Basic Attack!");
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
+
         double damage = getAttack() * 1.1;
 
         double manaRecovery = getManaCap() * 0.2;
@@ -28,16 +35,17 @@ public class Morgrath extends Boss {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-        System.out.println(getName() + " used Basic Attack!");
-        System.out.println("Basic Attack deals " + damageDealt + " damage!");
-
+        System.out.println("Basic Attack deals " + df.format(damageDealt) + " damage!");
 
         hero.setHp(hero.getHp() - damageDealt);
     }
 
     @Override
-    public void skill1(Hero hero){
+    public void skill1(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + getSkill1() + "!");
+
         setCooldown1(skillCd1);
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
 
         double damage = getAttack() * 1.5;
 
@@ -46,18 +54,19 @@ public class Morgrath extends Boss {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-
-        System.out.println(getName() + " used " + getSkill1() + "!");
-        System.out.println(getSkill1() + " deals " + damageDealt + " damage!");
+        System.out.println(getSkill1() + " deals " + df.format(damageDealt) + " damage!");
 
 
         hero.setHp(hero.getHp() - damageDealt);
     }
 
     @Override
-    public void skill2(Hero hero){
-        setCooldown2(skillCd2);
+    public void skill2(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + getSkill2() + "!");
 
+        setCooldown2(skillCd2);
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
+        
         double damage = getAttack() * 1.8;
 
         int manaReduce = getMana() - getManaCostSkill2();
@@ -65,16 +74,17 @@ public class Morgrath extends Boss {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-
-        System.out.println(getName() + " used " + getSkill2() + "!");
-        System.out.println(getSkill2() + " deals " + damageDealt + " damage!");
+        System.out.println(getSkill2() + " deals " + df.format(damageDealt) + " damage!");
         
         hero.setHp(hero.getHp() - damageDealt);
     }
 
     @Override
-    public void skill3(Hero hero){
+    public void skill3(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + getSkill3() + "!");
+
         setCooldown3(skillCd3);
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
 
         double damage = getAttack() * 1.9;
 
@@ -83,15 +93,14 @@ public class Morgrath extends Boss {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-
-        System.out.println(getName() + " used " + getSkill3() + "!");
-        System.out.println(getSkill3() + " deals " + damageDealt + " damage!");
+        System.out.println(getSkill3() + " deals " + df.format(damageDealt) + " damage!");
 
         hero.setHp(hero.getHp() - damageDealt);
     }
 
     @Override
-    public void ultimate(Hero hero){
+    public void ultimate(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + getUltimate() + "!");
         setCooldownU(skillCdU);
 
         double damage = getAttack() * 2.3;
@@ -101,8 +110,7 @@ public class Morgrath extends Boss {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-        System.out.println(getName() + " used " + getUltimate() + "!");
-        System.out.println(getUltimate() + " deals " + damageDealt + " damage!");
+        System.out.println(getUltimate() + " deals " + df.format(damageDealt) + " damage!");
         
         hero.setHp(hero.getHp() - damageDealt);
     }

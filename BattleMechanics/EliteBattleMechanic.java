@@ -10,7 +10,7 @@ public class EliteBattleMechanic {
     static private int origHp;
     static private int origMana;
 
-    public void fight(Hero player, Entity enemy){
+    public boolean fight(Hero player, Entity enemy){
         enemy.setManaCap(enemy.getMana());
         setOriginalStats(player);
 
@@ -48,7 +48,7 @@ public class EliteBattleMechanic {
                 System.out.println();
 
                 restoreStats(player);
-                return;
+                return true;
             }
 
             System.out.println();
@@ -67,9 +67,9 @@ public class EliteBattleMechanic {
                 System.out.println();
 
                 restoreStats(player);
-                return;
             }
         }
+        return false;
     }
 
     public static boolean castAttack (Hero player, Entity enemy, int choice) {
@@ -77,7 +77,7 @@ public class EliteBattleMechanic {
 
         switch (choice) {
             case 1:
-                player.basicAttack(enemy);
+                player.basicAttack(player, enemy);
                 break;
 
             case 2:
@@ -86,7 +86,7 @@ public class EliteBattleMechanic {
                     return false;
                 }
                 if (player.getCooldown1() == 0) {
-                    player.skill1(enemy);
+                    player.skill1(player, enemy);
                 } else {
                     System.out.println("Skill 1 (" + player.getSkill1() + ") is on cooldown for " + player.getCooldown1() + " more turn(s).");
                     return false;
@@ -99,7 +99,7 @@ public class EliteBattleMechanic {
                     return false;
                 }
                 if (player.getCooldown2() == 0) {
-                    player.skill2(enemy);
+                    player.skill2(player, enemy);
                 } else {
                     System.out.println("Skill 2 (" + player.getSkill2() + ") is on cooldown for " + player.getCooldown2() + " more turn(s).");
                     return false;
@@ -112,7 +112,7 @@ public class EliteBattleMechanic {
                     return false;
                 }
                 if (player.getCooldownU() == 0) {
-                    player.ultimate(enemy);
+                    player.ultimate(player, enemy);
                 } else {
                     System.out.println("Ultimate (" + player.getUltimate() + ") is on cooldown for " + player.getCooldownU() + " more turn(s).");
                     return false;
@@ -136,12 +136,12 @@ public class EliteBattleMechanic {
             switch (choice) {
                 case 1:
                     // Basic attack is always valid
-                    enemy.basicAttack(player);
+                    enemy.basicAttack(enemy, player);
                     break;
 
                 case 2:
                     if (enemy.getMana() >= enemy.getManaCostSkill1() && enemy.getCooldown1() == 0) {
-                        enemy.skill1(player);
+                        enemy.skill1(enemy, player);
                     } else {
                         continue; // try another choice
                     }
@@ -149,7 +149,7 @@ public class EliteBattleMechanic {
 
                 case 3:
                     if (enemy.getMana() >= enemy.getManaCostSkill2() && enemy.getCooldown2() == 0) {
-                        enemy.skill2(player);
+                        enemy.skill2(enemy, player);
                     } else {
                         continue;
                     }
@@ -157,7 +157,7 @@ public class EliteBattleMechanic {
 
                 case 4:
                     if (enemy.getMana() >= enemy.getManaCostUltimate() && enemy.getCooldownU() == 0) {
-                        enemy.ultimate(player);
+                        enemy.ultimate(enemy, player);
                     } else {
                         continue;
                     }

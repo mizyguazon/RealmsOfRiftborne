@@ -1,5 +1,7 @@
 package Boss;
 
+import java.util.Random;
+
 import Hero.*;
 
 public class Boss extends Entity {
@@ -35,7 +37,10 @@ public class Boss extends Entity {
         this.manaCostUltimate = manaCostUltimate;
     }
 
-    public void basicAttack(Hero hero) {
+    public void basicAttack(Entity enemy, Hero hero) {
+        System.out.println(getName() + " used Basic Attack!");
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
+
         double damage = getAttack() * 1.1;
 
         double manaRecovery = getManaCap() * 0.2;
@@ -49,15 +54,17 @@ public class Boss extends Entity {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-        System.out.println(getName() + " used Basic Attack!");
         System.out.println("Basic Attack deals " + damageDealt + " damage!");
 
 
         hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public void skill1(Hero hero){
+    public void skill1(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + skill1 + "!");
+
         setCooldown1(skillCd1);
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
 
         double damage = getAttack() * 1.5;
 
@@ -66,16 +73,17 @@ public class Boss extends Entity {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-
-        System.out.println(getName() + " used " + skill1 + "!");
         System.out.println(skill1 + " deals " + damageDealt + " damage!");
 
 
         hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public void skill2(Hero hero){
+    public void skill2(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + skill2 + "!");
+
         setCooldown2(skillCd2);
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
 
         double damage = getAttack() * 1.8;
 
@@ -85,14 +93,16 @@ public class Boss extends Entity {
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
 
-        System.out.println(getName() + " used " + skill2 + "!");
         System.out.println(skill2 + " deals " + damageDealt + " damage!");
         
         hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public void skill3(Hero hero){
+    public void skill3(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + skill3 + "!");
+
         setCooldown3(skillCd3);
+        if(hero.dodgeEnemyAtk(hero, enemy)) return;
 
         double damage = getAttack() * 1.9;
 
@@ -101,14 +111,14 @@ public class Boss extends Entity {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-
-        System.out.println(getName() + " used " + skill3 + "!");
         System.out.println(skill3 + " deals " + damageDealt + " damage!");
 
         hero.setHp(hero.getHp() - damageDealt);
     }
 
-    public void ultimate(Hero hero){
+    public void ultimate(Entity enemy, Hero hero){
+        System.out.println(getName() + " used " + ultimate + "!");
+
         setCooldownU(skillCdU);
 
         double damage = getAttack() * 2.3;
@@ -118,12 +128,24 @@ public class Boss extends Entity {
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
-        System.out.println(getName() + " used " + ultimate + "!");
         System.out.println(ultimate + " deals " + damageDealt + " damage!");
         
         hero.setHp(hero.getHp() - damageDealt);
     }
 
+    // Dodge Hero attack method || Enemy dodges
+    public boolean dodgeHeroAtk(Entity defender, Hero attacker){
+        Random rand = new Random();
+        double dodgeChance = (double) defender.getSpeed() / (defender.getSpeed() + attacker.getSpeed()) * 0.5;
+        double roll = rand.nextDouble(0.0, 1.0);
+
+        if (roll < dodgeChance) {
+            System.out.println(defender.getName() + " dodged the attack!");
+            return true;
+        }
+
+        return false;
+    }
 
     // Setters
     public void setHp(int hp) {

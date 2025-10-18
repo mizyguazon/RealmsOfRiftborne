@@ -1,5 +1,7 @@
 package Hero;
+
 import java.text.DecimalFormat;
+import java.util.*;
 
 public class Hero {
     private int hp;
@@ -45,7 +47,9 @@ public class Hero {
         setMaxStats(maxAtk, maxMana, maxDef);
     }
 
-    public void basicAttack(Entity enemy) {
+    public void basicAttack(Hero hero, Entity enemy) {
+        if(enemy.dodgeHeroAtk(enemy, hero)) return;
+
         int damage = multiplierB(getAttack(), getLevel());
         
         double manaRecovery = manaCap * 0.2;
@@ -65,8 +69,9 @@ public class Hero {
         enemy.setHp(enemy.getHp() - damageDealt);
     }
 
-    public void skill1(Entity enemy){
+    public void skill1(Hero hero, Entity enemy){
         setCooldown1(skillCd1);
+        if(enemy.dodgeHeroAtk(enemy, hero)) return;
 
         int damage = multiplier1(getAttack(), getLevel());
 
@@ -83,8 +88,9 @@ public class Hero {
         enemy.setHp(enemy.getHp() - damageDealt);
     }
 
-    public void skill2(Entity enemy){
+    public void skill2(Hero hero, Entity enemy){
         setCooldown2(skillCd2);
+        if(enemy.dodgeHeroAtk(enemy, hero)) return;
 
         int damage = multiplier2(getAttack(), getLevel());
 
@@ -101,7 +107,7 @@ public class Hero {
         enemy.setHp(enemy.getHp() - damageDealt);
     }
 
-    public void ultimate(Entity enemy){
+    public void ultimate(Hero hero, Entity enemy){
         setCooldownU(skillCdU);
 
         int damage = multiplierU(getAttack(), getLevel());
@@ -149,6 +155,20 @@ public class Hero {
         int scaledCost = (int)(manaCost * (1 + 0.005 * (getLevel() - 1)));
         
         return scaledCost;
+    }
+
+    // Dodge enemies attack method || Hero dodges
+    public boolean dodgeEnemyAtk(Hero defender, Entity attacker){
+        Random rand = new Random();
+        double dodgeChance = (double) defender.getSpeed() / (defender.getSpeed() + attacker.getSpeed()) * 0.5;
+        double roll = rand.nextDouble(0.0, 1.0);
+
+        if (roll < dodgeChance) {
+            System.out.println(defender.getName() + " swiftly dodged the attack!");
+            return true;
+        }
+
+        return false;
     }
 
     // Getters
@@ -329,9 +349,10 @@ public class Hero {
         int newDef = calculateStat(getBaseDef(), getMaxDef(), level);
 
         System.out.println();
-        System.out.println("┌──────────────────────────┐");
-        System.out.println("│     Level Increased!     │");
-        System.out.println("└──────────────────────────┘");
+        System.out.println("┌───────────────────────────────┐");
+        System.out.println("│        Level Increased!       │");
+        System.out.println("│    >>>  Stats Updated!  <<<   │");
+        System.out.println("└───────────────────────────────┘");
         System.err.println();
         System.out.println(">>>>>    Current Level: " + level + "    <<<<<");
         System.out.println();
