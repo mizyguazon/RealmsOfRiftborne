@@ -67,6 +67,7 @@ public class BattleMechanic {
                 System.out.println();
 
                 restoreStats(player);
+                break;
             }
         }
         return false;
