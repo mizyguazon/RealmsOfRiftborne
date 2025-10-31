@@ -10,7 +10,7 @@ public class SwampRat extends Mobs {
     private int skillCd2 = 4;
 
     public SwampRat() {
-        super("Swamp Rat", 30, 8, 4, 6, 1, 20, 50, "Toxic Bite", "Scurry", "Unknown", 10, 20, 40);
+        super("Swamp Rat", 8000, 750, 600, 30, 600, 600, "Toxic Bite", "Scurry", "Unknown", 200, 450, 0);
         this.skillCd1 = 2;
         this.skillCd2 = 4;
     }
@@ -22,7 +22,7 @@ public class SwampRat extends Mobs {
         System.out.println(getName() + " used Basic Attack!");
         
 
-        double damage = getAttack() * 1.1;
+        double damage = getAttack() * 1.0;
 
         double manaRecovery = getManaCap() * 0.2;
 
@@ -47,7 +47,7 @@ public class SwampRat extends Mobs {
 
         setCooldown1(skillCd1);
 
-        double damage = getAttack() * 1.5;
+        double damage = getAttack() * 1.3;
 
         int manaReduce = getMana() - getManaCostSkill1();
         setMana(manaReduce);
@@ -68,7 +68,7 @@ public class SwampRat extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 1.6;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);

@@ -9,7 +9,7 @@ public class Slime extends Mobs {
     private int skillCd2 = 5;
 
     public Slime() {
-        super("Slime", 1000, 150, 50, 100, 3, 200, 200, "Acid Splash", "Split", "Unknown", 80, 200, 400);
+        super("Slime", 2150, 400, 200, 30,400, 400, "Acid Splash", "Split", "Unknown", 150, 250, 0);
 
         this.skillCd1 = 3;
         this.skillCd2 = 5;
@@ -22,11 +22,11 @@ public class Slime extends Mobs {
         System.out.println(getName() + " used Basic Attack!");
         
 
-        double damage = getAttack() * 1.1;
+        double damage = getAttack() * 1.0;
 
         double manaRecovery = getManaCap() * 0.2;
 
-        if(manaRecovery+getMana() > getManaCap()){
+        if(manaRecovery+getMana() > getManaCap()){  
             setMana(getManaCap());
         } else {
             int addMana = (int) manaRecovery + getMana();
@@ -47,7 +47,7 @@ public class Slime extends Mobs {
 
         setCooldown1(skillCd1);
 
-        double damage = getAttack() * 1.5;
+        double damage = getAttack() * 1.3;
 
         int manaReduce = getMana() - getManaCostSkill1();
         setMana(manaReduce);
@@ -68,7 +68,7 @@ public class Slime extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 1.6;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);

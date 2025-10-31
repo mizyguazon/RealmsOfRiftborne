@@ -7,7 +7,7 @@ public class Kim extends Boss {
     private int skillCd1, skillCd2, skillCd3, skillCdU;
 
     public Kim() {
-        super(100000, 3000, 2500, 800, 30, "Kim Morvain - The Vengeful Shadow", "Oblivion Slash", "Abyssal Grasp", "Dark Pulse", "Eternal Shroud", 300, 400, 350, 800);
+        super(100000, 50000, 2500, 800, 30, "Kim Morvain - The Vengeful Shadow", "Oblivion Slash", "Abyssal Grasp", "Dark Pulse", "Eternal Shroud", 300, 400, 350, 800);
 
         this.skillCd1 = 5;
         this.skillCd2 = 7;  

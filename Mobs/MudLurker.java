@@ -8,7 +8,7 @@ public class MudLurker extends Mobs {
     private int skillCd1, skillCd2, skillCdU;
 
     public MudLurker() {        
-        super("Mud Lurker", 1500, 200, 100, 40, 5, 500, 400, "Mud Shot", "Burrow", "Quagmire", 100, 300, 600);
+        super("Mud Lurker", 4500, 500, 350, 50, 500, 500, "Mud Shot", "Burrow", "Quagmire", 200, 300, 350);
         this.skillCd1 = 4;
         this.skillCd2 = 6;  
         this.skillCdU = 8;
@@ -67,7 +67,7 @@ public class MudLurker extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 1.9;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);
@@ -90,7 +90,7 @@ public class MudLurker extends Mobs {
         System.out.println(getName() + " used " + getUltimate() + "!");
         setCooldownU(skillCdU);
 
-        double damage = getAttack() * 2.3;
+        double damage = getAttack() * 2.5;
 
         int manaReduce = getMana() - getManaCostUltimate();
         setMana(manaReduce);

@@ -10,7 +10,6 @@ public class Mobs extends Entity {
     private int attack;
     private int defense;
     private int speed;
-    private int level;
     private int mana;
     private int manaCap;
     private String skill1, skill2, ultimate;
@@ -18,13 +17,12 @@ public class Mobs extends Entity {
     private int skillCd1, skillCd2, skillCdU;
     
 
-    public Mobs(String name, int hp, int attack, int defense, int speed, int level, int mana, int manaCap, String skill1, String skill2, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostUltimate) {
+    public Mobs(String name, int hp, int attack, int defense, int speed, int mana, int manaCap, String skill1, String skill2, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostUltimate) {
         this.name = name;
         this.hp = hp;
         this.attack = attack;
         this.defense = defense;
         this.speed = speed;
-        this.level = level;
         this.mana = mana;
         this.manaCap = manaCap;
         this.skill1 = skill1;

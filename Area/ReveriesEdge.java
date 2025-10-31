@@ -53,18 +53,18 @@ public class ReveriesEdge {
 
     public void exploreEntry(Hero hero) {
         while(true){
-            System.out.print("\nDo you want to explore Reverie’s Edge? (y/n): ");
+            System.out.print("\nDo you want to explore Reverie's Edge? (y/n): ");
             char choice = scan.next().toLowerCase().charAt(0);
             System.out.println();
 
             if (choice == 'y') {
-                System.out.println("You step toward the dark borderlands of Reverie’s Edge...");
+                System.out.println("You step toward the dark borderlands of Reverie's Edge...");
                 retreat = false;
                 explore = true;
                 currentArea = 1;  
                 break;
             } else if (choice == 'n'){
-                System.out.println("You chose not to venture into Reverie’s Edge.");
+                System.out.println("You chose not to venture into Reverie's Edge.");
                 exit();
                 exit = true;
                 break;
@@ -159,7 +159,7 @@ public class ReveriesEdge {
         System.out.println();
 
         while(true){
-            System.out.print("Do you want to go deeper into Reverie’s Edge? (y/n): ");
+            System.out.print("Do you want to go deeper into Reverie's Edge? (y/n): ");
             char choice = scan.next().toLowerCase().charAt(0);
 
             if (choice == 'y') {

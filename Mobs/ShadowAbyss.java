@@ -8,7 +8,7 @@ public class ShadowAbyss extends Mobs {
     private int skillCd1, skillCd2;
 
     public ShadowAbyss() {
-        super("Shadow Abyss", 3000, 400, 200, 100, 10, 200, 1000, "Dark Pulse", "Abyssal Blink", "Unknown", 100, 300, 800);
+        super("Shadow Abyss", 15500, 900, 1000, 50,1000, 1000, "Dark Pulse", "Abyssal Blink", "Unknown", 400, 800, 0);
         
         this.skillCd1 = 3;
         this.skillCd2 = 5;
@@ -21,7 +21,7 @@ public class ShadowAbyss extends Mobs {
         System.out.println(getName() + " used Basic Attack!");
         
 
-        double damage = getAttack() * 1.1;
+        double damage = getAttack() * 1.3;
 
         double manaRecovery = getManaCap() * 0.2;
 
@@ -46,7 +46,7 @@ public class ShadowAbyss extends Mobs {
 
         setCooldown1(skillCd1);
 
-        double damage = getAttack() * 1.5;
+        double damage = getAttack() * 1.8;
 
         int manaReduce = getMana() - getManaCostSkill1();
         setMana(manaReduce);
@@ -67,7 +67,7 @@ public class ShadowAbyss extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 2.1;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);

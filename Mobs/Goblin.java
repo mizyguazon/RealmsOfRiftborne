@@ -8,7 +8,7 @@ public class Goblin extends Mobs {
     private int skillCd1, skillCd2;
 
     public Goblin() {
-        super("Goblin", 1500, 200, 100, 150, 5, 300, 300, "Throw Rock", "Rock Barrage", "Unknown", 50, 250, 500);
+        super("Goblin", 2000, 350, 200, 30,400, 400, "Throw Rock", "Rock Barrage", "Unknown", 100, 200, 0);
         
         this.skillCd1 = 4;
         this.skillCd2 = 6;
@@ -22,7 +22,7 @@ public class Goblin extends Mobs {
         System.out.println(getName() + " used Basic Attack!");
         
 
-        double damage = getAttack() * 1.1;
+        double damage = getAttack() * 1.0;
 
         double manaRecovery = getManaCap() * 0.2;
 
@@ -47,7 +47,7 @@ public class Goblin extends Mobs {
 
         setCooldown1(skillCd1);
 
-        double damage = getAttack() * 1.5;
+        double damage = getAttack() * 1.3;
 
         int manaReduce = getMana() - getManaCostSkill1();
         setMana(manaReduce);
@@ -68,7 +68,7 @@ public class Goblin extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 1.6;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);

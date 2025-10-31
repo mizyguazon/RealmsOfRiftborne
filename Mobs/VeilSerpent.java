@@ -8,7 +8,7 @@ public class VeilSerpent extends Mobs {
     private int skillCd1, skillCd2;
 
     public VeilSerpent() {
-        super("Veil Serpent", 2500, 350, 150, 120, 8, 250, 800, "Phantom Bite", "Mist Shrowd", "Unknown", 80, 250, 600);
+        super("Veil Serpent", 7800, 800, 500, 30,600, 600, "Phantom Bite", "Mist Shrowd", "Unknown", 200, 450, 0);
         
         this.skillCd1 = 4;
         this.skillCd2 = 6;
@@ -21,7 +21,7 @@ public class VeilSerpent extends Mobs {
         System.out.println(getName() + " used Basic Attack!");
         
 
-        double damage = getAttack() * 1.1;
+        double damage = getAttack() * 1.0;
 
         double manaRecovery = getManaCap() * 0.2;
 
@@ -46,7 +46,7 @@ public class VeilSerpent extends Mobs {
 
         setCooldown1(skillCd1);
 
-        double damage = getAttack() * 1.5;
+        double damage = getAttack() * 1.3;
 
         int manaReduce = getMana() - getManaCostSkill1();
         setMana(manaReduce);
@@ -67,7 +67,7 @@ public class VeilSerpent extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 1.6;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);

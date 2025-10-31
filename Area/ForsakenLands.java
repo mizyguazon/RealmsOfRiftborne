@@ -18,11 +18,11 @@ public class ForsakenLands {
     int currentArea = 0;
 
     public void enter(Hero hero) {
-        hero.setLevel(59); // for testing
+        hero.setLevel(35); // for testing
         hero.levelUp(101); // for testing
         System.out.println();
         System.out.println("┌────────────────────────────────────────────┐");
-        System.out.println("│        You have entered the Forsaken Lands │");
+        System.out.println("│     You have entered the Forsaken Lands    │");
         System.out.println("└────────────────────────────────────────────┘");
 
         while(!exit){    
@@ -215,11 +215,7 @@ public class ForsakenLands {
             char choice = scan.next().toLowerCase().charAt(0);
 
             if (choice == 'y') {
-                System.out.println();
-                System.out.println("┌────────────────────┐");
-                System.out.println("│       BATTLE       │");
-                System.out.println("└────────────────────┘");
-
+        
                 explore = true;
                 retreat = false;
                 boolean heroWon = battle.fight(hero, new Azrael());

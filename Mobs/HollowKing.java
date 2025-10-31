@@ -10,7 +10,7 @@ public class HollowKing extends Mobs {
     private int skillCdU = 8;
 
     public HollowKing() {
-        super("Hollow King", 10000, 1000, 500, 60, 25, 1000, 3000, "Cursed Command", "Soul Drain", "King's Despair", 200, 500, 1200);
+        super("Hollow King", 20000, 1100, 2000, 60, 1000, 1000, "Cursed Command", "Soul Drain", "King's Despair", 200, 500, 1200);
 
         this.skillCd1 = 3;
         this.skillCd2 = 5;  
@@ -25,7 +25,7 @@ public class HollowKing extends Mobs {
         System.out.println(getName() + " used Basic Attack!");
         
 
-        double damage = getAttack() * 1.1;
+        double damage = getAttack() * 1.4;
 
         double manaRecovery = getManaCap() * 0.2;
 
@@ -50,7 +50,7 @@ public class HollowKing extends Mobs {
 
         setCooldown1(skillCd1);
 
-        double damage = getAttack() * 1.5;
+        double damage = getAttack() * 2.0;
 
         int manaReduce = getMana() - getManaCostSkill1();
         setMana(manaReduce);
@@ -71,7 +71,7 @@ public class HollowKing extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 2.4;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);
@@ -94,7 +94,7 @@ public class HollowKing extends Mobs {
         System.out.println(getName() + " used " + getUltimate() + "!");
         setCooldownU(skillCdU);
 
-        double damage = getAttack() * 2.3;
+        double damage = getAttack() * 2.8;
 
         int manaReduce = getMana() - getManaCostUltimate();
         setMana(manaReduce);

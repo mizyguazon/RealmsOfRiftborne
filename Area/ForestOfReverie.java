@@ -18,7 +18,7 @@ public class ForestOfReverie {
     int currentArea = 0;
 
     public void enter(Hero hero) {
-        hero.setLevel(15); // for testing
+        hero.setLevel(23); // for testing
         hero.levelUp(101); // for testing
         System.out.println();
         System.out.println("┌────────────────────────────────────────────┐");

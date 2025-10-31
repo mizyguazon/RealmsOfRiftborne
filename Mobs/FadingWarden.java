@@ -10,7 +10,7 @@ public class FadingWarden extends Mobs {
     private int skillCdU = 8;
  
     public FadingWarden() {
-        super("Fading Warden", 4000, 500, 250, 90, 12, 100, 1000, "Ethereal Slash", "Ghost Step", "Oblivion Veil", 150, 350, 800);
+        super("Fading Warden", 10500, 900, 1000, 50,1000, 1000, "Ethereal Slash", "Ghost Step", "Oblivion Veil", 300, 450, 600);
 
         this.skillCd1 = 4;
         this.skillCd2 = 6;  
@@ -70,7 +70,7 @@ public class FadingWarden extends Mobs {
         setCooldown2(skillCd2);
         
         
-        double damage = getAttack() * 1.8;
+        double damage = getAttack() * 1.9;
 
         int manaReduce = getMana() - getManaCostSkill2();
         setMana(manaReduce);
@@ -93,7 +93,7 @@ public class FadingWarden extends Mobs {
         System.out.println(getName() + " used " + getUltimate() + "!");
         setCooldownU(skillCdU);
 
-        double damage = getAttack() * 2.3;
+        double damage = getAttack() * 2.5;
 
         int manaReduce = getMana() - getManaCostUltimate();
         setMana(manaReduce);
