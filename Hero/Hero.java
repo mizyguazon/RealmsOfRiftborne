@@ -762,4 +762,45 @@ public class Hero {
         this.haveAcceptedButExited = done;
     }
 
+    // Shop Related ________________________________________________________________________________________________________________________
+    private boolean hasConversedWithShop = false;
+
+    public void setConversedWithShop(boolean done) {
+        this.hasConversedWithShop = done;
+    }
+
+    public boolean getConversedWithShop(){
+        return hasConversedWithShop;
+    }
+
+    // Stats Check Related ___________________________________________________________________________________________________________________
+
+    private boolean swordmanCharacterChosen = false;
+    private boolean gunnerCharacterChosen = false;
+    private boolean mageCharacterChosen = false;
+
+    public void setSwordmanCharacterChosen(boolean done) {
+        this.swordmanCharacterChosen = done;
+    }
+
+    public boolean getSwordmanCharacterChosen() {
+        return swordmanCharacterChosen;
+    }
+
+    public void setGunnerCharacterChosen(boolean done) {
+        this.gunnerCharacterChosen = done;
+    }
+
+    public boolean getGunnerCharacterChosen() {
+        return gunnerCharacterChosen;
+    }
+
+    public void setMageCharacterChosen(boolean done) {
+        this.mageCharacterChosen = done;
+    }
+
+    public boolean getMageCharacterChosen() {
+        return mageCharacterChosen;
+    }
+ 
 }

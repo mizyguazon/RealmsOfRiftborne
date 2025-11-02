@@ -45,6 +45,7 @@ public class InnerCharacterMenu extends Narration{
                         
 
                         hero =  new Swordsman();
+                        hero.setSwordmanCharacterChosen(true);
                         isValid = true;
                         break;
 
@@ -114,6 +115,7 @@ public class InnerCharacterMenu extends Narration{
                         System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
 
                         hero = new Gunner();
+                        hero.setGunnerCharacterChosen(true);
                         isValid = true;
                         break;
 
@@ -184,6 +186,7 @@ public class InnerCharacterMenu extends Narration{
                         System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
 
                         hero = new Mage();
+                        hero.setMageCharacterChosen(true);
                         isValid = true;
                         break;
 

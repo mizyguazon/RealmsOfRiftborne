@@ -33,12 +33,11 @@ public class IntroTitle {
         System.out.println("███ ▓▓▓ ▒▒▒ ░░░        ▓▓▓▓   ▓▓▓▓         ▓▓▓▓            ▓▓▓▓      ▓▓▓▓▓                ▓▓▓                ███ ▓▓▓ ▒▒▒ ░░░                                                                                               ");
         System.out.println("███ ▓▓▓ ▒▒▒ ░░░         ▓▓▓▓ ▓▓▓▓          ▓ ▓▓            ▓▓ ▓      ▓▓ ▓▓        ▓ ▓     ▓ ▓         ▓ ▓    ███ ▓▓▓ ▒▒▒ ░░░                                                                                             ");
         System.out.println("███ ▓▓▓ ▒▒▒ ░░░          ▓▓▓ ▓▓▓          ▓▓▓▓▓▓          ▓▓▓▓▓▓    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓    ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓    ███ ▓▓▓ ▒▒▒ ░░░                                                                                             ");
-
-        System.out.println("┌──────────────────────────────┐");
-        System.out.println("│   Press ENTER to continue    │");
-        System.out.println("└──────────────────────────────┘");
-
+        System.out.println("                                            ┌──────────────────────────────┐                                            ");
+        System.out.println("                                >>>>> ----- |   Press ENTER to continue    | ----- <<<<<");
+        System.out.println("                                            └──────────────────────────────┘                                                      ");
         scanner.nextLine();
+        System.out.println();
         
     }
 
@@ -82,10 +81,12 @@ public class IntroTitle {
         System.out.println("░░░▓▒▒░░░▓▒▒░░░           *                                                     .                     *    ░░░▓▒▒░░░▒▒▓░░░");
         System.out.println("   ░░░░░░░░░                                            .                                                     ░░░░░░░░░");
         System.out.println("      ░░░    *          .              .                       *                       .              .          ░░░");
-        System.out.println("┌──────────────────────────────┐");
+        
+        /*System.out.println("┌──────────────────────────────┐");
         System.out.println("│   Press ENTER to continue    │");
         System.out.println("└──────────────────────────────┘");
         scanner.nextLine();
+        */
         
 
     }

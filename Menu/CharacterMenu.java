@@ -12,6 +12,7 @@ public class CharacterMenu extends Narration{
     public Hero chooseCharacterMenu(){
         MenuRelated designRelatedMenu = new MenuRelated();
         InnerCharacterMenu innerCharacterMenuHandler = new InnerCharacterMenu();
+        Characters characterPrompts = new Characters();
 
         while(true){
 
@@ -23,14 +24,17 @@ public class CharacterMenu extends Narration{
 
                 switch(characterChoice){
                     case 1:  
+                        characterPrompts.swordsmanCharacter();
                         hero = innerCharacterMenuHandler.playerSwordsman();
                         break;
 
                     case 2:
+                        characterPrompts.gunnerCharacter();
                         hero = innerCharacterMenuHandler.playerGunner();
                         break;
 
                     case 3: 
+                        characterPrompts.mageCharacter();
                         hero = innerCharacterMenuHandler.playerMage();
                         break;
 

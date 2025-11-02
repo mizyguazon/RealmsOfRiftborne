@@ -19,16 +19,9 @@ public class StartMenu extends Narration {
         introDisplayHander.mystvaleIntroTitle();
 
         while (true) {
-            /*System.out.println("+-----------------------------------------+");
-            System.out.println("|             Mystvale Academy            |");
-            System.out.println("+-----------------------------------------+");
-            System.out.println("|         A Text-Based Adventure          |");
-            System.out.println("|        in a World of Sorcery and        |");
-            System.out.println("|            Shadowed Halls               |");
-            System.out.println("+-----------------------------------------+");
-            System.out.println("|             [1] Start Game              |");
-            System.out.println("|             [2] Exit Game               |");
-            System.out.println("+-----------------------------------------+");
+
+            startMenuHandler.startMenuRevised();
+            //startMenuHandler.trainingMenu();
             System.out.print("-->| ");
             */
 
@@ -41,43 +34,18 @@ public class StartMenu extends Narration {
                 switch (startMenuChoice) {
                     case 1:
                         introDisplayHander.startingTheGame();
-                        /*System.out.println();
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - <<<<<");
-                        System.out.println("     ┌───────────────────────────────┐");
-                        System.out.println("     │   >>> Starting the game <<<   │");
-                        System.out.println("     └───────────────────────────────┘");
-                        System.out.println("     ┌────────────────────────────────┐");
-                        System.out.println("     │   The wind whisper your name   │");
-                        System.out.println("     │       Your destiny awaits      │");
-                        System.out.println("     └────────────────────────────────┘");
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - <<<<<");
-                        */
 
                         if (!hasVisitedPrologue) {
                             prologueNarration();
                             hasVisitedPrologue = true;
                         }
 
-                        /*System.out.println();
-                        System.out.println("┌────────────────────────────────────┐");
-                        System.out.println("│   + Choose a character to play +   │");
-                        System.out.println("└────────────────────────────────────┘");
-                        */
-
                         return true;
 
                     case 2:
-                        /*System.out.println();
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - <<<<<");
-                        System.out.println("    ┌──────────────────────────────┐");
-                        System.out.println("    │   >>> Exiting the game <<<   │");
-                        System.out.println("    └──────────────────────────────┘");
-                        System.out.println("┌──────────────────────────────────────┐");
-                        System.out.println("│       You vanish into the mist       │");
-                        System.out.println("│   The academy goes quiet once more   │");
-                        System.out.println("└──────────────────────────────────────┘");
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - <<<<<");
-                        */
+                        
+                        introDisplayHander.exitingTheGame();
+                        
                         return false;
 
                     default:

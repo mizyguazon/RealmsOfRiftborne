@@ -7,7 +7,7 @@ public class ShopRelated {
     Scanner scanner = new Scanner(System.in);
     
     public void shopPrompt() {
-
+        System.out.println();
         System.out.println("");
         System.out.println("  ▓▓");
         System.out.println(" ▓▓▓▓");
@@ -42,7 +42,7 @@ public class ShopRelated {
     }
 
     public void inventoryPrompt() {
-
+        System.out.println();
         System.out.println("                     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
         System.out.println("                  ░░░░░░▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░");
         System.out.println("               ░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒░░░░░░");
@@ -73,9 +73,6 @@ public class ShopRelated {
         System.out.println("               ░░░░░░▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓░░░░░░");
         System.out.println("                  ░░░░░░▓▓▓▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▓▓▓▓▓▓░░░░░░");
         System.out.println("                     ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
-
-        System.out.println("Press ENTER to continue");
-        scanner.nextLine();
 
     }
 }

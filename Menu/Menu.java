@@ -18,10 +18,12 @@ public class Menu extends Narration {
         ForestOfReverie forest = new ForestOfReverie();
         ReveriesEdge reverieEdge = new ReveriesEdge();
         ForsakenLands forsakenLands = new ForsakenLands();
-        AcademyMap mapHandler = new AcademyMap();
+        //AcademyMap mapHandler = new AcademyMap();
         IntroTitle exitHandler = new IntroTitle();
         ShopRelated shopPromptHandler = new ShopRelated();
         MenuRelated menuRelatedHandler = new MenuRelated();
+        AreaRelated areaHandler = new AreaRelated();
+        Characters characterStatsHandler = new Characters();
 
 
         while(true){
@@ -32,16 +34,12 @@ public class Menu extends Narration {
             try {
 
                 int mainMenuChoice = scanner.nextInt();
+                scanner.nextLine();
                 
                 switch (mainMenuChoice){
                     case 1:
 
-                        mapHandler.academyMap();
-
-                        if (!hero.hasVisitedAcademy()) {
-                            academyNarration();
-                            hero.setHasVisitedAcademy(true);
-                        } 
+                        //mapHandler.academyMap();
 
                         System.out.println();
                         System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - <<<<<");
@@ -52,6 +50,13 @@ public class Menu extends Narration {
                         System.out.println("         │   Let the magic guide you  │");
                         System.out.println("         └────────────────────────────┘");
                         System.out.println(">>>>> - - - - - - - - - - - - - - -  - - - <<<<<");
+
+                        if (!hero.hasVisitedAcademy()) {
+                            academyNarration();
+                            hero.setHasVisitedAcademy(true);
+                        } 
+
+                        
 
                         handler.academyMapMenu(hero);
                         break;
@@ -64,9 +69,18 @@ public class Menu extends Narration {
                             shopNarration();
                             hero.setHasVisitedShop(true);
                         }
+                        
+                        System.out.println("┌───────────────────────────────────┐");
+                        System.out.println("│      The shop owner wants to      │");
+                        System.out.println("│   have a conversation with you.   │");
+                        System.out.println("└───────────────────────────────────┘");
+
+                        if(!hero.getConversedWithShop()){
+                            shopConversationNarration();
+                            hero.setConversedWithShop(true);
+                        }
 
                         //shopFunction();
-                        shopConversationNarration();
                         break;
 
                     case 3:
@@ -91,17 +105,15 @@ public class Menu extends Narration {
                         break;
 
                     case 4:
+
                         if (hero.canEnterArea1()) {
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
-                            System.out.println("     ┌─────────────────────────────────────────────────┐");
-                            System.out.println("     │   + You may now enter The Forest of Reverie +   │");
-                            System.out.println("     └─────────────────────────────────────────────────┘");
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+
+                            areaHandler.forestOfReverieEligible();
 
                             if (!hero.hasVisitedArea1()) {
                                 area1Narration();
                                 hero.setHasVisitedArea1(true);
-                            }
+                            } 
 
                             System.out.println();
                             System.out.println("┌───────────────────────────────┐");
@@ -111,24 +123,17 @@ public class Menu extends Narration {
                             forest.enter(hero);
 
                         } else {
-                            System.out.println();
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - - - <<<<<");
-                            System.out.println("     ┌──────────────────────────────────────────────────────────────┐");
-                            System.out.println("     │     You are not eligible to enter The Forest of Reverie      │");
-                            System.out.println("     │      Visit the Principal's Office to unlock this area        │");
-                            System.out.println("     └──────────────────────────────────────────────────────────────┘");
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+
+                            areaHandler.forestOfReverieNOtEligible();
+                            
                         }
 
                         break;
 
                     case 5:
                         if (hero.canEnterArea2()) {
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - <<<<<");
-                            System.out.println("     ┌───────────────────────────────────────────┐");
-                            System.out.println("     │   + You may now enter The Reverie Edge +  │");
-                            System.out.println("     └───────────────────────────────────────────┘");
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+
+                            areaHandler.reverieEdgeEligible();
 
                             if (!hero.hasVisitedArea2()) {
                                 area2Narration();
@@ -143,13 +148,9 @@ public class Menu extends Narration {
                             reverieEdge.enter(hero);
 
                         } else {
-                            System.out.println();
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
-                            System.out.println("     ┌──────────────────────────────────────────────────────────────┐");
-                            System.out.println("     │        You are not eligible to enter The Reverie Edge        │");
-                            System.out.println("     │       Visit the Principal's Office to unlock this area       │");
-                            System.out.println("     └──────────────────────────────────────────────────────────────┘");
-                            System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+
+                            areaHandler.reverieEdgeNotEligible();
+
                         }
 
                         break;
@@ -187,11 +188,22 @@ public class Menu extends Narration {
                         break;
 
                     case 7:
-                        System.out.println("Character Current Stats");
-                        System.out.println("> Health: " + hero.getHp());
-                        System.out.println("> Attack: " + hero.getAttack());
-                        System.out.println("> Mana: " + hero.getMana());
-                        System.out.println("> Defense: " + hero.getDefense());
+
+                        if(hero.getSwordmanCharacterChosen()) {
+
+                            characterStatsHandler.swordsmanCharacterStats(hero);
+                            break;
+                        } else if (hero.getGunnerCharacterChosen()) {
+
+                            characterStatsHandler.gunnerCharacterStats(hero);
+                            break;
+                        } else if (hero.getMageCharacterChosen()) {
+
+                            characterStatsHandler.mageCharacterStats(hero);
+                            break;
+                        }
+                        
+                        
 
                         // Part ni Ray haha
 
@@ -207,9 +219,10 @@ public class Menu extends Narration {
                             System.out.println("└───────────────────────────────────────────────────┘");
                             System.out.print("-->| ");
 
-                            String ifWantToQuit = scanner.nextLine();
-
                             try {
+
+                                 String ifWantToQuit = scanner.nextLine();
+
                                 switch (ifWantToQuit) {
                                     case "y":
                                     case "Y":

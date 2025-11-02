@@ -2,6 +2,7 @@ package Menu;
 
 import TrainingGround.*;
 import Hero.*;
+import DesignRelated.*;
 
 import java.util.Scanner;
 
@@ -16,27 +17,12 @@ public class TrainingMenu {
     }
     
     public void trainingMenu(Hero hero) {
+        MenuRelated menuRelatedHandler = new MenuRelated();
         boolean training = true; 
 
         while (training) {
-            System.out.println();
-            System.out.println("+-------------------------------------------------+");
-            System.out.println("|         Choose Your Training Discipline         |");
-            System.out.println("+-------------------------------------------------+");
-            System.out.println("| [1] Endurance                                   |");
-            System.out.println("|    Push your limits with stamina training and   |");
-            System.out.println("|    long-distance challenges.                    |");
-            System.out.println("| [2] Strength                                    |");
-            System.out.println("|    Build raw power through intense physical     |");
-            System.out.println("|    exercises and resistance training.           |");
-            System.out.println("| [3] Durability                                  |");
-            System.out.println("|    Fortify your body to withstand powerful      |");
-            System.out.println("|    blows and environmental hazards.             |");
-            System.out.println("| [4] Mana Refinement                             |");
-            System.out.println("|    Enhance magical control and efficiency by    |");
-            System.out.println("|    focusing on internal mana flow.              |");
-            System.out.println("+------------------------------------------------+");
-            System.out.print("-->| ");
+            
+            menuRelatedHandler.trainingMenu();
 
             try {
                 // Convert input to integer

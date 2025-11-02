@@ -16,10 +16,11 @@ public class AcademyMenu extends Menu{
         AcademyMap mapHandler = new AcademyMap();
         IntroTitle introHandler = new IntroTitle();
         MenuRelated menuRelatedHanlder = new MenuRelated();
+        ShopRelated shopPromptHandler = new ShopRelated();
 
         while (academyMapMenu) {
-
-            menuRelatedHanlder.academyMenu();
+            
+            menuRelatedHanlder.academyMapMenu();
             System.out.print("-->| ");
 
             try {
@@ -129,17 +130,25 @@ public class AcademyMenu extends Menu{
                         break;
 
                     case 4:
-                        /*System.out.println();
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
-                        System.out.println("           ┌─────────────────────────────────────────────────┐");
-                        System.out.println("           │   >>> Exiting from the Academy's premises <<<   │");
-                        System.out.println("           └─────────────────────────────────────────────────┘");
-                        System.out.println("     ┌──────────────────────────────────────────────────────────────┐");
-                        System.out.println("     │   The hum of magic fades as you leave the academy\'s walls    │");
-                        System.out.println("     └──────────────────────────────────────────────────────────────┘");
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
-                        */
+                        shopPromptHandler.shopPrompt();
 
+                        if (!hero.hasVisitedShop()) {
+                            shopNarration();
+                            hero.setHasVisitedShop(true);
+                        }
+
+                        if(!hero.getConversedWithShop()){
+                            shopConversationNarration();
+                            hero.setConversedWithShop(true);
+                        }
+
+                        //shopFunction();
+
+                        break;
+                        
+
+                    case 5:
+                       
                         introHandler.exitAcademy();
 
                         academyMapMenu = false;
