@@ -99,6 +99,12 @@ public class ForestOfReverie {
 
     public void exploreOutsideArea(Hero hero) {
         // This is my current currentArea = 1 
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println("┌─────────────────────────────────────────────────┐");
         System.out.println("│||||||            FOREST OF REVERIE              │");
         System.out.println("│/////                                            │");
@@ -107,7 +113,8 @@ public class ForestOfReverie {
         System.out.println("│||| \\\\     You                                   │");
         System.out.println("│|||  \\\\                                          │");
         System.out.println("└─────────────────────────────────────────────────┘");
-
+        System.out.println();
+        System.out.println();
         System.out.println();
 
         if(explore){
@@ -158,11 +165,11 @@ public class ForestOfReverie {
             char choice;
 
             try {
-                System.out.print("\nDo you want to continue exploring? (y/n): ");
+                System.out.print("\n\nDo you want to continue exploring? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
                 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -183,11 +190,11 @@ public class ForestOfReverie {
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
 
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
@@ -195,6 +202,12 @@ public class ForestOfReverie {
 
     public void exploreMiddleArea(Hero hero) {
         // This is my current currentArea = 2
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println("┌───────────────────────────────────────────────────────────┐");
         System.out.println("│    /\\  /\\  /\\              FOREST OF REVERIE              │");
         System.out.println("│   /  \\/  \\/  \\                                            │");
@@ -203,7 +216,8 @@ public class ForestOfReverie {
         System.out.println("│  /_  _\\  /_  _\\                   You                     │");
         System.out.println("│    ||  ||  ||                                             │");
         System.out.println("└───────────────────────────────────────────────────────────┘");
-
+        System.out.println();
+        System.out.println();
         System.out.println();
         
         if(explore){
@@ -254,11 +268,11 @@ public class ForestOfReverie {
             char choice;
 
             try {
-                System.out.print("\nDo you want to continue exploring? (y/n): ");
+                System.out.print("\n\nDo you want to continue exploring? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -279,11 +293,11 @@ public class ForestOfReverie {
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
 
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
@@ -292,6 +306,12 @@ public class ForestOfReverie {
     public void exploreInnerArea(Hero hero) {
         // This is my current currentArea = 3
         BattleMechanic battle = new BattleMechanic();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────────────────────────────────┐");
         System.out.println("│    /\\  /\\  /\\              FOREST OF REVERIE   *  .  *   /\\* /\\ ./\\* . │");
         System.out.println("│   /  \\/  \\/  \\                                   * .  * /  \\/  \\/  \\  *│");
@@ -300,11 +320,13 @@ public class ForestOfReverie {
         System.out.println("│  /_  _\\  /_  _\\                                 You   ./_  _\\  /_  _\\ .│");
         System.out.println("│    ||  ||  ||                                     .   *  ||* || .||  * │");
         System.out.println("└────────────────────────────────────────────────────────────────────────┘");
-
         System.out.println();
+        System.out.println();
+        System.out.println();
+
         if(explore){
             if(rand.nextBoolean()){
-                System.out.println("You venture into the innermost part of the forest... \n\nSuddenly, a strong creature appears to attack!");
+                System.out.println("You venture into the innermost part of the forest... \nSuddenly, a strong creature appears to attack!");
                 boolean heroWon = eliteBattle.fight(hero, new MudLurker());
                 if(EliteBattleMechanic.run) {
                     EliteBattleMechanic.run = false;
@@ -320,7 +342,7 @@ public class ForestOfReverie {
                     return;
                 }
             } else {
-                System.out.println("You are peacefully exploring the innermost part of the forest \n\nand noticed that the forest has clawed trees and dark atmosphere.");
+                System.out.println("You are peacefully exploring the innermost part of the forest \n\nand noticed that the forest has clawed trees and dark atmosphere.\n\n\n");
             }
         }
         
@@ -333,20 +355,23 @@ public class ForestOfReverie {
 
         // Array Iteration
         playSection(elderthorn);
-
+        System.out.println();
+        System.out.println();
         System.out.println("┌─────────────────────────────────────────────────┐");
         System.out.println("│      It's the Forest Guardian, Elderthorn!      │");
         System.out.println("└─────────────────────────────────────────────────┘");
+        System.out.println();
+        System.out.println();
 
         while(true){
             char choice;
 
             try {    
-                System.out.print("\nDo you want to fight the Forest Guardian, Elderthorn? (y/n): ");
+                System.out.print("\n\nDo you want to fight the Forest Guardian, Elderthorn? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -372,37 +397,39 @@ public class ForestOfReverie {
 
                         System.out.println("You peacefully exit the Forest Of Reverie...");
                         System.out.println();
-
+                        exit();
                         currentArea = 0; // automatically exits the FOREST OF REVERIE
                         exit = true;
                         break;
 
                     } else {
-                        System.out.println("You have sustained serious injuries, but fortunately, a group of students arrived in time to rescue you.");
+                        System.out.println("\n\nYou have sustained serious injuries, but fortunately, a group of students arrived in time to rescue you.");
+                        exit();
                         currentArea = 0; // automatically exits the FOREST OF REVERIE
                         exit = true;
+                        System.out.println();
                         break;
 
                     }
                 } else if (choice == 'n'){
-                    System.out.println("\nYou chose to avoid the Forest Guardian, Elderthorn and head back to the previous area.");
+                    System.out.println("\n\nYou chose to avoid the Forest Guardian, Elderthorn and head back to the previous area.");
                     retreat = true;
                     explore = false;
                     currentArea = 2; // go back to middle area
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
     }
     
     public static void playSection(String[] section) {
-        System.out.println("\nPress ENTER to continue...");
+        System.out.println("\n\nPress ENTER to continue...");
         scan.nextLine();
         
         for (int i = 0; i < section.length; i++) {
@@ -426,10 +453,12 @@ public class ForestOfReverie {
 
     public void exit() {
         System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────┐");
         System.out.println("│           <<< Location Exited >>>          │");
         System.out.println("│   You have exited the Forest of Reverie.   │");
         System.out.println("└────────────────────────────────────────────┘");
+        System.out.println();
         System.out.println();
 
     }

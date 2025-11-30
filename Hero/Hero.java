@@ -632,7 +632,7 @@ public class Hero {
     // Office Progress______________________________________________________________________________
     private boolean canEnterArea1 = true; // false original
     private boolean canEnterArea2 = true;
-    private boolean canEnterArea3 = false;
+    private boolean canEnterArea3 = true;
     private boolean haveEntered = true;
 
     public boolean haveEntered() {

@@ -95,6 +95,12 @@ public class ForsakenLands {
     }
 
     public void exploreOutsideArea(Hero hero) {
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────────────┐");
         System.out.println("│|||||              FORSAKEN LANDS                  │");
         System.out.println("│/////      The ground is cracked and lifeless.     │");
@@ -102,7 +108,8 @@ public class ForsakenLands {
         System.out.println("│|||\\\\   - - O - - - - - - O - - - - - - O          │");
         System.out.println("│||| \\\\           You                               │");
         System.out.println("└────────────────────────────────────────────────────┘");
-
+        System.out.println();
+        System.out.println();
         System.out.println();
 
         if(explore){
@@ -152,11 +159,11 @@ public class ForsakenLands {
             char choice;
 
             try {
-                System.out.print("\nDo you want to venture deeper? (y/n): ");
+                System.out.print("\n\nDo you want to venture deeper? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
                 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -177,24 +184,31 @@ public class ForsakenLands {
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
 
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
     }
 
     public void exploreMiddleArea(Hero hero) {
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────────────────┐");
         System.out.println("│       FORSAKEN LANDS - The Ruined City                 │");
         System.out.println("│   Collapsed towers and broken monuments surround you.  │");
         System.out.println("│  - - O - - - - - - O - - - - - - O                    │");
         System.out.println("│                 You                                   │");
         System.out.println("└────────────────────────────────────────────────────────┘");
-
+        System.out.println();
+        System.out.println();
         System.out.println();
         
         if(explore){
@@ -245,11 +259,11 @@ public class ForsakenLands {
             char choice;
 
             try {    
-                System.out.print("\nDo you wish to proceed further into the darkness? (y/n): ");
+                System.out.print("\n\nDo you wish to proceed further into the darkness? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
                 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -270,21 +284,30 @@ public class ForsakenLands {
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
 
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
     }
 
     public void exploreInnerArea(Hero hero) {
-        int goldGained, expGained;
         BattleMechanic battle = new BattleMechanic();
-
         System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        //insert art here
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
         if(explore){
             if(rand.nextBoolean()){
                 System.out.println("The air grows thick... the ground trembles beneath your feet...");
@@ -303,10 +326,9 @@ public class ForsakenLands {
                     return;
                 }
             } else {
-                System.out.println("You reach the heart of desolation, where no life stirs...");
+                System.out.println("You reach the heart of desolation, where no life stirs...\n\n\n");
             }
         }
-        System.out.println();
 
         String[] azraelIntro = {
             "You step into a vast crater filled with bones and ash...",
@@ -317,20 +339,23 @@ public class ForsakenLands {
         };
 
         playSection(azraelIntro);
-
+        System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────────┐");
         System.out.println("│          Boss Encounter: Azrael                │");
         System.out.println("└────────────────────────────────────────────────┘");
+        System.out.println();
+        System.out.println();
 
         while(true){
             char choice;
 
             try {
-                System.out.print("\nDo you dare challenge Azrael, the Harbinger of Ruin? (y/n): ");
+                System.out.print("\n\nDo you dare challenge Azrael, the Harbinger of Ruin? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
                 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -338,7 +363,6 @@ public class ForsakenLands {
                 System.out.println();
 
                 if (choice == 'y') {
-            
                     explore = true;
                     retreat = false;
                     boolean heroWon = battle.fight(hero, new Azrael());
@@ -353,31 +377,33 @@ public class ForsakenLands {
                         System.out.println();
                         System.out.println("You have conquered the Forsaken Lands.");
                         System.out.println();
+                        exit();
                         currentArea = 0; // automatically exits the FORSAKEN LANDS
                         exit = true;
                         break;
 
                     } else {
-                        System.out.println("Azrael's divine scythe strikes true — darkness consumes you...");
+                        System.out.println("\n\nAzrael's divine scythe strikes true — darkness consumes you...");
                         System.out.println("You are rescued by fellow adventurers and taken back to the academy.");
+                        exit();
                         currentArea = 0; // automatically exits the FORSAKEN LANDS
                         exit = true;
                         break;
 
                     }
                 } else if (choice == 'n'){
-                    System.out.println("\nYou feel the overwhelming dread and choose to flee before Azrael notices you.");
+                    System.out.println("\n\nYou feel the overwhelming dread and choose to flee before Azrael notices you.");
                     retreat = true;
                     explore = false;
                     currentArea = 2; 
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
 
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
@@ -406,10 +432,12 @@ public class ForsakenLands {
 
     public void exit() {
         System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────┐");
         System.out.println("│           <<< Location Exited >>>          │");
         System.out.println("│      You have left the Forsaken Lands.     │");
         System.out.println("└────────────────────────────────────────────┘");
+        System.out.println();
         System.out.println();
     }
 

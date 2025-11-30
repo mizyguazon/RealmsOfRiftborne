@@ -19,38 +19,56 @@ public class EliteBattleMechanic {
         enemy.setHpCap(enemy.getHp());
         setOriginalStats(player);
         System.out.println();
-        System.out.println("┌────────────────────┐");
-        System.out.println("│       BATTLE       │");
-        System.out.println("└────────────────────┘");
+        System.out.println();
+        System.out.println();
+        System.out.println("<<==================================================================>>");
+        System.out.println();
+        System.out.println("                      "+ player.getName() +"");
+        System.out.println();
+        System.out.println("                                 VS               ");
+        System.out.println();
+        System.out.println("                                  "+ enemy.getName() +"");
+        System.out.println();
+        System.out.println("<<==================================================================>>");
+        System.out.println();
+        System.out.println("\t\t       ┌────────────────────┐");
+        System.out.println("\t\t       │       FIGHT!       │");
+        System.out.println("\t\t       └────────────────────┘");
         int choice = -1;
 
         while(player.getHp() > 0 && enemy.getHp() > 0){
             while(true){
             // Player's turn
+            System.out.println();
+            System.out.println();
+            System.out.println();
             System.out.println("\nPlayer HP: " + df.format(player.getHp()) + " | Player Mana: " + df.format(player.getMana()) + " || Enemy HP: " + df.format(enemy.getHp()) + " | Enemy Mana: " + df.format(enemy.getMana()));
             System.out.println("+--------------------------------   ROUND " + round + "  ------------------------------------+");
             System.out.println("Choose your attack:");
             System.out.println();
-            System.out.println("[ 1 ] Basic Attack");
-            System.out.println("[ 2 ] Skill 1 - "+ player.getSkill1() + " (Mana Cost: " + player.scaledCost(player.getManaCostSkill1()) + ") (Cooldown: " + player.getCooldown1() + ")");
-            System.out.println("[ 3 ] Skill 2 - "+ player.getSkill2() + " (Mana Cost: " + player.scaledCost(player.getManaCostSkill2()) + ") (Cooldown: " + player.getCooldown2() + ")");
-            System.out.println("[ 4 ] Ultimate - "+ player.getUltimate() + " (Mana Cost: " + player.scaledCost(player.getManaCostUltimate()) + ") (Cooldown: " + player.getCooldownU() + ")");
-            System.out.println("[ 5 ] Run Away!");
+            System.out.println("   [ 1 ] Basic Attack");
+            System.out.println("   [ 2 ] Skill 1 - "+ player.getSkill1() + " (Mana Cost: " + player.scaledCost(player.getManaCostSkill1()) + ") (Cooldown: " + player.getCooldown1() + ")");
+            System.out.println("   [ 3 ] Skill 2 - "+ player.getSkill2() + " (Mana Cost: " + player.scaledCost(player.getManaCostSkill2()) + ") (Cooldown: " + player.getCooldown2() + ")");
+            System.out.println("   [ 4 ] Ultimate - "+ player.getUltimate() + " (Mana Cost: " + player.scaledCost(player.getManaCostUltimate()) + ") (Cooldown: " + player.getCooldownU() + ")");
+            System.out.println("   [ 5 ] Run Away!");
             System.out.println("+--------------------------------------------------------------------------------+");
             System.out.print(">>> ");
 
                 try {
                     choice = Integer.parseInt(scanner.nextLine().trim());
                     if (choice >= 1 && choice <= 5) break;
-                    else System.out.println("\nPlease select a valid choice [1-5]");
+                    else System.out.println("\nPlease select a valid choice [1-5]\n\n\n");
                 } catch (Exception e) {
-                    System.out.println("\nInvalid input! Please enter a number between 1 and 5.");
+                    System.out.println("\nInvalid input! Please enter a number between 1 and 5.\n\n\n");
                 }
             }
 
             System.out.println();
             boolean valid = true;
 
+            System.out.println();
+            System.out.println("<<==================================================================>>");
+            System.out.println();
             System.out.println("Player's Turn:");
             if (player.getStunned() <= 0) {
                 if(choice == 5) {
@@ -64,6 +82,7 @@ public class EliteBattleMechanic {
 
                 if (!valid) {
                     // Skip enemy turn, let player retry instead
+                    System.out.println("\n<<==================================================================>>");
                     continue;
                 }
 
@@ -75,10 +94,14 @@ public class EliteBattleMechanic {
             // Check if enemy is defeated
             if(enemy.getHp() <= 0){
                 System.out.println();
+                System.out.println();
+                System.out.println();
                 System.out.println("┌───────────────────────────────────────┐");
                 System.out.println("│        Enemy has been defeated!       │");
                 System.out.println("└───────────────────────────────────────┘");
                 System.out.println();
+                System.out.println();
+                System.out.println("<<==================================================================>>\n\n");
 
                 restoreStats(player);
                 return true;
@@ -93,17 +116,27 @@ public class EliteBattleMechanic {
                 enemyCastAttack(player, enemy);
             }
 
+            System.out.println();
+            System.out.println("<<==================================================================>>");
+            System.out.println();
+            System.out.println();
+            System.out.println();
+
             reduceEnemyNegativeEffects(enemy);
             reduceEnemyCooldown(enemy);
 
             // Check if player is defeated
             if(player.getHp() <= 0){
                 System.out.println();
-                System.out.println("┌────────────────────────────────────────┐");
-                System.out.println("│        You have been defeated!         │");
-                System.out.println("└────────────────────────────────────────┘");
                 System.out.println();
-
+                System.out.println();
+                System.out.println("\t\t  ┌────────────────────────────────────────┐");
+                System.out.println("\t\t  │        You have been defeated!         │");
+                System.out.println("\t\t  └────────────────────────────────────────┘");
+                System.out.println();
+                System.out.println();
+                System.out.println();
+                
                 restoreStats(player);
                 break;
             }
@@ -268,17 +301,22 @@ public class EliteBattleMechanic {
             player.setPoison(player.getPoison() - 1);
         }
 
-        if(player.getStunned() > 0) player.setStun(player.getStunned() - 1);
-        if(player.getStunned() < 0) player.setStun(0);
+        if(player.getStunned() >= 0) player.setStun(player.getStunned() - 1);
+        if(player.getStunned() < 0) player.setStun(-1);
         if(player.getPoison() < 0) player.setPoison(0);
+
+        if(player.getStunned() == 0) System.out.println(player.getName() + " is no longer stunned and can attack next round.");
     }
 
     public void reduceEnemyNegativeEffects(Entity enemy){
-        if (enemy.getStunned() > 0) enemy.setStun(enemy.getStunned() - 1);
-        if (enemy.getDisabled() > 0) enemy.setDisabled(enemy.getDisabled() - 1);
+        if (enemy.getStunned() >= 0) enemy.setStun(enemy.getStunned() - 1);
+        if (enemy.getDisabled() >= 0) enemy.setDisabled(enemy.getDisabled() - 1);
 
-        if (enemy.getStunned() < 0) enemy.setStun(0);
-        if (enemy.getDisabled() < 0) enemy.setDisabled(0);
+        if (enemy.getStunned() < 0) enemy.setStun(-1);
+        if (enemy.getDisabled() < 0) enemy.setDisabled(-1);
+
+        if(enemy.getStunned() == 0) System.out.println(enemy.getName() + " is no longer stunned and can attack next round.");
+        if(enemy.getDisabled() == 0) System.out.println(enemy.getName() + " is no longer exhausted and can attack next round.");
     }
 
     public boolean runAway(Hero player, Entity enemy) {
@@ -294,6 +332,7 @@ public class EliteBattleMechanic {
         if (roll <= successChance) {
             System.out.println("You successfully escaped from " + enemy.getName() + "!\n");
             run = true;
+            System.out.println("<<==================================================================>>\n\n");
             return true;
         } else {
             System.out.println("Failed to escape! " + enemy.getName() + " blocks your path!");

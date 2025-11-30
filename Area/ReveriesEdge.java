@@ -95,6 +95,12 @@ public class ReveriesEdge {
     }
 
     public void exploreOuterArea(Hero hero) {
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println("┌───────────────────────────────────────────────────┐");
         System.out.println("│|||||              REVERIE'S EDGE                 │");
         System.out.println("│/////                                               │");
@@ -102,7 +108,8 @@ public class ReveriesEdge {
         System.out.println("│|||\\\\   - - O - - - - - - O - - - - - - O          │");
         System.out.println("│||| \\\\         You                                 │");
         System.out.println("└───────────────────────────────────────────────────┘");
-
+        System.out.println();
+        System.out.println();
         System.out.println();
 
         if(explore){
@@ -152,11 +159,11 @@ public class ReveriesEdge {
             char choice;
 
             try {
-                System.out.print("Do you want to continue exploring deeper? (y/n): ");
+                System.out.print("\n\nDo you want to continue exploring deeper? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -177,24 +184,31 @@ public class ReveriesEdge {
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
 
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
     }
 
     public void exploreMiddleArea(Hero hero) {
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println("┌──────────────────────────────────────────────────────────┐");
         System.out.println("│      REVERIE'S EDGE - The Borderlands                    │");
         System.out.println("│   The air feels heavy; faint lights flicker in the fog.  │");
         System.out.println("│  - - O - - - - - - O - - - - - - O                      │");
         System.out.println("│                   You                                   │");
         System.out.println("└──────────────────────────────────────────────────────────┘");
-
+        System.out.println();
+        System.out.println();
         System.out.println();
         
         if(explore){
@@ -243,11 +257,11 @@ public class ReveriesEdge {
             char choice;
 
             try {
-                System.out.print("\nDo you want to go deeper into Reverie's Edge? (y/n): ");
+                System.out.print("\n\nDo you want to go deeper into Reverie's Edge? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
 
                 if (input.isEmpty()) {
-                    System.out.println("No input detected. Please enter 'y' or 'n'.");
+                    System.out.println("\nNo input detected. Please enter 'y' or 'n'.");
                     continue;
                 }
 
@@ -268,21 +282,29 @@ public class ReveriesEdge {
                     break;
 
                 } else {
-                    System.out.println("Invalid choice. Please enter 'y' or 'n'.");
+                    System.out.println("\nInvalid choice. Please enter 'y' or 'n'.");
                 }
 
             } catch (Exception e) {
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("\nInvalid input. Please try again.");
                 scan.nextLine(); // clears broken input
             }
         }
     }
 
     public void exploreInnerArea(Hero hero) {
-        int goldGained, expGained;
         BattleMechanic battle = new BattleMechanic();
-
         System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        //insert art here
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
         if(explore){
             if(rand.nextBoolean()){
                 System.out.println("You walk through an eerie clearing... and the ground trembles!");
@@ -314,10 +336,13 @@ public class ReveriesEdge {
         };
 
         playSection(morgrath);
-
+        System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────────┐");
         System.out.println("│          Boss Encounter: Morgrath              │");
         System.out.println("└────────────────────────────────────────────────┘");
+        System.out.println();
+        System.out.println();
 
         while(true){
             char choice;
@@ -335,11 +360,6 @@ public class ReveriesEdge {
                 System.out.println();
 
                 if (choice == 'y') {
-                    System.out.println();
-                    System.out.println("┌────────────────────┐");
-                    System.out.println("│       BATTLE       │");
-                    System.out.println("└────────────────────┘");
-
                     explore = true;
                     retreat = false;
                     boolean heroWon = battle.fight(hero, new Morgrath());
@@ -358,13 +378,14 @@ public class ReveriesEdge {
                         if(hero.getGunnerCharacterChosen() && hero.getHaveDefeatedArea2Boss()) { // Javines | Plot
                             gunnerPlotHandler.gunnerAfterArea2();
                         }
-
+                        exit();
                         currentArea = 0; // automatically exits the REVERIE EDGE
                         exit = true;
                         break;
                     } else {
                         System.out.println("Morgrath's power overwhelms you — darkness consumes your vision.");
                         System.out.println("You collapse, but are rescued and taken back to safety.");
+                        exit();
                         currentArea = 0; // automatically exits the REVERIE EDGE
                         exit = true;
                         break;
@@ -408,10 +429,12 @@ public class ReveriesEdge {
 
     public void exit() {
         System.out.println();
+        System.out.println();
         System.out.println("┌────────────────────────────────────────────┐");
         System.out.println("│           <<< Location Exited >>>          │");
         System.out.println("│       You have left Reverie's Edge.        │");
         System.out.println("└────────────────────────────────────────────┘");
+        System.out.println();
         System.out.println();
     }
 
