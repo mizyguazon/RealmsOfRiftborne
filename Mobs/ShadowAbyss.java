@@ -8,7 +8,7 @@ public class ShadowAbyss extends Mobs {
     private int skillCd1, skillCd2;
 
     public ShadowAbyss() {
-        super("Shadow Abyss", 15500, 900, 1000, 50,1000, 1000, "Dark Pulse", "Abyssal Blink", "Unknown", 400, 800, 0);
+        super("Shadow Abyss", 15500, 900, 1000, 50,1000, "Dark Pulse", "Abyssal Blink", "Unknown", 400, 800, 0);
         
         this.skillCd1 = 3;
         this.skillCd2 = 5;

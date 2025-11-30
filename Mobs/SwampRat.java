@@ -10,7 +10,7 @@ public class SwampRat extends Mobs {
     private int skillCd2 = 4;
 
     public SwampRat() {
-        super("Swamp Rat", 8000, 750, 600, 30, 600, 600, "Toxic Bite", "Scurry", "Unknown", 200, 450, 0);
+        super("Swamp Rat", 8000, 750, 600, 30, 600, "Toxic Bite", "Scurry", "Unknown", 200, 450, 0);
         this.skillCd1 = 2;
         this.skillCd2 = 4;
     }

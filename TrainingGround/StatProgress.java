@@ -52,12 +52,13 @@ public class StatProgress {
         if(!hero.canEnterArea1()){
             if(hero.hasFinishedAllTraining()){
                 System.out.println();
-                System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - - - <<<<<");
+                System.out.println();
                 System.out.println("     ┌──────────────────────────────────────────────────────────────┐");
                 System.out.println("     │     You meet the requirements for The Forest of Reverie      │");
                 System.out.println("     │   Visit the Principal's Office to get your permission slip   │");
                 System.out.println("     └──────────────────────────────────────────────────────────────┘");
-                System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                System.out.println();
+                System.out.println();
 
             }
             
@@ -65,24 +66,26 @@ public class StatProgress {
         } else if (!hero.canEnterArea2()){
             if(hero.canEnterArea1() && hero.getHaveDefeatedArea1Boss()) {
                 System.out.println();
-                System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                System.out.println();
                 System.out.println("     ┌─────────────────────────────────────────────────────────────┐");
                 System.out.println("     │     You meet the requirements for The Reverie\'s Edge       │");
                 System.out.println("     │   Visit the Principal's Office to get your permission slip  │");
                 System.out.println("     └─────────────────────────────────────────────────────────────┘");
-                System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                System.out.println();
+                System.out.println();
             }
             
 
         } else if (!hero.canEnterArea3()){
             if(hero.canEnterArea3() && hero.getHaveDefeatedArea2Boss()) {
                 System.out.println();
-                System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                System.out.println();
                 System.out.println("     ┌──────────────────────────────────────────────────────────────┐");
                 System.out.println("     │      You meet the requirements for The Forsaken Lands        │");
                 System.out.println("     │   Visit the Principal's Office to get your permission slip   │");
                 System.out.println("     └──────────────────────────────────────────────────────────────┘");
-                System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - -  - - - - <<<<<");
+                System.out.println();
+                System.out.println();
             }
             
         } 

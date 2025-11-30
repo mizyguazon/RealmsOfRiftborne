@@ -9,12 +9,17 @@ import java.util.Scanner;
 public class InnerCharacterMenu extends Narration{
 
     static Scanner scanner = new Scanner(System.in);
+
+    MenuRelated menuRelatedHandler = new MenuRelated();
+    Characters characterStatsHandler = new Characters();
+    Narration separatorHandler = new Narration();
+    IntroTitle loadReset = new IntroTitle();
+    boolean isValid = false;
     
 
     public Hero playerSwordsman(Hero hero) {
-        MenuRelated menuRelatedHandler = new MenuRelated();
-        Characters characterStatsHandler = new Characters();
-        boolean isValid = false;
+
+        separatorHandler.promptSeparator();
 
         while(!isValid) {
             menuRelatedHandler.swordsmanCharacterMenu();
@@ -40,23 +45,27 @@ public class InnerCharacterMenu extends Narration{
                         scanner.nextLine(); 
 
                         while (willChange) {
-                            System.out.println();
-                            System.out.println("┌─────────────────────────────────────────────────────────────────────────────┐");
-                            System.out.println("│  Are you sure you want to change character? All progress will not be saved. │");
-                            System.out.println("│  Enter 'y' to confirm or 'n' to cancel.                                    │");
-                            System.out.println("└─────────────────────────────────────────────────────────────────────────────┘");
+                            System.out.println("┌──────────────────────────────────────────────┐");
+                            System.out.println("│  Change character? Progress won't be saved.  │");
+                            System.out.println("│      Enter 'y' to confirm, 'n' to cancel     │");
+                            System.out.println("└──────────────────────────────────────────────┘");
                             System.out.print("--> ");
 
                             try {
                                 String willChangePlayer = scanner.nextLine().trim();
 
                                 if (willChangePlayer.equalsIgnoreCase("y")) {
+
+                                    loadReset.resetGame();
+
+                                    /*System.out.println();
                                     System.out.println();
-                                    System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
                                     System.out.println("      ┌────────────────────────────────────────────────────────────────────┐");
                                     System.out.println("      │   The fates allow you to choose again. Another destiny awaits...   │");
                                     System.out.println("      └────────────────────────────────────────────────────────────────────┘");
-                                    System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                                    System.out.println();
+                                    System.out.println();
+                                    */
 
                                     hero.resetAllProgress();
 
@@ -154,23 +163,27 @@ public class InnerCharacterMenu extends Narration{
                         scanner.nextLine(); 
 
                         while (willChange) {
-                            System.out.println();
-                            System.out.println("┌─────────────────────────────────────────────────────────────────────────────┐");
-                            System.out.println("│  Are you sure you want to change character? All progress will not be saved. │");
-                            System.out.println("│  Enter 'y' to confirm or 'n' to cancel.                                    │");
-                            System.out.println("└─────────────────────────────────────────────────────────────────────────────┘");
+                            System.out.println("┌──────────────────────────────────────────────┐");
+                            System.out.println("│  Change character? Progress won't be saved.  │");
+                            System.out.println("│      Enter 'y' to confirm, 'n' to cancel     │");
+                            System.out.println("└──────────────────────────────────────────────┘");
                             System.out.print("--> ");
 
                             try {
                                 String willChangePlayer = scanner.nextLine().trim();
 
                                 if (willChangePlayer.equalsIgnoreCase("y")) {
+
+                                    loadReset.resetGame();
+
+                                    /*System.out.println();
                                     System.out.println();
-                                    System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
                                     System.out.println("      ┌────────────────────────────────────────────────────────────────┐");
                                     System.out.println("      │   The visions shift... perhaps another path calls your name.   │");
                                     System.out.println("      └────────────────────────────────────────────────────────────────┘");
-                                    System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                                    System.out.println();
+                                    System.out.println();
+                                    */
 
                                     hero.resetAllProgress();
 
@@ -267,23 +280,27 @@ public class InnerCharacterMenu extends Narration{
                         scanner.nextLine(); 
 
                         while (willChange) {
-                            System.out.println();
-                            System.out.println("┌─────────────────────────────────────────────────────────────────────────────┐");
-                            System.out.println("│  Are you sure you want to change character? All progress will not be saved. │");
-                            System.out.println("│  Enter 'y' to confirm or 'n' to cancel.                                     │");
-                            System.out.println("└─────────────────────────────────────────────────────────────────────────────┘");
+                            System.out.println("┌──────────────────────────────────────────────┐");
+                            System.out.println("│  Change character? Progress won't be saved.  │");
+                            System.out.println("│      Enter 'y' to confirm, 'n' to cancel     │");
+                            System.out.println("└──────────────────────────────────────────────┘");
                             System.out.print("--> ");
 
                             try {
                                 String willChangePlayer = scanner.nextLine().trim();
 
                                 if (willChangePlayer.equalsIgnoreCase("y")) {
+
+                                    loadReset.resetGame();
+
+                                    /*System.out.println();
                                     System.out.println();
-                                    System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
                                     System.out.println("      ┌───────────────────────────────────────────────────────────────────────────┐");
                                     System.out.println("      │   The scrolls fade from your grasp -  you seek another legend to become.  │");
                                     System.out.println("      └───────────────────────────────────────────────────────────────────────────┘");
-                                    System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                                    System.out.println();
+                                    System.out.println();
+                                    */
 
                                     hero.resetAllProgress();
                                      //hero.resetCharacterFlags();

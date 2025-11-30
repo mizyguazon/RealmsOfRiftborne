@@ -1,6 +1,6 @@
 package Narration;
 
-import DesignRelated.*;
+//import DesignRelated.*;
 
 import java.util.Scanner;
 
@@ -53,8 +53,11 @@ public class SwordsmanPlot {
 
     }
 
+    // ending plot for Swordsman
+    // dapat ma discover niya na the very first Solmere was Kim Morvain
+    // kun i utilize gihapon an idea ni ray na papatayon an sadiri, then pwede na inin iya after area 3 tapos dapat mangyari ini sa area 3
 
-    public void swordsmanAfterArea3() { // already implemented
+    /*public void swordsmanAfterArea3() { // already implemented
 
         String[] afterArea3Narration1 = {
             
@@ -75,8 +78,9 @@ public class SwordsmanPlot {
 
         swordsmanPlotNarration(afterArea3Narration1);
     }
+        */
 
-    public void swordsmanAfterDeath() { // polish the narration markers
+    /*public void swordsmanAfterDeath() { // polish the narration markers
 
         String[] afterDeath1 = { // have implemented
 
@@ -176,6 +180,7 @@ public class SwordsmanPlot {
         System.exit(0); 
     }
 
+    */
 
     public void swordsmanPlotNarration(String[] array) {
 
@@ -191,4 +196,5 @@ public class SwordsmanPlot {
 
         System.out.println();
     }
+        
 }

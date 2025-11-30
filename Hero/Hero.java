@@ -719,7 +719,7 @@ public class Hero {
     private boolean finishedDurability = false;
     private boolean finishedManaRefinement = false;
     private int numberOfTrainingFinished = 0;
-    private boolean finishedAllTraining = true; // default for checking
+    private boolean finishedAllTraining = false; // default for checking
     private boolean haveExploredButExited = false;
     private boolean haveAcceptedButExited = false;
 

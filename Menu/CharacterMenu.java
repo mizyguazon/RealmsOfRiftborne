@@ -15,6 +15,10 @@ public class CharacterMenu extends Narration{
         Menu mainMenuHandler = new Menu();
         Hero hero = null;
 
+        Narration separatorHandler = new Narration();
+
+        separatorHandler.promptSeparator();
+
         while(true){
 
             designRelatedMenu.characterChoiceMenu();

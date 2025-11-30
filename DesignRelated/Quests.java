@@ -4,8 +4,9 @@ public class Quests {
     
     public void riddles() {
         // to be implemented
-        
-        System.out.println("          ░░░░░░░░");
+        System.out.println("                   ┌────────────────────────────┐");
+        System.out.println("                   │   + Decode The Riddles +   │");
+        System.out.println("          ░░░░░░░░ └────────────────────────────┘");
         System.out.println("        ░░▓▓████▒▒░░░░░░░░░░░░");
         System.out.println("      ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓██████▒▒░░░░░░░░░░░░░░");
         System.out.println("    ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░");
@@ -15,36 +16,30 @@ public class Quests {
         System.out.println("        ░░░░▒▒▒▒▒▒▒▒████████▓▓▓▓▓▓▓▓▓▓▓▓░░▓▓░▓░░");
         System.out.println("          ░░▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒▓▓████▓▓░░▓▓░░▒▒░░");
         System.out.println("          ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒██▓▓░░▒▒▓▓░░");
-        System.out.println("          ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▓▓░░");
-        System.out.println("          ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██░░");
-        System.out.println("        ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██░░");
-        System.out.println("        ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██░░");
-        System.out.println("      ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░");
-        System.out.println("      ░░████▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██░░");
-        System.out.println("  ░░░░▒▒▒▒██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██▒▒██░░");
-        System.out.println("░░▓▓▓▓▓▓▓▓▒▒██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░");
-        System.out.println("  ░░░░░░░░▓▓▓▓▒▒██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██░░");
-        System.out.println("          ░░░░▓▓▓▓██▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░");
+        System.out.println("          ░░▓▓▓░▓▓▓▓▓▓▓▓░░▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▓▓░░");
+        System.out.println("          ░░▓▓▓▓░░▓▓▓▓▓▓▓▓░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██░░");
+        System.out.println("        ░░▓▓▓▓▓▓▓▓░░▓▓▓░░▓▓░▓▓░░▓▓▓▓▓▓▓▓▓▓██░░");
+        System.out.println("        ░░▓▓▓░░▓▓▓▓▓░▓▓▓▓░▓▓▓▓▓▓░▓▓▓▓▓▓▓▓▓██░░");
+        System.out.println("      ░░▓▓▓▓▓▓▓░▓▓▓▓▓░▓▓▓▓░▓▓▓▓▓▓░▓▓▓▓▓▓▓▓░░");
+        System.out.println("      ░░████▓▓░▓▓▓▓▓▓▓▓▓▓▓▓░░▓▓▓▓▓░░▓▓▓▓██░░");
+        System.out.println("  ░░░░▒▒▒▒██▓▓▓▓░▓▓▓▓░░▓▓▓▓▓▓░▓▓▓▓▓▓██▒▒██░░");
+        System.out.println("░░▓▓▓▓▓▓▓▓▒▒██▓▓▓▓▓▓▓▓▓░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒░░");
+        System.out.println("  ░░░░░░░░▓▓▓▓▒▒██▓▓▓▓▓▓░▓▓▓▓▓▓▓▓▓▓▓██░░");
+        System.out.println("          ░░░░▓▓▓▓██▓▓▓▓▓░░▓▓▓▓▓▓▓▓▓░░");
         System.out.println("              ░░░░▓▓▓▓██▓▓▓▓▓▓▓▓▓▓██░░");
         System.out.println("                  ░░░░▓▓▓▓▓▓██▓▓▓▓██░░");
         System.out.println("                      ░░░░░░░░████░░");
         System.out.println("                              ░░░░");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-        System.out.println("");
-
+        System.out.println();
 
 
     }
 
     public void bookFinding() {
         // to be implemented
-        System.out.println("                                    ┌────────────────────────────┐                                    ");
-        System.out.println("                                    │   + Find The Lost Book +   │                                    ");
-        System.out.println("                                    └────────────────────────────┘                                     ");
+        System.out.println("                                 ┌────────────────────────────┐                                    ");
+        System.out.println("                                 │   + Find The Lost Book +   │                                    ");
+        System.out.println("                                 └────────────────────────────┘                                     ");
         System.out.println("                                                                                                      ");
         System.out.println("  ░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒        ░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒        ░░░░░▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒");
         System.out.println("░░▒▒▒░░▒▒▒███████████████▒▒▒      ░░▒▒▒░░▒▒▒███████████████▒▒▒      ░░▒▒▒░░▓▓▓███████████████▓▓▓");
@@ -57,21 +52,15 @@ public class Quests {
         System.out.println("░░▒▒▒░░▒▒▒███████████████▒▒▒      ░░▒▒▒░░▒▒▒███████████████▒▒▒      ░░▒▒▒░░▓▓▓███████████████▓▓▓");
         System.out.println("░░▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒      ░░▒▒▒░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒      ░░▒▒▒░░▒▒▒▓▓▓▒▒▒▒▒▒▒▒▒▓▓▓▒▒▒");
         System.out.println("░░░░░░░░░░░░░░░░░░░░░░░░░░░░      ░░░░░░░░░░░░░░░░░░░░░░░░░░░░      ░░░░░░░░░░░░░░░░░░░░░░░░░░░░");
-        System.out.println("░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓▓▓░░      ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░      ░░▓▓▓▓▓▓▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓░░");
-        System.out.println("░░▓▓▓██████████████▒▒▒▒███░░      ░░██████▒▒▒▒██████████████░░      ░░██████▒▒██▒▒████████████░░");
-        System.out.println("░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓░░      ░░▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░      ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░");
+        System.out.println("░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓      ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓      ░░▓▓▓▓▓▓▒▒▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓");
+        System.out.println("░░▓▓▓██████████████▒▒▒▒█████      ░░██████▒▒▒▒████████████████      ░░██████▒▒██▒▒██████████████");
+        System.out.println("░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▓▓▓▓▓      ░░▓▓▓▓▓▓▒▒▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓      ░░▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓");
         System.out.println("   ░░░░░░░░░░░░░░░░░░░░░░░░░         ░░░░░▒▒▒▒░░░░░░░░░░░░░░░░        ░░░░░░░░░░░░░░░░░░░░░░░░░░");
+        System.out.println("      [1] Shelf Fiction                  [2] Shelf Science               [3] Shelf Mythology");
         System.out.println("");
+        System.out.println("                  [4] Shelf Magic and Spells             [5] Shelf History");
+        
        
-
-
-
-
-
-
-
-
-
     }
 
 }

@@ -10,7 +10,7 @@ public class HollowKing extends Mobs {
     private int skillCdU = 8;
 
     public HollowKing() {
-        super("Hollow King", 20000, 1100, 2000, 60, 1000, 1000, "Cursed Command", "Soul Drain", "King's Despair", 200, 500, 1200);
+        super("Hollow King", 20000, 1100, 2000, 60, 1000, "Cursed Command", "Soul Drain", "King's Despair", 200, 500, 1200);
 
         this.skillCd1 = 3;
         this.skillCd2 = 5;  

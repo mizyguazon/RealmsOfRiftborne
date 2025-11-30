@@ -1,7 +1,8 @@
 package Library;
 
 import Hero.*;
-import Narration.LibraryNarration;
+import Narration.*;
+import DesignRelated.*;
 
 import java.util.Scanner;
 import java.util.Random;
@@ -12,18 +13,29 @@ public class LibraryQuest extends LibraryNarration{
     Random random = new Random(System.nanoTime());
     private static int whichShelf = new Random().nextInt(5) + 1;
     private StatsProgressLibrary progressHandler = new StatsProgressLibrary();
+    Narration separatorHandler = new Narration();
+    Quests questsHandler = new Quests();
+    MenuRelated bookMenuHandler = new MenuRelated();
 
     public void findTheLostBook(Hero hero) {
-        System.out.println();
-        System.out.println("┌────────────────────────────┐");
+        separatorHandler.promptSeparatorResized();
+
+        //questsHandler.bookFinding();
+        separatorHandler.promptSeparatorResized();
+        
+        /*System.out.println("┌────────────────────────────┐");
         System.out.println("│   + Find The Lost Book +   │");
         System.out.println("└────────────────────────────┘");
+        */
 
         boolean found = false;
 
         while (!found) {
             try {
-                System.out.println("+-------------------------------------+");
+
+                bookMenuHandler.bookFindingMenu();
+
+                /*System.out.println("+-------------------------------------+");
                 System.out.println("|   The lost book could be here...    |");
                 System.out.println("+-------------------------------------+");
                 System.out.println("| [1] Shelf Fiction                   |");
@@ -32,6 +44,7 @@ public class LibraryQuest extends LibraryNarration{
                 System.out.println("| [4] Shelf Magic and Spells          |");
                 System.out.println("| [5] Shelf History                   |");
                 System.out.println("+-------------------------------------+");
+                */
                 System.out.print("-->| ");
 
                 int shelfChoice = Integer.parseInt(scanner.nextLine());
@@ -39,13 +52,15 @@ public class LibraryQuest extends LibraryNarration{
                 if (shelfChoice < 1 || shelfChoice > 5) {
                     System.out.println();
                     System.out.println("┌───────────────────────────────────────────────────────────┐");
-                    System.out.println("│   Hmmm...That's not valid. Choose a number between 1-5   │");
+                    System.out.println("│   Hmmm...That's not valid. Choose a number between 1-5    │");
                     System.out.println("└───────────────────────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
                 } else if (shelfChoice == whichShelf) {
                     System.out.println();
                     System.out.println("┌───────────────────────────────────────────────────────┐");
                     System.out.println("│   You've uncovered the lost book. Well done, hero!    │");
                     System.out.println("└───────────────────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
 
                     if(hero.getSwordmanCharacterChosen()) {
                         swordsmanHint();
@@ -59,17 +74,20 @@ public class LibraryQuest extends LibraryNarration{
                     System.out.println("┌──────────────────────────────────────────────────────┐");
                     System.out.println("│   No luck here, brave seeker. Continue your quest.   │");
                     System.out.println("└──────────────────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
                 }
             } catch (NumberFormatException e) {
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────┐");
                 System.out.println("│   Invalid input! Please enter a number 1-5.  │");
                 System.out.println("└──────────────────────────────────────────────┘");
+                separatorHandler.promptSeparatorResized();
             } catch (Exception e) {
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────┐");
                 System.out.println("│   An unexpected error occurred. Try again.   │");
                 System.out.println("└──────────────────────────────────────────────┘");
+                separatorHandler.promptSeparatorResized();
                 scanner.nextLine();
             }
         }
@@ -136,6 +154,7 @@ public class LibraryQuest extends LibraryNarration{
 
         hintNarration(foundHintNarration);
 
+        separatorHandler.promptSeparatorResized();
         System.out.println("┌────────────────────────────────────────────────────────────────────────┐");
         System.out.println("│ Whispered Danger: The streets were still, yet voices stir, Rogue hands │");
         System.out.println("│ reach where secrets were. Your path is fraught, the choices keen, What │");
@@ -149,15 +168,19 @@ public class LibraryQuest extends LibraryNarration{
 
     public void riddles(Hero hero){
 
-        System.out.println();
-        System.out.println("┌────────────────────────────┐");
+        separatorHandler.promptSeparatorResized();
+        /*System.out.println("┌────────────────────────────┐");
         System.out.println("│   + Decode The Riddles +   │");
         System.out.println("└────────────────────────────┘");
+        */
+
+        //questsHandler.riddles();
 
         if(hero.isRiddle1Done() && hero.isRiddle2Done() && hero.isRiddle3Done()) {
             System.out.println("┌───────────────────────────────────────────────────┐");
             System.out.println("│   + Victory! All riddles have been conquered! +   │");
             System.out.println("└───────────────────────────────────────────────────┘");
+            separatorHandler.promptSeparatorResized();
 
             if(hero.getMageCharacterChosen()) {
                 mageHint();

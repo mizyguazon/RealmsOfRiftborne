@@ -8,7 +8,7 @@ public class Goblin extends Mobs {
     private int skillCd1, skillCd2;
 
     public Goblin() {
-        super("Goblin", 2000, 350, 200, 30,400, 400, "Throw Rock", "Rock Barrage", "Unknown", 100, 200, 0);
+        super("Goblin", 2000, 350, 200, 30,400, "Throw Rock", "Rock Barrage", "Unknown", 100, 200, 0);
         
         this.skillCd1 = 4;
         this.skillCd2 = 6;

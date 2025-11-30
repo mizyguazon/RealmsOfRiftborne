@@ -9,7 +9,7 @@ public class Slime extends Mobs {
     private int skillCd2 = 5;
 
     public Slime() {
-        super("Slime", 2150, 400, 200, 30,400, 400, "Acid Splash", "Split", "Unknown", 150, 250, 0);
+        super("Slime", 2150, 400, 200, 30,400, "Acid Splash", "Split", "Unknown", 150, 250, 0);
 
         this.skillCd1 = 3;
         this.skillCd2 = 5;

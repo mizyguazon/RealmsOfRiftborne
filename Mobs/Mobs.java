@@ -15,16 +15,18 @@ public class Mobs extends Entity {
     private String skill1, skill2, ultimate;
     private int manaCostSkill1, manaCostSkill2, manaCostUltimate;
     private int skillCd1, skillCd2, skillCdU;
+    private int cooldown1 = 0;
+    private int cooldown2 = 0;
+    private int cooldownU = 0;
     
 
-    public Mobs(String name, int hp, int attack, int defense, int speed, int mana, int manaCap, String skill1, String skill2, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostUltimate) {
+    public Mobs(String name, int hp, int attack, int defense, int speed, int mana, String skill1, String skill2, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostUltimate) {
         this.name = name;
         this.hp = hp;
         this.attack = attack;
         this.defense = defense;
         this.speed = speed;
         this.mana = mana;
-        this.manaCap = manaCap;
         this.skill1 = skill1;
         this.skill2 = skill2;
         this.ultimate = ultimate;
@@ -60,13 +62,13 @@ public class Mobs extends Entity {
     public void skill1(Entity enemy, Hero hero){
         System.out.println(getName() + " used " + skill1 + "!");
 
-        setCooldown1(skillCd1);
+        enemy.setCooldown1(skillCd1);
         
 
         double damage = getAttack() * 1.5;
 
         int manaReduce = getMana() - manaCostSkill1;
-        setMana(manaReduce);
+        enemy.setMana(manaReduce);
 
         if(hero.dodgeEnemyAtk(hero, enemy)) return;
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
@@ -80,13 +82,13 @@ public class Mobs extends Entity {
     public void skill2(Entity enemy, Hero hero){
         System.out.println(getName() + " used " + skill2 + "!");
 
-        setCooldown2(skillCd2);
+        enemy.setCooldown2(skillCd2);
         
 
         double damage = getAttack() * 1.8;
 
         int manaReduce = getMana() - manaCostSkill2;
-        setMana(manaReduce);
+        enemy.setMana(manaReduce);
 
         if(hero.dodgeEnemyAtk(hero, enemy)) return;
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
@@ -104,12 +106,12 @@ public class Mobs extends Entity {
     public void ultimate(Entity enemy, Hero hero){
         System.out.println(getName() + " used " + ultimate + "!");
 
-        setCooldownU(skillCdU);
+        enemy.setCooldownU(skillCdU);
 
         double damage = getAttack() * 2.3;
 
         int manaReduce = getMana() - manaCostUltimate;
-        setMana(manaReduce);
+        enemy.setMana(manaReduce);
 
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;
 
@@ -151,6 +153,9 @@ public class Mobs extends Entity {
     public void setMana(int mana) {
         this.mana = mana;
     }
+    public void setManaCap(int manaCap){
+        this.manaCap = manaCap;
+    }
     public void setSkill1(String skill1) {
         this.skill1 = skill1;
     }
@@ -159,6 +164,25 @@ public class Mobs extends Entity {
     }
     public void setUltimate(String ultimate) {
         this.ultimate = ultimate;
+    }
+    public void setManaCostSkill1(int manaCostSkill1){
+        this.manaCostSkill1 = manaCostSkill1;
+    }
+    public void setManaCostSkill2(int manaCostSkill2){
+        this.manaCostSkill2 = manaCostSkill2;
+    }
+    public void setManaCostUltimate(int manaCostUltimate){
+        this.manaCostUltimate = manaCostUltimate;
+    }
+    public void setCooldown1(int cd1) {
+        cooldown1 = cd1;
+    }
+
+    public void setCooldown2(int cd2) {
+        cooldown2 = cd2;
+    }
+    public void setCooldownU(int cdU) {
+        cooldownU = cdU;
     }
 
     //getters
@@ -186,6 +210,15 @@ public class Mobs extends Entity {
     public int getManaCap() {
         return manaCap;
     }
+    public int getManaCostSkill1(){
+        return manaCostSkill1;
+    }
+    public int getManaCostSkill2(){
+        return manaCostSkill2;
+    }
+    public int getManaCostUltimate(){
+        return manaCostUltimate;
+    }
     public String getSkill1() {
         return skill1;
     }
@@ -194,5 +227,15 @@ public class Mobs extends Entity {
     }
     public String getUltimate() {
         return ultimate;
+    }
+    public int getCooldown1() {
+        return cooldown1;
+    }
+
+    public int getCooldown2() {
+        return cooldown2;
+    }
+    public int getCooldownU() {
+        return cooldownU;
     }
 }

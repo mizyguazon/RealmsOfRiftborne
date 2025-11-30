@@ -2,6 +2,7 @@ package Menu;
 
 import Hero.*;
 import Library.LibraryAcademy;
+import Narration.Narration;
 //import Narration.SwordsmanPlot;
 import TrainingGround.*;
 import DesignRelated.*;
@@ -15,10 +16,15 @@ public class AcademyMenu extends Menu{
         LibraryAcademy libraryHandler = new LibraryAcademy();
         PrincipalOffice officeHandler = new PrincipalOffice();
         AcademyMap mapHandler = new AcademyMap();
-        IntroTitle introHandler = new IntroTitle();
+        //IntroTitle introHandler = new IntroTitle();
         MenuRelated menuRelatedHanlder = new MenuRelated();
         ShopRelated shopPromptHandler = new ShopRelated();
         //SwordsmanPlot swordsmanPlotHandler = new SwordsmanPlot();
+        Narration separatorHandler = new Narration();
+
+        IntroTitle loadHandler = new IntroTitle();
+        
+        separatorHandler.promptSeparator();
         
         while (academyMapMenu) {
             
@@ -31,34 +37,27 @@ public class AcademyMenu extends Menu{
 
                 switch (academyMapMenuChoice) {
                     case 1:
+                        //mapHandler.characterInsideLibrary();
 
-                        mapHandler.characterInsideLibrary();
-
+                        /*System.out.println();
                         System.out.println();
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - -  - - - - <<<<<");
                         System.out.println("      ┌───────────────────────────────────────┐");
                         System.out.println("      │   + You are now inside the Library +  │");
                         System.out.println("      └───────────────────────────────────────┘");
                         System.out.println("     ┌──────────────────────────────────────────┐");
                         System.out.println("     │   Shh! Be mindful, others are studying   │");
                         System.out.println("     └──────────────────────────────────────────┘");
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                        System.out.println();
+                         System.out.println();
+                         */
 
                         if(!hero.hasVisitedLibrary()){
                             libraryNarration();
                             hero.setVisitedLibrary(true);
                         }
 
-                        /*if(hero.getHaveDefeatedArea3Boss()) { 
-                            if(hero.getSwordmanCharacterChosen()) {
-
-                                scanner.nextLine();
-                                swordsmanPlotHandler.swordsmanEndingPlot(); 
-                                
-
-                            } 
-                        }
-                            */
+                        separatorHandler.promptSeparator();
+                        mapHandler.characterInsideLibrary();
 
                         libraryHandler.libraryAcademy(hero);
 
@@ -66,22 +65,25 @@ public class AcademyMenu extends Menu{
 
                     case 2:
 
-                        mapHandler.characterInsideTrainingGround();
-
+                        /*System.out.println();
                         System.out.println();
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
                         System.out.println("        ┌────────────────────────────────────────────────┐");
                         System.out.println("        │   + You are now inside the Training Ground +   │");
                         System.out.println("        └────────────────────────────────────────────────┘");
                         System.out.println("     ┌───────────────────────────────────────────────────────┐");
                         System.out.println("     │   The air grows tense. It's time to prove your skill  │");
                         System.out.println("     └───────────────────────────────────────────────────────┘");
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+                        System.out.println();
+                        System.out.println();
+                        */
 
                         if (!hero.hasVisitedGym()) {
                             gymNarration();
                             hero.setVisitedGym(true);
                         }
+
+                        separatorHandler.promptSeparator();
+                        mapHandler.characterInsideTrainingGround();
 
                         boolean validInput = false;
 
@@ -101,6 +103,9 @@ public class AcademyMenu extends Menu{
                                     System.out.println("┌──────────────────────────────────────────────┐");
                                     System.out.println("│   >>> Exiting from the Training Ground <<<   │");
                                     System.out.println("└──────────────────────────────────────────────┘");
+                                    loadHandler.exitGame();
+                                    separatorHandler.promptSeparator();
+                                
                                     validInput = true;
                                 } else {
                                     System.out.println();
@@ -121,17 +126,18 @@ public class AcademyMenu extends Menu{
 
 
                     case 3:
-                        mapHandler.characterInsidePrincipalOffice();
 
+                        /*System.out.println();
                         System.out.println();
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - <<<<<");
                         System.out.println("     ┌───────────────────────────────────────┐");
                         System.out.println("     │   + You are now inside the Office +   │");
                         System.out.println("     └───────────────────────────────────────┘");
                         System.out.println("       ┌───────────────────────────────────┐");
                         System.out.println("       │   May the odds be in your favor   │");
                         System.out.println("       └───────────────────────────────────┘");
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - <<<<<");
+                        System.out.println();
+                        System.out.println();
+                        */
 
                         if (!hero.hasVisitedOffice()) {
                             principalOfficeNarration();
@@ -139,17 +145,25 @@ public class AcademyMenu extends Menu{
                         }
                         System.out.println();
 
+                        separatorHandler.promptSeparator();
+                        mapHandler.characterInsidePrincipalOffice();
+
                         officeHandler.principalOffice(hero);
 
                         break;
 
                     case 4:
+
+                        separatorHandler.promptSeparator();
                         shopPromptHandler.shopPrompt();
 
                         if (!hero.hasVisitedShop()) {
                             shopNarration();
                             hero.setHasVisitedShop(true);
                         }
+
+                        separatorHandler.promptSeparator();
+                        mapHandler.characterInsideShop();
 
                         if(!hero.getConversedWithShop()){
                             shopConversationNarration();
@@ -162,8 +176,12 @@ public class AcademyMenu extends Menu{
                         
 
                     case 5:
+
+                        loadHandler.exitGame();
+                        separatorHandler.promptSeparator();
                        
-                        introHandler.exitAcademy();
+                        //introHandler.exitAcademy();
+                        
 
                         academyMapMenu = false;
 

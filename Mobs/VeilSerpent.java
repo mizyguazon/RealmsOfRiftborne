@@ -8,7 +8,7 @@ public class VeilSerpent extends Mobs {
     private int skillCd1, skillCd2;
 
     public VeilSerpent() {
-        super("Veil Serpent", 7800, 800, 500, 30,600, 600, "Phantom Bite", "Mist Shrowd", "Unknown", 200, 450, 0);
+        super("Veil Serpent", 7800, 800, 500, 30,600, "Phantom Bite", "Mist Shrowd", "Unknown", 200, 450, 0);
         
         this.skillCd1 = 4;
         this.skillCd2 = 6;

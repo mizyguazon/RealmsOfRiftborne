@@ -10,7 +10,7 @@ public class FadingWarden extends Mobs {
     private int skillCdU = 8;
  
     public FadingWarden() {
-        super("Fading Warden", 10500, 900, 1000, 50,1000, 1000, "Ethereal Slash", "Ghost Step", "Oblivion Veil", 300, 450, 600);
+        super("Fading Warden", 10500, 900, 1000, 50,1000, "Ethereal Slash", "Ghost Step", "Oblivion Veil", 300, 450, 600);
 
         this.skillCd1 = 4;
         this.skillCd2 = 6;  

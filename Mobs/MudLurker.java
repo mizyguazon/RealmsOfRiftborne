@@ -8,7 +8,8 @@ public class MudLurker extends Mobs {
     private int skillCd1, skillCd2, skillCdU;
 
     public MudLurker() {        
-        super("Mud Lurker", 4500, 500, 350, 50, 500, 500, "Mud Shot", "Burrow", "Quagmire", 200, 300, 350);
+        super("Mud Lurker", 4500, 500, 350, 50, 500, "Mud Shot", "Burrow", "Quagmire", 
+        200, 300, 350);
         this.skillCd1 = 4;
         this.skillCd2 = 6;  
         this.skillCdU = 8;
@@ -48,8 +49,8 @@ public class MudLurker extends Mobs {
 
         double damage = getAttack() * 1.5;
 
-        int manaReduce = getMana() - getManaCostSkill1();
-        setMana(manaReduce);
+
+        setMana(getMana() - getManaCostSkill1());
 
         if(hero.dodgeEnemyAtk(hero, enemy)) return;
         int damageDealt = (int) Math.round(damage) - hero.getDefense()/2;

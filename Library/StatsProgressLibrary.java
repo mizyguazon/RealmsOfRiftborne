@@ -13,38 +13,42 @@ public class StatsProgressLibrary extends StatProgress {
 
         switch(whatStat){
             case 1:
-                System.out.println();
+                /*System.out.println();
                 System.out.println("┌────────────────────────────────────────────┐");
                 System.out.println("│   + Endurance Related Stats Increased! +   │");
                 System.out.println("└────────────────────────────────────────────┘");
+                */
                 endurance(hero);
                 displayXPandLevel(hero, 500);
 
                 break;
 
             case 2:
-                System.out.println();
+                /*System.out.println();
                 System.out.println("┌─────────────────────────────────────────────┐");
                 System.out.println("│   + Durability Related Stats Increased! +   │");
                 System.out.println("└─────────────────────────────────────────────┘");
+                */
                 durability(hero);
                 displayXPandLevel(hero, 500);
                 break;
 
             case 3:
-                System.out.println();
+                /*System.out.println();
                 System.out.println("┌───────────────────────────────────────────┐");
                 System.out.println("│   + Strength Related Stats Increased! +   │");
                 System.out.println("└───────────────────────────────────────────┘");
+                */
                 strength(hero);
                 displayXPandLevel(hero, 500);
                 break;
 
             case 4:
-                System.out.println();
+                /*System.out.println();
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("│   + Mana Refinement Related Stats Increased! +   │");
                 System.out.println("└──────────────────────────────────────────────────┘");
+                */
                 mana(hero);
                 displayXPandLevel(hero, 500);
                 break;

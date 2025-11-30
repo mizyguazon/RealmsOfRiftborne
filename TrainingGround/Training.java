@@ -2,8 +2,9 @@ package TrainingGround;
 
 import Hero.*;
 import Menu.*;
-import Narration.TrainingNarration;
+import Narration.*;
 import TrainingGround.Training;
+import DesignRelated.*;
 
 import java.util.Scanner;
 import java.util.Random;
@@ -16,7 +17,8 @@ public class Training {
     private TrainingMenu trainingMenuHandler = new TrainingMenu(this);
     private TrainingNarration narrationHandler = new TrainingNarration();
     private StatProgress statProgressHandler = new StatProgress();
-
+    private Narration separatorHandler = new Narration();
+    private IntroTitle loadHandler = new IntroTitle();
 
     public void trainingGround(Hero hero){
 
@@ -27,7 +29,7 @@ public class Training {
 
         if(hero.hasFinishedAllTraining()){
 
-                System.out.println();
+                separatorHandler.promptSeparatorResized();
                 System.out.println("┌─────────────────────────────────────────────┐");
                 System.out.println("│    You have completed your training quest   │");
                 System.out.println("│       Exiting from Training Ground...       │");
@@ -45,7 +47,15 @@ public class Training {
                 System.out.println("└────────────────────────────────────────────────┘");
                 System.out.print("-->| ");
 
-                String wouldAccept = scanner.nextLine();
+                String wouldAccept;
+                
+                wouldAccept = scanner.nextLine().trim();
+
+                //if (scanner.hasNextLine()) scanner.nextLine();
+
+                if(wouldAccept.isEmpty()) {
+                    continue;
+                }
 
                 if (wouldAccept.equalsIgnoreCase("y")) {
 
@@ -63,6 +73,7 @@ public class Training {
                     System.out.println("│        Training offer declined        │");
                     System.out.println("│   Exiting from the Training Ground    │");
                     System.out.println("└───────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
 
                     isValid = false;
                     return;
@@ -71,6 +82,7 @@ public class Training {
                     System.out.println("┌────────────────────────────────────────┐");
                     System.out.println("│   Choice unclear! Enter 'y' or 'n'.    │");
                     System.out.println("└────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
                 }
             } catch (Exception e) {
                 System.out.println();
@@ -78,6 +90,7 @@ public class Training {
                 System.out.println("│   An unexpected error occurred. Try again.   │");
                 System.out.println("└──────────────────────────────────────────────┘");
                 scanner.nextLine(); 
+                separatorHandler.promptSeparatorResized();
             }
         }
 
@@ -99,7 +112,7 @@ public class Training {
         while (continueTraining) {
 
             if(hero.getNumberOfTrainingFinished() == 4){
-                System.out.println();
+                //separatorHandler.promptSeparatorResized();
                 System.out.println("┌───────────────────────────────────────────────────────────┐");
                 System.out.println("│   + You have finished your training. Congratulations! +   │");
                 System.out.println("└───────────────────────────────────────────────────────────┘");
@@ -120,9 +133,18 @@ public class Training {
                     System.out.println("└─────────────────────────────────────────────┘");
                     System.out.print("-->| ");
 
-                    String continueChoice = scanner.nextLine();
+                    String continueChoice;
+                    
+                    continueChoice = scanner.nextLine().trim();
+
+                    //if (scanner.hasNextLine()) scanner.nextLine();
+
+                    if(continueChoice.isEmpty()) {
+                        continue;
+                    }
 
                     if (continueChoice.equalsIgnoreCase("y")) {
+                        separatorHandler.promptSeparator();
                         trainingMenuHandler.trainingMenu(hero);
                         isValidInput = true; 
                     } 
@@ -142,6 +164,9 @@ public class Training {
                                 System.out.println("┌───────────────────────────────────────────────────┐");
                                 System.out.println("│   + You decided to end your training session +    │");
                                 System.out.println("└───────────────────────────────────────────────────┘");
+                                separatorHandler.promptSeparatorResized();
+
+                                loadHandler.resetGame();
 
                                 if (!hero.hasFinishedAllTraining()) {
                                     hero.setHp(originalHp);
@@ -158,16 +183,22 @@ public class Training {
                                     hero.setFinishedManaRefinement(true);
                                     hero.setNumberOfTrainingFinished(0);
                                     hero.setFinishedAllTraining(false);
-                                    
+
+                                    separatorHandler.promptSeparatorResized();
+                                    /*System.out.println();
                                     System.out.println("┌──────────────────────────────────────┐");
                                     System.out.println("│   >>> Your progress was reset <<<    │");
                                     System.out.println("└──────────────────────────────────────┘");
+                                    separatorHandler.promptSeparatorResized();
+                                    */
 
                                 }
-                            
+
+                                separatorHandler.promptSeparatorResized();
                                 System.out.println("┌──────────────────────────────────────────────┐");
                                 System.out.println("│   >>> Exiting from the Training Ground <<<   │");
                                 System.out.println("└──────────────────────────────────────────────┘");
+                                separatorHandler.promptSeparatorResized();
 
                                 return; 
                             } 
@@ -176,6 +207,7 @@ public class Training {
                                 System.out.println("┌─────────────────────────────────────┐");
                                 System.out.println("│   >>> Your training continues <<<   │");
                                 System.out.println("└─────────────────────────────────────┘");
+                                separatorHandler.promptSeparatorResized();
 
                                 isValidInput = true;
                             } 
@@ -184,6 +216,7 @@ public class Training {
                                 System.out.println("┌───────────────────────────────────────────────────┐");
                                 System.out.println("│   Invalid input! Continuing training by default   │");
                                 System.out.println("└───────────────────────────────────────────────────┘");
+                                separatorHandler.promptSeparatorResized();
 
                                 isValidInput = true;
                             }
@@ -193,6 +226,7 @@ public class Training {
                             System.out.println("│   An unexpected error occurred. Try again.   │");
                             System.out.println("└──────────────────────────────────────────────┘");
                             scanner.nextLine(); 
+                            separatorHandler.promptSeparatorResized();
                         }
                     } 
                     else {
@@ -200,6 +234,7 @@ public class Training {
                         System.out.println("┌────────────────────────────────────────┐");
                         System.out.println("│   Choice unclear! Enter 'y' or 'n'.    │");
                         System.out.println("└────────────────────────────────────────┘");
+                        separatorHandler.promptSeparatorResized();
                     }
                 } catch (Exception e) {
                     System.out.println();
@@ -207,6 +242,7 @@ public class Training {
                     System.out.println("│   An unexpected error occurred. Try again.   │");
                     System.out.println("└──────────────────────────────────────────────┘");
                     scanner.nextLine(); 
+                    separatorHandler.promptSeparatorResized();
                 }
             }
         }
@@ -214,6 +250,7 @@ public class Training {
         System.out.println("┌──────────────────────────────────────────────┐");
         System.out.println("│   >>> Exiting from the Training Ground <<<   │");
         System.out.println("└──────────────────────────────────────────────┘");
+        separatorHandler.promptSeparatorResized();
     }
 
 
@@ -257,13 +294,14 @@ public class Training {
             System.out.println("│      You\'ve fallen this time      │");
             System.out.println("│    Ready to give it another go?   │");
             System.out.println("└───────────────────────────────────┘");
+            //separatorHandler.promptSeparatorResized();
 
         }
     }
 
     public void generalTrainingPrompt(Hero hero, String trainingType){
 
-        System.out.println();
+        /*System.out.println();
         System.out.println("┌───────────────────────────────────┐");
         System.out.println("│   >>> Training is on-going <<<    │");
         System.out.println("│      Press Enter to continue      │");
@@ -276,11 +314,17 @@ public class Training {
             "-- >>> Battle is on going... Please wait... <<< --", 
             "-- >>> Battle is on going... Please wait... <<< --"
         };
+        
 
         for(int i = 0; i < timeDelay.length; i++){
             scanner.nextLine();
             System.out.println(timeDelay[i]);
         }
+            */
+
+        loadHandler.onGoingBattle();
+            
+        separatorHandler.promptSeparatorResized();
 
         sparringMechanism(hero, trainingType);
 

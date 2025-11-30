@@ -1,12 +1,15 @@
 package Narration;
 
 import java.util.Scanner;
+import DesignRelated.*;
 
 public class LibraryNarration {
 
     private static Scanner scanner = new Scanner(System.in);
 
     Narration printDelayHandler = new Narration();
+    Narration separatorHandler = new Narration();
+    Quests questHandler = new Quests();
 
     public void findTheLostBookNarration(){
         String[] quest1 = {
@@ -19,7 +22,7 @@ public class LibraryNarration {
 
         for (int i = 0; i < quest1.length; i++) {
             //scanner.nextLine(); 
-            printDelayHandler.printWithDelay(quest1[i], 40); 
+            printDelayHandler.printWithDelay(quest1[i], 15); 
             System.out.println("\n");
         }
 
@@ -36,7 +39,7 @@ public class LibraryNarration {
 
         for (int i = 0; i < success1.length; i++) {
             //scanner.nextLine(); 
-            printDelayHandler.printWithDelay(success1[i], 40); 
+            printDelayHandler.printWithDelay(success1[i], 15); 
             System.out.println("\n");
         }
 
@@ -53,7 +56,7 @@ public class LibraryNarration {
 
         for (int i = 0; i < fail1.length; i++) {
             //scanner.nextLine(); 
-            printDelayHandler.printWithDelay(fail1[i], 40); 
+            printDelayHandler.printWithDelay(fail1[i], 15); 
             System.out.println("\n");
         }
 
@@ -71,7 +74,7 @@ public class LibraryNarration {
 
         for (int i = 0; i < quest3.length; i++) {
             //scanner.nextLine(); 
-            printDelayHandler.printWithDelay(quest3[i], 40); 
+            printDelayHandler.printWithDelay(quest3[i], 15); 
             System.out.println("\n");
         }
 
@@ -83,6 +86,8 @@ public class LibraryNarration {
         boolean continueInput = true;
         boolean isCorrect = false;
 
+        questHandler.riddles();
+
         String[] riddle = {
             "┌───────────────────────────────────────────────────┐",
             "│   Nang maliit ay mestiso, nang lumaki'y negro    │",
@@ -93,7 +98,7 @@ public class LibraryNarration {
         };
 
         for (int i = 0; i < riddle.length; i++) {  
-            printDelayHandler.printLineWithDelay(riddle[i], 50); 
+            printDelayHandler.printLineWithDelay(riddle[i], 25); 
         }
 
         /*System.out.println("┌───────────────────────────────────────────────────┐");
@@ -114,6 +119,7 @@ public class LibraryNarration {
                     System.out.println("┌───────────────────────┐");
                     System.out.println("│   Nice! You got it!   │");
                     System.out.println("└───────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
 
                     isCorrect = true;
                     continueInput = false;
@@ -121,11 +127,13 @@ public class LibraryNarration {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("│   Input unclear! Answer must be a character\\s   │");
                     System.out.println("└──────────────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
                 } else {
                     System.out.println();
                     System.out.println("┌──────────────────────────────────────────┐");
                     System.out.println("│   Whoops! Better luck on the next try!   │");
                     System.out.println("└──────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
                     continueInput = false;
                 }
             } 
@@ -135,6 +143,7 @@ public class LibraryNarration {
                 System.out.println("│   Error occured in input statement   │");
                 System.out.println("└──────────────────────────────────────┘");
                 scanner.nextLine(); 
+                separatorHandler.promptSeparatorResized();
             }
         }
 
@@ -145,6 +154,8 @@ public class LibraryNarration {
     public boolean riddle2() {
         boolean continueInput = true;
         boolean isCorrect = false;
+
+        questHandler.riddles();
 
         String[] riddle = {
             "┌────────────────────────────────────────────────────────────┐",
@@ -158,7 +169,7 @@ public class LibraryNarration {
         };
 
         for (int i = 0; i < riddle.length; i++) {  
-            printDelayHandler.printLineWithDelay(riddle[i], 50); 
+            printDelayHandler.printLineWithDelay(riddle[i], 25); 
         }
 
         /*System.out.println("┌────────────────────────────────────────────────────────────┐");
@@ -181,6 +192,7 @@ public class LibraryNarration {
                     System.out.println("┌────────────────────────┐");
                     System.out.println("│   Correct! Good job!   │");
                     System.out.println("└────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
 
                     isCorrect = true;
                     continueInput = false;
@@ -188,11 +200,13 @@ public class LibraryNarration {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("│   Input unclear! Answer must be a character\\s   │");
                     System.out.println("└──────────────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
                 } else {
                     System.out.println();
                     System.out.println("┌──────────────────────────────┐");
                     System.out.println("│   Bzzzt! That's not right!   │");
                     System.out.println("└──────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
 
                     isCorrect = false;
                     continueInput = false;
@@ -204,6 +218,7 @@ public class LibraryNarration {
                 System.out.println("│   Error occured in input statement   │");
                 System.out.println("└──────────────────────────────────────┘");
                 scanner.nextLine(); 
+                separatorHandler.promptSeparatorResized();
             }
         }
 
@@ -213,6 +228,8 @@ public class LibraryNarration {
     public boolean riddle3() {
         boolean continueInput = true;
         boolean isCorrect = false;
+
+        questHandler.riddles();
 
         String[] riddle = {
             "┌──────────────────────────────────────────────────────────────┐",
@@ -224,7 +241,7 @@ public class LibraryNarration {
         };
 
         for (int i = 0; i < riddle.length; i++) {  
-            printDelayHandler.printLineWithDelay(riddle[i], 50); 
+            printDelayHandler.printLineWithDelay(riddle[i], 25); 
         }
 
 
@@ -243,10 +260,11 @@ public class LibraryNarration {
                 String answer3 = scanner.nextLine();
 
                 if (answer3.equalsIgnoreCase("Spaghetti")) {
-                    System.out.println();
+                    separatorHandler.promptSeparatorResized();
                     System.out.println("┌─────────────────────────┐");
                     System.out.println("│   Correct! Well done!   │");
                     System.out.println("└─────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
 
                     isCorrect = true;
                     continueInput = false;
@@ -254,11 +272,13 @@ public class LibraryNarration {
                     System.out.println("┌──────────────────────────────────────────────────┐");
                     System.out.println("│   Input unclear! Answer must be a character\\s   │");
                     System.out.println("└──────────────────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
                 } else {
                     System.out.println();
                     System.out.println("┌───────────────────────────────────────┐");
                     System.out.println("│   Incorrect! Better luck next time!   │");
                     System.out.println("└───────────────────────────────────────┘");
+                    separatorHandler.promptSeparatorResized();
 
                     isCorrect = false;
                     continueInput = false;
@@ -270,6 +290,7 @@ public class LibraryNarration {
                 System.out.println("│   Error occured in input statement   │");
                 System.out.println("└──────────────────────────────────────┘");
                 scanner.nextLine();
+                separatorHandler.promptSeparatorResized();
             }
         }
 
@@ -294,7 +315,7 @@ public class LibraryNarration {
 
         for (String line : arr) {
             scanner.nextLine();
-                System.out.println(line);
+            System.out.println(line);
         }
         
         System.out.println();

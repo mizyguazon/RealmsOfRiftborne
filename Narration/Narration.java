@@ -391,6 +391,40 @@ public class Narration{
     public void gunnerBackstory() { // implemented with time delay
 
         String[] lines = {
+            "┌────────────────────────────────────────────────────────┐",
+            "│               Aria Caelith - The Void's Eye            │",
+            "│                       Backstory                        │",
+            "├────────────────────────────────────────────────────────┤",
+            "│                                                        │",
+            "│ Aria Caelith was taken from his home as a child,       │",
+            "│ abducted during a covert raid led by Kim Morvain.      │",
+            "│ Selected for Project LUCENT, he was subjected to       │",
+            "│ brutal experiments that fused Aether Pulse energy      │",
+            "│ into his nervous system, granting him deadly precision │",
+            "│ at the cost of his own lifespan.                       │",
+            "│                                                        │",
+            "│ In the cold metal halls where failure meant death,     │",
+            "│ Aria developed Aether Sight -an ability to read motion,│",
+            "│ pressure, and angles with impossible clarity. His      │",
+            "│ bullets could bend through steel and air, but using    │",
+            "│ this power burned his body from within.                │",
+            "│                                                        │",
+            "│ After years of torment, he escaped the facility,       │",
+            "│ vowing to destroy Morvain and end Project LUCENT       │",
+            "│ before it creates an army of controlled soldiers made  │",
+            "│ from his stolen power.                                 │",
+            "│                                                        │",
+            "│ In the shadows, his name is both feared and whispered  │",
+            "│  -Aria Caelith, the last experiment who never misses.  │",
+            "│                                                        │",
+            "└────────────────────────────────────────────────────────┘",
+            "┌──────────────────────────────┐",
+            "│   Press ENTER to continue    │",
+            "└──────────────────────────────┘"
+        };
+
+
+        /*String[] lines = {
             "┌───────────────────────────────────────────────────────┐",
             "│              Aria Caelith - The Void's Eye            |",
             "│                       Backstory                       │",
@@ -418,6 +452,7 @@ public class Narration{
             "│   Press ENTER to continue    │",
             "└──────────────────────────────┘"
         };
+        */
 
         System.out.println(); 
 
@@ -543,31 +578,31 @@ public class Narration{
 
         String[] lines = {
             "┌────────────────────────────────────────────────────────────────────────────────┐",
-            "│                   Selene Arclight - Weaver of Arcane Flames                    |",
+            "│                  Selene Arclight - Weaver of Arcane Flames                     |",
             "│                                  Backstory                                     │",
             "├────────────────────────────────────────────────────────────────────────────────┤",
             "│                                                                                │",
-            "│ Born into the prestigious Arclight family, Selene was raised under the weight  │",
-            "│ of expectation. Gifted in the arcane arts, her brilliance shone early—capable  │",
-            "│ of bending starlight and weaving cosmic energies with precision and grace.     │",
+            "│ Selene Arclight was born into the prestigious Arclight lineage, her talent in  │",
+            "│ cosmic and starlight magic evident from a young age. Morvain recruited her to  │",
+            "│ help create the spells and enchantments that fueled Project LUCENT.            │",
             "│                                                                                │",
-            "│ Her path, however, took a fateful turn when she witnessed the power of Kim     │",
-            "│ Morvain—an enigmatic sorcerer who defied the laws of magic itself. His command │",
-            "│ over the void and the whispers of forbidden realms awakened something in her:  │",
-            "│ awe, fear, and an unshakable desire to understand that power.                  │",
+            "│ She soon discovered the project's true purpose: weaponizing human lives and    │",
+            "│ spreading destruction. Realizing her complicity, she tried to escape—but was   │",
+            "│ cursed, her magic twisted to both empower and torment her.                     │",
             "│                                                                                │",
-            "│ Determined to uncover his secrets and surpass the limits of her own family's   │",
-            "│ teachings, Selene entered the academy. There, she seeks not just mastery, but  │",
-            "│ truth—what Kim Morvain discovered, and what it cost him to wield such might.   │",
+            "│ Consumed by guilt and driven by vengeance, Selene now wields her powers to     │",
+            "│ stop Morvain. Each spell carries the precision of her craft and the weight of  │",
+            "│ remorse, guiding her toward the Forsaken Lands where he awaits.                │",
             "│                                                                                │",
-            "│ Whether admiration or obsession drives her, none can tell—but her journey has  │",
-            "│ already begun, and the stars themselves seem to tremble in anticipation.       │",
+            "│ Her name is spoken with caution and awe—Selene Arclight, the mage whose        │",
+            "│ genius became a weapon, and whose vengeance burns brighter than any star.      │",
             "│                                                                                │",
             "└────────────────────────────────────────────────────────────────────────────────┘",
             "┌──────────────────────────────┐",
             "│   Press ENTER to continue    │",
             "└──────────────────────────────┘"
         };
+
 
         System.out.println(); 
 
@@ -580,6 +615,13 @@ public class Narration{
     }
 
     public void playSection(String[] section) {
+
+        String[] blankLines = {
+            "",
+            "",
+            "",
+        };
+
         while (true) {
             try {
                 System.out.println();
@@ -600,14 +642,17 @@ public class Narration{
                         return;
 
                     case 'n':
-                        System.out.println();
+                        /*System.out.println();
                         System.out.println("┌─────────────────────────────┐");
                         System.out.println("│   Press Enter to continue   │");
                         System.out.println("└─────────────────────────────┘");
+                        */
+
+                        blankSeparators(blankLines, 50);
 
                         for (int i = 0; i < section.length; i++) {
                             //scanner.nextLine(); 
-                            printWithDelay(section[i], 40); 
+                            printWithDelay(section[i], 10); 
                             System.out.println("\n");
                         }
 
@@ -649,6 +694,59 @@ public class Narration{
             Thread.sleep(delay);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    public void promptSeparator() {
+
+        String[] blankLines = {
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+        };
+
+        blankSeparators((blankLines), 50);
+
+
+    }
+
+    public void promptSeparatorResized() {
+
+        String[] blankLines = {
+            "",
+            "",
+            "",
+        };
+
+        blankSeparators((blankLines), 50);
+
+    }
+
+    
+    public void blankSeparators(String arr[], int num) {
+
+        for (int i = 0; i < arr.length; i++) {
+            //scanner.nextLine(); 
+            printLineWithDelay(arr[i], num); 
+            //System.out.println("\n");
+        }
+    }
+
+    public void characterSeparators(String arr[], int num) {
+
+        for (int i = 0; i < arr.length; i++) {
+            //scanner.nextLine(); 
+            printWithDelay(arr[i], num); 
+            //System.out.println("\n");
         }
     }
 

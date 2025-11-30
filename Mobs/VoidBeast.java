@@ -9,7 +9,7 @@ public class VoidBeast extends Mobs {
     private int skillCd2 = 4;
 
     public VoidBeast() {
-        super("Void Beast", 14500, 900, 1000, 50,1000, 1000, "Rift Claw", "Gravity Crush", "Unknown", 400, 750, 0);
+        super("Void Beast", 14500, 900, 1000, 50,1000, "Rift Claw", "Gravity Crush", "Unknown", 400, 750, 0);
         
         this.skillCd1 = 2;
         this.skillCd2 = 4;

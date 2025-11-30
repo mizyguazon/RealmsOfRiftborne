@@ -17,7 +17,7 @@ public class Menu extends Narration {
         ForestOfReverie forest = new ForestOfReverie();
         ReveriesEdge reverieEdge = new ReveriesEdge();
         ForsakenLands forsakenLands = new ForsakenLands();
-        IntroTitle exitHandler = new IntroTitle();
+        //IntroTitle exitHandler = new IntroTitle();
         ShopRelated shopPromptHandler = new ShopRelated();
         MenuRelated menuRelatedHandler = new MenuRelated();
         AreaRelated areaHandler = new AreaRelated();
@@ -25,6 +25,14 @@ public class Menu extends Narration {
         InnerCharacterMenu innerCharacterMenuHandler = new InnerCharacterMenu();
         Shop shop = new Shop();
 
+        IntroTitle loadHandler = new IntroTitle();
+        Narration separatorHandler = new Narration();
+
+        separatorHandler.promptSeparator();
+
+        //Stats stats = new Stats(); for testing
+
+        //stats.forRevision1(hero); for testing
 
         while(true){
 
@@ -41,20 +49,24 @@ public class Menu extends Narration {
 
                         //mapHandler.academyMap();
 
+                        //separatorHandler.promptSeparator();
+
+                        if (!hero.hasVisitedAcademy()) {
+                            academyNarration();
+                            hero.setHasVisitedAcademy(true);
+                        } 
+
+                        /*System.out.println();
                         System.out.println();
-                        System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - <<<<<");
                         System.out.println("     ┌────────────────────────────────────┐");
                         System.out.println("     │   You are now inside the Academy   │");
                         System.out.println("     └────────────────────────────────────┘");
                         System.out.println("         ┌────────────────────────────┐");
                         System.out.println("         │   Let the magic guide you  │");
                         System.out.println("         └────────────────────────────┘");
-                        System.out.println(">>>>> - - - - - - - - - - - - - - -  - - - <<<<<");
-
-                        /*if (!hero.hasVisitedAcademy()) {
-                            academyNarration();
-                            hero.setHasVisitedAcademy(true);
-                        } 
+                        System.out.println();
+                        System.out.println();
+                        */
 
                         if(hero.getHaveDefeatedArea3Boss()) {
 
@@ -65,12 +77,12 @@ public class Menu extends Narration {
                         }
                             */
                         
-
                         handler.academyMapMenu(hero);
                         break;
 
                     case 2:
 
+                        separatorHandler.promptSeparator();
                         shopPromptHandler.shopPrompt();
 
                         if (!hero.hasVisitedShop()) {
@@ -95,6 +107,7 @@ public class Menu extends Narration {
                     case 3:
                         boolean isInventoryEmpty = true; // default case since wala pay inventory
 
+                        separatorHandler.promptSeparator();
                         shopPromptHandler.inventoryPrompt();
 
                         if (!hero.hasOpenedInventory()) {
@@ -116,8 +129,11 @@ public class Menu extends Narration {
 
                     case 4:
 
+                        loadHandler.loadGame();
+
                         if (hero.canEnterArea1()) {
 
+                            separatorHandler.promptSeparator();
                             areaHandler.forestOfReverieEligible();
 
                             if (!hero.hasVisitedArea1()) {
@@ -134,6 +150,7 @@ public class Menu extends Narration {
 
                         } else {
 
+                            separatorHandler.promptSeparator();
                             areaHandler.forestOfReverieNOtEligible();
                             
                         }
@@ -141,8 +158,12 @@ public class Menu extends Narration {
                         break;
 
                     case 5:
+
+                        loadHandler.loadGame();
+
                         if (hero.canEnterArea2()) {
 
+                            separatorHandler.promptSeparator();
                             areaHandler.reverieEdgeEligible();
 
                             if (!hero.hasVisitedArea2()) {
@@ -159,6 +180,7 @@ public class Menu extends Narration {
 
                         } else {
 
+                            separatorHandler.promptSeparator();
                             areaHandler.reverieEdgeNotEligible();
 
                         }
@@ -166,8 +188,12 @@ public class Menu extends Narration {
                         break;
 
                     case 6:
+
+                        loadHandler.loadGame();
+
                         if (hero.canEnterArea3()) {
 
+                            separatorHandler.promptSeparator();
                             areaHandler.forsakenLandsEligible();
 
                             if (!hero.hasVisitedArea3()) {
@@ -184,6 +210,7 @@ public class Menu extends Narration {
 
                         } else {
 
+                            separatorHandler.promptSeparator();
                             areaHandler.forsakenLandsNotEligible();
             
                         }
@@ -191,6 +218,8 @@ public class Menu extends Narration {
                         break;
 
                     case 7:
+
+                        separatorHandler.promptSeparator();
 
                         if (hero.getSwordmanCharacterChosen()) {
                             Hero result = innerCharacterMenuHandler.playerSwordsman(hero);
@@ -220,6 +249,8 @@ public class Menu extends Narration {
                     case 8:
                         boolean confirmExit = true;
 
+                        //separatorHandler.promptSeparator();
+
                         while(confirmExit) {
                             System.out.println("┌───────────────────────────────────────────────────┐");
                             System.out.println("│   Are you sure you want to quit playing? (y/n)    │");
@@ -234,7 +265,9 @@ public class Menu extends Narration {
                                     case "y":
                                     case "Y":
 
-                                        exitHandler.exitingUnfinishedGame();
+                                        //separatorHandler.promptSeparator();
+                                        loadHandler.exitGame();
+                                        //exitHandler.exitingUnfinishedGame();
 
                                         System.exit(0);
                                         break;
@@ -248,7 +281,11 @@ public class Menu extends Narration {
                                         System.out.println("┌───────────────────────────┐");
                                         System.out.println("│   Returning to Main Menu  │");
                                         System.out.println("└───────────────────────────┘");
+
+                                        loadHandler.loadGame();
+                                        separatorHandler.promptSeparator();
                                         confirmExit = false; 
+
                                         break;
 
                                     default:
@@ -256,6 +293,7 @@ public class Menu extends Narration {
                                         System.out.println("┌────────────────────────────────────────┐");
                                         System.out.println("│   Choice unclear! Enter 'y' or 'n'.    │");
                                         System.out.println("└────────────────────────────────────────┘");
+                                        separatorHandler.promptSeparatorResized();
                                         break;
                                 }
                             } catch (Exception e) {
@@ -263,6 +301,7 @@ public class Menu extends Narration {
                                 System.out.println("┌──────────────────────────────────────────────┐");
                                 System.out.println("│   An unexpected error occurred. Try again.   │");
                                 System.out.println("└──────────────────────────────────────────────┘");
+                                separatorHandler.promptSeparatorResized();
                                 scanner.nextLine(); 
                             }
                         }
@@ -274,6 +313,7 @@ public class Menu extends Narration {
                         System.out.println("┌─────────────────────────────────────┐");
                         System.out.println("│  Oops! Invalid choice. Try again.   │");
                         System.out.println("└─────────────────────────────────────┘");
+                        separatorHandler.promptSeparator();
                 }
 
             } catch (NumberFormatException e) {
@@ -281,12 +321,15 @@ public class Menu extends Narration {
                 System.out.println("┌──────────────────────────────────────────┐");
                 System.out.println("│   Invalid input! Please enter a number.  │");
                 System.out.println("└──────────────────────────────────────────┘");
+                separatorHandler.promptSeparator();
             } catch (Exception e) {
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────┐");
                 System.out.println("│   An unexpected error occurred. Try again.   │");
                 System.out.println("└──────────────────────────────────────────────┘");
                 scanner.nextLine(); 
+
+                separatorHandler.promptSeparator();
             }
         }
     }

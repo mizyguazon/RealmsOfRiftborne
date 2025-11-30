@@ -13,9 +13,14 @@ public class StartMenu extends Narration {
     public boolean displayStartMenu() {
         IntroTitle introDisplayHander = new IntroTitle();
         MenuRelated startMenuHandler = new MenuRelated();
+        Narration separatorHandler = new Narration();
+        IntroTitle loadGameHandler = new IntroTitle();
         
-
         introDisplayHander.mystvaleIntroTitle();
+
+        loadGameHandler.loadGame();
+
+        separatorHandler.promptSeparator();
 
         while (true) {
 
@@ -27,18 +32,21 @@ public class StartMenu extends Narration {
 
                 switch (startMenuChoice) {
                     case 1:
-                        introDisplayHander.startingTheGame();
+                        //introDisplayHander.startingTheGame();
 
                         if (!hasVisitedPrologue) {
                             prologueNarration();
                             hasVisitedPrologue = true;
                         }
+
+                        introDisplayHander.startGame();
                         
                         return true;
 
                     case 2:
                         
-                        introDisplayHander.exitingTheGame();
+                        loadGameHandler.exitGame();
+                        //introDisplayHander.exitingTheGame();
                         
                         return false;
 
@@ -47,6 +55,7 @@ public class StartMenu extends Narration {
                         System.out.println("┌─────────────────────────────────────┐");
                         System.out.println("│   Oops! Invalid choice. Try again.  │");
                         System.out.println("└─────────────────────────────────────┘");
+                        separatorHandler.promptSeparatorResized();
                         break;
                 }
             } catch (NumberFormatException e) {
@@ -54,11 +63,13 @@ public class StartMenu extends Narration {
                 System.out.println("┌──────────────────────────────────────────┐");
                 System.out.println("│   Invalid input! Please enter a number.  │");
                 System.out.println("└──────────────────────────────────────────┘");
+                separatorHandler.promptSeparatorResized();
             } catch (Exception e) {
                 System.out.println();
                 System.out.println("┌──────────────────────────────────────────────┐");
                 System.out.println("│   An unexpected error occurred. Try again.   │");
                 System.out.println("└──────────────────────────────────────────────┘");
+                separatorHandler.promptSeparatorResized();
                 scan.nextLine(); 
             }
         }

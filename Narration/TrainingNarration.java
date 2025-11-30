@@ -5,6 +5,7 @@ import java.util.Scanner;
 public class TrainingNarration {
 
     Narration printDelayNarration = new Narration();
+    Narration separatorHandler = new Narration();
 
     Scanner scanner = new Scanner(System.in);
 
@@ -41,12 +42,13 @@ public class TrainingNarration {
         System.out.println("┌─────────────────────────────┐");
         System.out.println("│   Press Enter to continue   │");
         System.out.println("└─────────────────────────────┘");
-
         scanner.nextLine();
+
+        separatorHandler.promptSeparatorResized();
 
         for (int i = 0; i < arr.length; i++) {
             //scanner.nextLine(); 
-            printDelayNarration.printWithDelay(arr[i], 40); 
+            printDelayNarration.printWithDelay(arr[i], 15); 
             System.out.println("\n");
         }
         

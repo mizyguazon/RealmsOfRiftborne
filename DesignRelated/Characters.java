@@ -15,9 +15,11 @@ public class Characters {
      
         System.out.println();
         System.out.println("     >>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+        System.out.println();
         System.out.println("          ┌───────────────────────────────────────────────────────────────────────────────────┐");
         System.out.println("          │   The winds whisper your choice... The path of the Swordsman is yours to walk.    │");
         System.out.println("          └───────────────────────────────────────────────────────────────────────────────────┘");
+        System.out.println();
         System.out.println("     >>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
 
         String[] lines = {
@@ -51,7 +53,7 @@ public class Characters {
         };
 
         for (int i = 0; i < lines.length; i++) {  
-            printdelayHandler.printLineWithDelay(lines[i], 50); 
+            printdelayHandler.printLineWithDelay(lines[i], 25); 
         }
 
         scanner.nextLine();
@@ -91,10 +93,13 @@ public class Characters {
 
     public void gunnerCharacter() {
 
+        System.out.println();
         System.out.println("  >>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+        System.out.println();
         System.out.println("        ┌────────────────────────────────────────────────────────────────────────────────┐");
         System.out.println("        │   The echo of gunfire resounds through the void - you are the chosen Gunner.   │");
         System.out.println("        └────────────────────────────────────────────────────────────────────────────────┘");
+        System.out.println();
         System.out.println("  >>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
         System.out.println();
 
@@ -124,7 +129,7 @@ public class Characters {
         };
 
         for (int i = 0; i < lines.length; i++) {  
-            printdelayHandler.printLineWithDelay(lines[i], 50); 
+            printdelayHandler.printLineWithDelay(lines[i], 25); 
         }
 
         scanner.nextLine();
@@ -158,10 +163,13 @@ public class Characters {
 
     public void mageCharacter() {
         // to be implemented
+        System.out.println();
         System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
+        System.out.println();
         System.out.println("      ┌────────────────────────────────────────────────────────┐");
         System.out.println("      │   The stars align, You are now the Mage of destiny.    │");
         System.out.println("      └────────────────────────────────────────────────────────┘");
+        System.out.println();
         System.out.println(">>>>> - - - - - - - - - - - - - - - - - - - - - - - - - - - - - <<<<<");
         System.out.println();
 
@@ -195,7 +203,7 @@ public class Characters {
         };
 
         for (int i = 0; i < lines.length; i++) {  
-            printdelayHandler.printLineWithDelay(lines[i], 50); 
+            printdelayHandler.printLineWithDelay(lines[i], 25); 
         }
 
         scanner.nextLine();
