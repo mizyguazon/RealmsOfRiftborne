@@ -721,17 +721,49 @@ public class Hero {
         return canEnterArea3; 
     }
 
-    public void unlockArea1() { 
-        canEnterArea1 = true; 
+    public void unlockArea1(boolean canEnterArea1) { 
+        this.canEnterArea1 = canEnterArea1; 
     }
 
-    public void unlockArea2() { 
-        canEnterArea2 = true; 
+    public void unlockArea2(boolean canEnterArea2) { 
+        this.canEnterArea2 = canEnterArea2; 
     }
 
-    public void unlockArea3() { 
-        canEnterArea3 = true; 
+    public void unlockArea3(boolean canEnterArea3) { 
+        this.canEnterArea3 = canEnterArea3; 
     }
+
+    // Area unlock tracking in Hero class
+    private boolean unlockedArea1 = false;
+    private boolean unlockedArea2 = false;
+    private boolean unlockedArea3 = false;
+
+    // --- Setters ---
+    public void setUnlockArea1(boolean status) {
+        this.unlockedArea1 = status;
+    }
+
+    public void setUnlockArea2(boolean status) {
+        this.unlockedArea2 = status;
+    }
+
+    public void setUnlockArea3(boolean status) {
+        this.unlockedArea3 = status;
+    }
+
+    // --- Getters ---
+    public boolean hasUnlockedArea1() {
+        return this.unlockedArea1;
+    }
+
+    public boolean hasUnlockedArea2() {
+        return this.unlockedArea2;
+    }
+
+    public boolean hasUnlockedArea3() {
+        return this.unlockedArea3;
+    }
+
 
     // Modified Area Progress _________________________________________________________________________
 
@@ -818,8 +850,8 @@ public class Hero {
         return finishedAllTraining;
     }
 
-    public void setFinishedAllTraining(boolean done){
-        this.finishedAllTraining = true;
+    public void setFinishedAllTraining(boolean finishedAllTraining){
+        this.finishedAllTraining = finishedAllTraining;
     }
 
     public boolean haveExploredButExited(){

@@ -368,6 +368,7 @@ public class ReveriesEdge {
                         System.out.println();
 
                         hero.setHaveDefeatedArea2Boss(true);
+                        hero.setUnlockArea2(true);
 
                         exit();
                         currentArea = 0; // automatically exits the REVERIE EDGE

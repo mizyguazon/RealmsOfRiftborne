@@ -34,10 +34,10 @@ public class PrincipalOffice extends StatProgress {
 
         boolean eligible = false;
 
-        if (hero.canEnterArea1() && hero.hasFinishedAllTraining()) {
+        if (!hero.hasUnlockedArea1() && hero.canEnterArea1() && hero.hasFinishedAllTraining()) {
             
                 narrationHandler.area1Eligible();
-                hero.unlockArea1();
+                hero.unlockArea1(true);
 
                 System.out.println("┌──────────────────────────────────────────────────┐");
                 System.out.println("│   + You may now enter The Forest of Reverie +    │");
@@ -52,10 +52,11 @@ public class PrincipalOffice extends StatProgress {
                 scanner.nextLine();
 
                 eligible = true;
-            } else if (!hero.canEnterArea2() && hero.canEnterArea1() && hero.getHaveDefeatedArea1Boss()) { 
-               
+            } else if (!hero.hasUnlockedArea2() && hero.canEnterArea1() && hero.getHaveDefeatedArea1Boss()) { 
 
-                narrationHandler.area2Eligible();
+                //narrationHandler.area2Eligible();
+
+                hero.unlockArea2(true);
 
                 if(hero.getSwordmanCharacterChosen()) {
                     swordsmanPlotHandlder.swordsmanAfterArea1();
@@ -65,7 +66,7 @@ public class PrincipalOffice extends StatProgress {
                     magePlotHandler.mageAfterArea1();
                 }
 
-                hero.unlockArea2();
+                
 
                 System.out.println("┌───────────────────────────────────────────┐");
                 System.out.println("│   + You may now enter The Reverie Edge +  │");
@@ -81,9 +82,11 @@ public class PrincipalOffice extends StatProgress {
 
                 eligible = true;
 
-            }  else if (!hero.canEnterArea3() && hero.canEnterArea2() && hero.getHaveDefeatedArea2Boss()) {
+            }  else if (!hero.hasUnlockedArea3() && hero.canEnterArea2() && hero.getHaveDefeatedArea2Boss()) {
 
-                narrationHandler.area3Eligible();
+                //narrationHandler.area3Eligible();
+
+                hero.unlockArea3(true);
 
                 if(hero.getSwordmanCharacterChosen()) {
                     swordsmanPlotHandlder.swordsmanAfterArea2(); 
@@ -93,7 +96,7 @@ public class PrincipalOffice extends StatProgress {
                     gunnerPlotHandler.gunnerAfterArea2();
                 }
                 
-                hero.unlockArea3();
+                
             
                 System.out.println("┌───────────────────────────────────────────────┐");
                 System.out.println("│   + You may now enter The Forsaken Lands +    │");

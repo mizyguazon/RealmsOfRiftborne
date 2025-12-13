@@ -187,7 +187,7 @@ public class Characters {
             " *          └────────────────────────────────────────────────────┘",
             "░░░░░░░░░░░░> Character Level:   .    " + hero.getLevel() + " .   *   .  .   *  ",
             "░░░███▓▓▓▓▓▓░░░> Current Experience:  " + hero.getExperience() + " .   *    .   *   ",
-            "░░░▓▓▓███▓▓▓▓▓▓░░░  *     .         > Health:   " + hero.getBaseHp() + " .    . ",
+            "░░░▓▓▓███▓▓▓▓▓▓░░░  *     .         > Health:   " + hero.getHp() + " .    . ",
             "░░░▓▓▓▓▓▓███▓▓▓▓▓▓░░░          *    > Attack:   " + hero.getAttack() + ".    .   * ",
             "  ░░░▓▓▓▓▓▓███▓▓▓▓▓▓░░░    .     .  > Mana:     " + hero.getMana() + " *   .   .   *",
             "     ░░░▓▓▓▓▓▓███▓▓▓▓▓▓░░░          > Defense:  " + hero.getDefense() + " .   *  .  *",

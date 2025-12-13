@@ -92,4 +92,18 @@ public class StatProgress {
 
     }
 
+    public static class TrainingSession {
+        int bonusHp;
+        int bonusAtk;
+        int bonusDef;
+        int bonusMana;
+
+        public void reset() {
+            bonusHp = 0;
+            bonusAtk = 0;
+            bonusDef = 0;
+            bonusMana = 0;
+        }
+    }
+
 }

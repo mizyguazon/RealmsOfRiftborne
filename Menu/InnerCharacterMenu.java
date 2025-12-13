@@ -14,10 +14,11 @@ public class InnerCharacterMenu extends Narration{
     Characters characterStatsHandler = new Characters();
     Narration separatorHandler = new Narration();
     IntroTitle loadReset = new IntroTitle();
-    boolean isValid = false;
     
 
     public Hero playerSwordsman(Hero hero) {
+
+        boolean isValid = false; 
 
         separatorHandler.promptSeparator();
 
