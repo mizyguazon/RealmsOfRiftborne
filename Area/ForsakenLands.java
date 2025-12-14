@@ -333,7 +333,7 @@ public class ForsakenLands {
         System.out.println();
         System.out.println();
         System.out.println("┌────────────────────────────────────────────────┐");
-        System.out.println("│              Boss Encounter: Azrael            │");
+        System.out.println("│       It's the Harbringer of Ruin, Azrael!     │");
         System.out.println("└────────────────────────────────────────────────┘");
         System.out.println();
         System.out.println();

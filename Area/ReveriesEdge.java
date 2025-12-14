@@ -289,12 +289,12 @@ public class ReveriesEdge {
         System.out.println("│                                    REVERIES EDGE                *                 │");
         System.out.println("│                      *                                                *       +   │");
         System.out.println("│  _______________                                    DANGER!     _______________   │");
-        System.out.println("│  \\             /      - - O - - - - - - O - - - - - - O         \\             /    │");
-        System.out.println("│   \\           /                                      You         \\           /     │");
-        System.out.println("│    \\         /__________                         *                \\         /      │");
-        System.out.println("│     \\       / \\        /        *                                 \\       /       │");
-        System.out.println("│      \\     /   \\      /                          +        *        \\     /        │");
-        System.out.println("│       \\   /     \\    /                 +                            \\   /         │");
+        System.out.println("│  \\             /      - - O - - - - - - O - - - - - - O         \\             /   │");
+        System.out.println("│   \\           /                                      You         \\           /    │");
+        System.out.println("│    \\         /__________                         *                \\         /     │");
+        System.out.println("│     \\       / \\        /        *                                  \\       /      │");
+        System.out.println("│      \\     /   \\      /                          +        *         \\     /       │");
+        System.out.println("│       \\   /     \\    /                 +                             \\   /        │");
         System.out.println("└───────────────────────────────────────────────────────────────────────────────────┘");
 
         if(explore){
@@ -324,14 +324,14 @@ public class ReveriesEdge {
             "Dark whispers echo around you, calling your name...",
             "A towering shadow emerges from the darkness, holding a blackened scythe.",
             "'So, another lost soul dares enter my dominion'",
-            "Morgrath, the Shadow Warden, stands before you!"
+            "Morgrath, the Swamp Warden, stands before you!"
         };
 
         playSection(morgrath);
         System.out.println();
         System.out.println();
         System.out.println("┌────────────────────────────────────────────────┐");
-        System.out.println("│           Boss Encounter: Morgrath             │");
+        System.out.println("│        It's the Swamp Warden, Morgrath!        │");
         System.out.println("└────────────────────────────────────────────────┘");
         System.out.println();
         System.out.println();
@@ -340,7 +340,7 @@ public class ReveriesEdge {
             char choice;
 
             try {
-                System.out.print("\nDo you wish to challenge Morgrath, the Shadow Warden? (y/n): ");
+                System.out.print("\nDo you wish to challenge Morgrath, the Swamp Warden? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
 
                 if (input.isEmpty()) {
