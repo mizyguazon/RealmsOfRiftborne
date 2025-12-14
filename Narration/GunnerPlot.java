@@ -1,7 +1,6 @@
 package Narration;
 
 import java.util.Scanner;
-//import DesignRelated.IntroTitle;
 
 public class GunnerPlot {
     
