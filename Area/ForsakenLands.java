@@ -503,6 +503,7 @@ public class ForsakenLands {
     }
 
     public void exit() {
+
         System.out.println();
         System.out.println();
         System.out.println("┌────────────────────────────────────────────┐");

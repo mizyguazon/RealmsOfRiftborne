@@ -125,7 +125,7 @@ public class ForestOfReverie {
                 System.out.println();
                 System.out.println("Press ENTER to continue...");
                 scan.nextLine();
-                scan.nextLine();
+                //scan.nextLine();
 
                 System.out.println();
                 System.out.println();
@@ -476,6 +476,7 @@ public class ForestOfReverie {
     public void playSection(String[] section) {
         System.out.println("\n\nPress ENTER to continue...");
         scan.nextLine();
+        scan.nextLine();
 
         for (int i = 0; i < section.length; i++) {
             narrationPrinter.printWithDelay(section[i], 10); 
@@ -511,5 +512,6 @@ public class ForestOfReverie {
         System.out.println("└────────────────────────────────────────────┘");
         System.out.println();
         System.out.println();
+        
     }
 }

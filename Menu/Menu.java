@@ -112,6 +112,8 @@ public class Menu extends Narration {
                             
                         }
 
+                        loadHandler.exitGame();
+
                         break;
 
                     case 4:
@@ -142,6 +144,8 @@ public class Menu extends Narration {
 
                         }
 
+                        loadHandler.exitGame();
+
                         break;
 
                     case 5:
@@ -171,6 +175,8 @@ public class Menu extends Narration {
                             areaHandler.forsakenLandsNotEligible();
             
                         }
+
+                        loadHandler.exitGame();
 
                         break;
 

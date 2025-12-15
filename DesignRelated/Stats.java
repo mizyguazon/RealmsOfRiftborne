@@ -54,6 +54,7 @@ public class Stats {
         System.out.println("                    ░░░░ | Press ENTER to continue... |");
         scanner.nextLine();
         hero.levelUp(xp);
+        scanner.nextLine();
         
 
     }
