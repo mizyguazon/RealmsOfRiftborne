@@ -150,7 +150,7 @@ public class IntroTitle {
         String lineLoadGame = "███ ███ ███ ███ ███ ███ ███ ███ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ░░░ ░░░ ░░░ ░░░ ░░░";
 
         for (int i = 0; i < loadGame.length; i++) {  
-            printDelayHandler.printLineWithDelay(loadGame[i], 200); 
+            printDelayHandler.printLineWithDelay(loadGame[i], 150); 
         }
 
         for (int i = 0; i < 1; i++) {  
@@ -177,7 +177,7 @@ public class IntroTitle {
         String lineLoadGame = "███ ███ ███ ███ ███ ███ ███ ███ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░";
 
         for (int i = 0; i < loadGame.length; i++) {  
-            printDelayHandler.printLineWithDelay(loadGame[i], 200); 
+            printDelayHandler.printLineWithDelay(loadGame[i], 150); 
         }
 
         for (int i = 0; i < 1; i++) {  
@@ -204,7 +204,7 @@ public class IntroTitle {
         String lineExit = "███ ███ ███ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░";
 
         for (int i = 0; i < exit.length; i++) {  
-            printDelayHandler.printLineWithDelay(exit[i], 200); 
+            printDelayHandler.printLineWithDelay(exit[i], 150); 
         }
 
         for (int i = 0; i < 1; i++) {  
@@ -231,7 +231,7 @@ public class IntroTitle {
         String lineReset = "███ ███ ███ ███ ███ ███ ███ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░";
 
         for (int i = 0; i < reset.length; i++) {  
-            printDelayHandler.printLineWithDelay(reset[i], 200); 
+            printDelayHandler.printLineWithDelay(reset[i], 150); 
         }
 
         for (int i = 0; i < 1; i++) {  
@@ -258,7 +258,7 @@ public class IntroTitle {
         String lineBattle = "███ ███ ███ ███ ███ ███ ███ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░ ░░░";
 
         for (int i = 0; i < battle.length; i++) {  
-            printDelayHandler.printLineWithDelay(battle[i], 200); 
+            printDelayHandler.printLineWithDelay(battle[i], 150); 
         }
 
         for (int i = 0; i < 1; i++) {  
@@ -285,7 +285,7 @@ public class IntroTitle {
         String standbyLine = "███ ███ ███ ███ ███ ███ ███ ███ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓ ▓▓▓  ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ▒▒▒ ░░░ ░░░ ░░░ ░░░";
 
         for (int i = 0; i < standby.length; i++) {  
-            printDelayHandler.printLineWithDelay(standby[i], 200); 
+            printDelayHandler.printLineWithDelay(standby[i], 150); 
         }
 
         for (int i = 0; i < 1; i++) {  

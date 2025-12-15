@@ -38,12 +38,13 @@ public class TrainingNarration {
 
     public void playGymNarration(String[] arr){
 
-        System.out.println();
+        /*System.out.println();
         System.out.println("┌─────────────────────────────┐");
         System.out.println("│   Press Enter to continue   │");
         System.out.println("└─────────────────────────────┘");
         scanner.nextLine();
-
+        */
+       
         separatorHandler.promptSeparatorResized();
 
         for (int i = 0; i < arr.length; i++) {
