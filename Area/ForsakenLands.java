@@ -382,7 +382,7 @@ public class ForsakenLands {
             "You step into a vast crater filled with bones and ash...",
             "The wind whispers - 'All souls end here.'",
             "A towering figure descends from the crimson sky, its wings tattered yet divine...",
-            "A deep, echoing voice speaks: 'I am Azrael... the Harbinger of Ruin.'",
+            "A deep, echoing voice speaks: 'I am Azrael... the Annihilator of Realms.'",
             "Darkness itself bends before his presence."
         };
 
@@ -390,7 +390,7 @@ public class ForsakenLands {
         System.out.println();
         System.out.println();
         System.out.println("┌────────────────────────────────────────────────┐");
-        System.out.println("│        It's the Harbringer Ruin, Azrael!       │");
+        System.out.println("│     It's the Annihilator of Realms, Azrael!    │");
         System.out.println("└────────────────────────────────────────────────┘");
         System.out.println();
         System.out.println();
@@ -399,7 +399,7 @@ public class ForsakenLands {
             char choice;
 
             try {
-                System.out.print("\n\nDo you dare challenge Azrael, the Harbinger of Ruin? (y/n): ");
+                System.out.print("\n\nDo you dare challenge Azrael, the Annihilator of Realms? (y/n): ");
                 String input = scan.next().trim().toLowerCase();
                 
                 if (input.isEmpty()) {
