@@ -1,0 +1,135 @@
+package com.ror.models;
+
+import java.text.DecimalFormat;
+
+public class Gunner extends Hero {
+    private int skillCd1, skillCd2, skillCdU;
+
+    public Gunner() {
+        super(4000, 535, 600, 125, 150, 1, 
+        "Aria Caelith", "Gunner", "Rusty Dual Pistol", 
+        "Crimson Barrage", "Frostwind Bullet", "Judgement Phantom", 
+        150, 275, 450, 
+        1500, 1530, 650);
+        //setGold(999999999); // test purpose
+        this.skillCd1 = 4;
+        this.skillCd2 = 7;
+        this.skillCdU = 10;
+
+        setGunnerCharacterChosen(true); 
+    }
+
+
+    DecimalFormat df = new DecimalFormat("#,##0");
+
+   @Override
+    public void basicAttack(Hero hero, Entity enemy) {
+        System.out.println(getName() + " used Basic Attack!");
+
+        int damage = multiplierB(getAttack(), getLevel());
+        
+        double manaRecovery = getManaCap() * 0.2;
+
+        if(manaRecovery+getMana() > getManaCap()){
+            setMana(getManaCap());
+        } else {
+            int addMana = (int) manaRecovery + getMana();
+            setMana(addMana);
+        }
+
+        if(enemy.dodgeHeroAtk(enemy, hero)) return;
+
+        int damageDealt = damage - enemy.getDefense()/2;
+
+        System.out.println("Basic Attack deals " + df.format(damageDealt) + " damage!");
+
+        enemy.setHp(enemy.getHp() - damageDealt);
+    }
+
+    @Override
+    public void skill1(Hero hero, Entity enemy){
+        System.out.println(getName() + " used " + getSkill1() + "!");
+        setCooldown1(skillCd1);
+
+        int damage = multiplier1(getAttack(), getLevel());
+
+        int manaReduce = getMana() - scaledCost(getManaCostSkill1());
+        setMana(manaReduce);
+
+        if(enemy.dodgeHeroAtk(enemy, hero)) return;
+
+        int damageDealt = damage - enemy.getDefense()/2;
+
+        System.out.println(getSkill1() + " deals " + df.format(damageDealt) + " damage!");
+
+        enemy.setHp(enemy.getHp() - damageDealt);
+    }
+
+    @Override
+    public void skill2(Hero hero, Entity enemy){
+        System.out.println(getName() + " used " + getSkill2() + "!");
+        setCooldown2(skillCd2);
+
+        int damage = multiplier2(getAttack(), getLevel());
+
+        int manaReduce = getMana() - scaledCost(getManaCostSkill2());
+        setMana(manaReduce);
+
+        if(enemy.dodgeHeroAtk(enemy, hero)) return;
+
+         int damageDealt = damage - enemy.getDefense()/2;
+
+        System.out.println(getSkill2() + " deals " + df.format(damageDealt) + " damage!");
+
+        if(enemy.getStunned() > 0){
+            System.out.println(enemy.getName() + " is already frozen! (Stun refreshed to 2 turn)");
+        } else {
+            System.out.println(enemy.getName() + " is frozen solid! (Stun 2 turns)");
+        }
+        enemy.setStun(2);
+
+        enemy.setHp(enemy.getHp() - damageDealt);
+    }
+
+    @Override
+    public void ultimate(Hero hero, Entity enemy){
+        System.out.println(getName() + " used " + getUltimate() + "!");
+        setCooldownU(skillCdU);
+
+        int damage = multiplierU(getAttack(), getLevel());
+
+        int manaReduce = getMana() - scaledCost(getManaCostUltimate());
+        setMana(manaReduce);
+
+        int damageDealt = damage - enemy.getDefense()/2;
+
+        System.out.println(getUltimate() + " deals " + df.format(damageDealt) + " damage!");
+
+        enemy.setHp(enemy.getHp() - damageDealt);
+    }
+
+    @Override
+    public int multiplierB(int atk, int L) {
+        double multiplier = 0.9 + 0.7 * ((L - 1) / 59.0); // up to ~1.6x
+        return (int) Math.round(atk * multiplier);
+    }
+
+    @Override
+    public int multiplier1(int atk, int L) {
+        double multiplier = 1.1 + 1.5 * ((L - 1) / 59.0); // up to ~2.6x
+        return (int) Math.round(atk * multiplier);
+    }
+
+    @Override
+    public int multiplier2(int atk, int L) {
+        double multiplier = 1.3 + 2.3 * ((L - 1) / 59.0); // up to ~3.6x
+        return (int) Math.round(atk * multiplier);
+    }
+
+    @Override
+    public int multiplierU(int atk, int L) {
+        double multiplier = 1.6 + 3.2 * ((L - 1) / 59.0); // up to ~4.8x
+        return (int) Math.round(atk * multiplier);
+    }
+
+}

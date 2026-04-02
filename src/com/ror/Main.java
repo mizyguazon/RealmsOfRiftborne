@@ -1,15 +1,12 @@
-import com.ror.engine.GameWindow;
+package com.ror;
 
-import javax.swing.SwingUtilities;
+import com.ror.engine.GameWindow;
 
 public class Main {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
+        javax.swing.SwingUtilities.invokeLater(() -> {
             GameWindow window = new GameWindow();
             window.launchGame();
         });
     }
 }
-
-
-
