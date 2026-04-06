@@ -19,7 +19,7 @@
     {
       "label": "Run Game",
       "type": "shell",
-      "command": "java Main",
+      "command": "java -cp bin com.ror.Main",
       "options": {
         "cwd": "${workspaceFolder}"
       },

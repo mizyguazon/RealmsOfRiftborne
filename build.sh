@@ -2,4 +2,5 @@
 
 set -euo pipefail
 
-find . -name "*.java" -print0 | xargs -0 javac
+mkdir -p bin
+find src -name "*.java" -print0 | xargs -0 javac -d bin

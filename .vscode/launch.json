@@ -5,7 +5,10 @@
       "type": "java",
       "name": "Run Main (Mystvale)",
       "request": "launch",
-      "mainClass": "Main",
+      "mainClass": "com.ror.Main",
+      "classPaths": [
+        "${workspaceFolder}/bin"
+      ],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "Build Game"
     }

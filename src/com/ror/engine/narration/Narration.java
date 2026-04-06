@@ -16,7 +16,7 @@ public class Narration{
             
             "As you take a cautious step forward, a presence brushes against you. Weightless, yet undeniable. \nA wandering spirit materializes from the air itself, its form shifting like smoke caught in a breeze. \nIts voice is calm, distant, but warm enough to ease the unease clawing at your chest.",
             
-            "\"Welcome, lost one. Please to meet you, I am Louraine Aetherlight, the wandering spirit it says.\" it says \"This is Mystvale Academy… a place where magic is studied, honed, \nand wielded against the forces beyond these walls. You now stand on the threshold of its trials.\"",
+            "\"Welcome, lost one. Please to meet you, I am Void Aetherlight, the wandering spirit it says.\" it says \"This is Mystvale Academy… a place where magic is studied, honed, \nand wielded against the forces beyond these walls. You now stand on the threshold of its trials.\"",
             
             "\"The academy rests at the edge of a vast forest, shielding its students from the dangers beyond.\"",
             
@@ -26,11 +26,11 @@ public class Narration{
             
             "\"And far beyond lies the outer region - the dominion of entities. Few dare tread there, \nfor it is said the most fearsome of them all awaits in its shadowed heart.\"",
             
-            "Louraine's gaze lingers on you, sharp and knowing.",
+            "Void's gaze lingers on you, sharp and knowing.",
             
             "\"Why you were brought here, only time will reveal. But your path begins now. \nLearn, survive, and perhaps... you may one day stand against what lies beyond the forest.\"",
             
-            "Louraine, the wandering spirit, fades, leaving only silence and the academy\'s looming silhouette in the distance.",
+            "Void, the wandering spirit, fades, leaving only silence and the academy\'s looming silhouette in the distance.",
             
             "Your story has begun."
         };
@@ -46,11 +46,11 @@ public class Narration{
             
             "You pause, taking it all in, when a sudden chill brushes your shoulder...",
             
-            "You nearly stumble back in shock. It's Louraine again!",
+            "You nearly stumble back in shock. It's Void again!",
             
             "\"I didn't expect you again,\" you mutter under your breath.",
             
-            "The Louraine's form flickers faintly, its voice calm and patient.",
+            "The Void's form flickers faintly, its voice calm and patient.",
             
             "\"Do not be alarmed. Mystvale Academy is vast...\"",
             
@@ -62,7 +62,7 @@ public class Narration{
 
             "\"In every area outside the academy, you need an eligibility pass. So, you must go through the Principal's office first.\"",
             
-            "\"And finally\" the Louraine's form stills...",
+            "\"And finally\" the Void's form stills...",
             
             "Its glow dims slightly as the explanations end.",
             
@@ -80,7 +80,7 @@ public class Narration{
         String[] library = {
             "As you step into the library, the air grows still...",
             
-            "The Louraine, the wandering spirit, flickers into view...",
+            "The Void, the wandering spirit, flickers into view...",
             
             "\"This is Mystvale's Library. May knowledge guide you...\"",
             
@@ -95,7 +95,7 @@ public class Narration{
     public void gymNarration() {
         String[] gym = {
             "The Training Ground resounds with the clash of practice weapons...",
-            "Louraine, as expected, flickers into view.",
+            "Void, as expected, flickers into view.",
             "\"This is where strength is forged. Accept the challenge,",
             "and receive the gift of strength, precision, and courage...\"",
             "The spirit fades, leaving the echoes of steel and determination behind."
@@ -110,11 +110,11 @@ public class Narration{
         String[] principalOffice = {
             "The doors of the Principal\'s Office stand tall and unyielding...",
             
-            "Louraine appears at your side...",
+            "Void appears at your side...",
             
             "\"This office is the gateway through end of this vast land. May the odds be in your favor...\"",
             
-            "Louraine fades, and the silence around the doorway feels heavier..."
+            "Void fades, and the silence around the doorway feels heavier..."
         };
 
         //Array Iteration
@@ -125,7 +125,7 @@ public class Narration{
     public void area1Narration() {
         String[] area1 = {
             "The trees of the inner forest rise around you...",
-            "Louraine, then drifts into view...",
+            "Void, then drifts into view...",
             "\"This is the inner forest, where you\'d be able to meet the lowest of lows entities.\"",
             "Before fading away, she looked at you with a meaningful look before vanishing out of your sight,\nleaving you with the quiet but uneasy rhythm..."
         };
@@ -137,7 +137,7 @@ public class Narration{
     public void area2Narration() {
         String[] area2 = {
             "The air thickens as you step into the swamp area. Muddy, stinky, and lacks of life. You felt a sudden chill down your spines.",
-            "Louraine, as expected, flickers beside you.",
+            "Void, as expected, flickers beside you.",
             "\"This is the middle region, the Swamp, where much stronger entities lives. Be careful, they may seem not strong, but they are more blood thirsty\"",
             "Before fading away, she touched your shoulder, giving you the look of encouragement.\n Before you could even say a thing, she then vanished into the mist..."
         };
@@ -149,9 +149,9 @@ public class Narration{
     public void area3Narration() {
         String[] area3 = {
             "Stone ruins and jagged towers stretch across the horizon. Suprisingly, it has more life than the previous areas you have been.\nBut you cannot seem to shake off the eerie feeling, your test tighten as you feel like suffocated with the how heavy the feeling is.",
-            "Louraine then appears, her face radiates something you cannot pinpoint.",
+            "Void then appears, her face radiates something you cannot pinpoint.",
             "\"This is the outer region, the Forsaken Lands where all strong entities lives. But at the end of this land, there lies the strongest of them all.\nMy only advice to you is to never let your guard down, and may the odds be in your favor...\"",
-            "Louraine lingers for a moment longer before fading away from your sight.\nBut as her presence left the area, you felt the wind lingers onto your skin, feeling like she is still there, not quite present, but watching over you."
+            "Void lingers for a moment longer before fading away from your sight.\nBut as her presence left the area, you felt the wind lingers onto your skin, feeling like she is still there, not quite present, but watching over you."
         };
 
         playSection(area3);
@@ -160,7 +160,7 @@ public class Narration{
     // Shop Narration
     public void shopNarration() {
         String[] shop = {
-            "Louraine appears beside you, its form calm against the quiet sway of trees.",
+            "Void appears beside you, its form calm against the quiet sway of trees.",
             
             "\"This is the academy\'s supply shop,\" it says. \"Here, students exchange earned coin for tools of survival \n- weapons, potions, and the occasional rarity.\"",
             
@@ -170,7 +170,7 @@ public class Narration{
             
             "\"Your currency is merit earned - through trials, tasks, and time. \nSpend it with intention. Not everything you need will be here twice.\"",
             
-            "Louraine's gaze lingers on the door before fading again into the still air.",
+            "Void's gaze lingers on the door before fading again into the still air.",
             
             "You step forward. The scent of old leather, steel, \nand something faintly herbal greets you as the shop door creaks open."
         };
@@ -195,7 +195,7 @@ public class Narration{
     // Inventory Narration 
     public void inventoryNarration() {
         String[] inventory = {
-            "Louraine emerges without a sound, its form quiet and steady beside you.",
+            "Void emerges without a sound, its form quiet and steady beside you.",
 
             "\"All that you carry tells a story,\" it begins. \"Not just of what you\'ve gathered - but of what you\'ve chosen to keep.\"",
             

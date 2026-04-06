@@ -1,6 +1,6 @@
 {
   "code-runner.fileDirectoryAsCwd": false,
   "code-runner.executorMap": {
-    "java": "cd \"$workspaceRoot\" && ./build.sh && java Main"
+    "java": "cd \"$workspaceRoot\" && ./build.sh && java -cp bin com.ror.Main"
   }
 }
