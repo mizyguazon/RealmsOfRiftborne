@@ -1,51 +1,41 @@
 package com.ror.utils.sounds;
 
+import java.io.File;
 import java.net.URL;
 import javax.sound.sampled.*;
 
 public class SoundManager {
-    private Clip clip;
-
-    public void load(String path) {
+    public static void play(String path) {
         try {
+            AudioInputStream ais = null;
+            
             URL url = SoundManager.class.getResource(path);
-            AudioInputStream baseIn = AudioSystem.getAudioInputStream(url);
-            AudioFormat baseFormat = baseIn.getFormat();
+            if (url != null) {
+                ais = AudioSystem.getAudioInputStream(url);
+            } else {
+                String fsPath = path.startsWith("/") ? path.substring(1) : path;
+                File file = new File(fsPath);
+                if (file.exists()) {
+                    ais = AudioSystem.getAudioInputStream(file);
+                }
+            }
 
-            //by the grace of the almighty google, converts ogg to pcm for java to get it working
-            AudioFormat decodedFormat = new AudioFormat(
-                AudioFormat.Encoding.PCM_SIGNED,
-                baseFormat.getSampleRate(),
-                16,
-                baseFormat.getChannels(),
-                baseFormat.getChannels() * 2,
-                baseFormat.getSampleRate(),
-                false
-            );
+            if (ais == null) {
+                System.err.println("AUDIO ERROR: Could not find file at " + path);
+                return; 
+            }
 
-            AudioInputStream decodedIn = AudioSystem.getAudioInputStream(decodedFormat, baseIn);
-            clip = AudioSystem.getClip();
-            clip.open(decodedIn);
+            Clip clip = AudioSystem.getClip();
+            clip.open(ais);
+            clip.start();
+            
+            //debug thing, the original clip is 15mins long.
+            if (path.toLowerCase().contains("title")) {
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            }
         } catch (Exception e) {
+            System.err.println("AUDIO SYSTEM CRASH!");
             e.printStackTrace();
         }
-    }
-
-    public void play(boolean loop) {
-        if (clip != null) {
-            clip.setFramePosition(0);
-            if (loop) clip.loop(Clip.LOOP_CONTINUOUSLY);
-            clip.start();
-        }
-    }
-
-    public void stop() {
-        if (clip != null && clip.isRunning()) {
-            clip.stop();
-        }
-    }
-
-    public boolean isRunning() {
-        return clip != null && clip.isRunning();
     }
 }

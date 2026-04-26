@@ -1,13 +1,11 @@
 package com.ror.engine;
 
 import com.ror.models.*;
-import com.ror.models.Inventory.Inventory;
-import com.ror.models.training.StatProgress;
 import com.ror.models.Boss.*;
+import com.ror.models.Inventory.Inventory;
 import com.ror.models.Mobs.*;
-
-import javax.swing.*;
-import javax.swing.border.Border;
+import com.ror.models.training.StatProgress;
+import com.ror.utils.sounds.SoundManager;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
@@ -17,12 +15,12 @@ import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.plaf.FontUIResource;
 
 public class GameWindow implements BattlePanel.BattleActionListener {
+
+    SoundManager sound = new SoundManager();
 
     // Asset directories and screen card names
     private static final String ROOT_LANDING = "landing";
@@ -180,8 +178,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         setupBattleBackspaceBinding();
         frame.setVisible(true);
             System.out.println("DEBUG: Working Directory = " + System.getProperty("user.dir"));
-            SoundController.playBGM("/com/ror/models/assets/sounds/titleScreen.ogg");
         showLandingScreen();
+        sound.play("src/com/ror/models/assets/sounds/titleScreen.wav");
     }
 
     // -------------------------------------------------------------------------
@@ -1257,8 +1255,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                         new TextAreaOutputStream(outputArea, this::filterLegacyOutput, this::observeLegacyOutput), 1),
                 true, StandardCharsets.UTF_8);
 
-        System.setOut(guiOut);
-        System.setErr(guiOut);
+        //System.setOut(guiOut);
+        //System.setErr(guiOut);
     }
 
     // -------------------------------------------------------------------------
