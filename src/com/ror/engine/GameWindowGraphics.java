@@ -42,15 +42,11 @@ final class GameWindowGraphics {
         landingBackgroundFrames = loadLandingBackgroundFrames();
         primaryButtonSkin = loadButtonSkin("button-primary");
         secondaryButtonSkin = loadButtonSkin("button-secondary");
-        landingPlayButtonImage = prepareUiButtonSprite("landing-button-sheet.png", new Rectangle(20, 15, 1215, 340));
-        landingAboutButtonImage = normalizeLandingSecondaryButton(
-                prepareUiButtonSprite("landing-button-sheet.png", new Rectangle(25, 325, 610, 280)));
-        landingLoadButtonImage = normalizeLandingSecondaryButton(
-                prepareUiButtonSprite("landing-button-sheet.png", new Rectangle(645, 325, 590, 280)));
-        landingOptionsButtonImage = normalizeLandingSecondaryButton(
-                prepareUiButtonSprite("landing-button-sheet.png", new Rectangle(20, 620, 615, 275)));
-        landingExitButtonImage = normalizeLandingSecondaryButton(
-                prepareUiButtonSprite("landing-button-sheet.png", new Rectangle(640, 620, 615, 275)));
+        landingPlayButtonImage = loadLandingButtonImage("play-button.png");
+        landingAboutButtonImage = loadLandingButtonImage("about-button.png");
+        landingLoadButtonImage = loadLandingButtonImage("load-button.png");
+        landingOptionsButtonImage = loadLandingButtonImage("options-button.png");
+        landingExitButtonImage = loadLandingButtonImage("exit-button.png");
     }
 
     JPanel createCardPanel(Color borderColor, Color panelColor) {
@@ -159,6 +155,13 @@ final class GameWindowGraphics {
     }
 
     JPanel buildLandingScreen(JFrame frame, Runnable onPlay, Runnable onExit) {
+        final int playButtonWidth = 448;
+        final int playButtonHeight = 133;
+        final int secondaryButtonWidth = 225;
+        final int secondaryButtonHeight = 110;
+        final int secondaryButtonGap = 18;
+        final int buttonBlockWidth = (secondaryButtonWidth * 2) + secondaryButtonGap;
+
         JPanel panel = new JPanel() {
             @Override
             protected void paintComponent(Graphics graphics) {
@@ -188,7 +191,7 @@ final class GameWindowGraphics {
 
         panel.setLayout(new GridBagLayout());
         if (landingBackgroundFrames.length > 1) {
-            Timer frameTimer = new Timer(180, event -> {
+            Timer frameTimer = new Timer(280, event -> {
                 landingBackgroundIndex = (landingBackgroundIndex + 1) % landingBackgroundFrames.length;
                 panel.repaint();
             });
@@ -198,28 +201,30 @@ final class GameWindowGraphics {
         JPanel content = new JPanel();
         content.setOpaque(false);
         content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
-        content.setBorder(BorderFactory.createEmptyBorder(12, 24, 12, 24));
-        content.setMaximumSize(new Dimension(760, Integer.MAX_VALUE));
+        content.setBorder(BorderFactory.createEmptyBorder(12, 0, 12, 0));
+        content.setMaximumSize(new Dimension(buttonBlockWidth, Integer.MAX_VALUE));
 
         JPanel topMenuRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
         topMenuRow.setOpaque(false);
-        topMenuRow.setMaximumSize(new Dimension(320, 102));
-        topMenuRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        topMenuRow.setMaximumSize(new Dimension(buttonBlockWidth, playButtonHeight));
+        topMenuRow.setPreferredSize(new Dimension(buttonBlockWidth, playButtonHeight));
+        topMenuRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JButton playButton = landingPlayButtonImage != null
-                ? createLandingImageButton(landingPlayButtonImage, 320, "PLAY")
+                ? createLandingImageButton(landingPlayButtonImage, playButtonWidth, playButtonHeight, "PLAY")
                 : createLandingPlaceholderButton("PLAY", 220, 48);
         playButton.addActionListener(event -> onPlay.run());
         topMenuRow.add(playButton);
 
-        JPanel middleMenuRow = new JPanel(new GridLayout(1, 2, 28, 0));
+        JPanel middleMenuRow = new JPanel(new GridLayout(1, 2, 1, 0));
         middleMenuRow.setOpaque(false);
-        middleMenuRow.setMaximumSize(new Dimension(380, 82));
-        middleMenuRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        middleMenuRow.setMaximumSize(new Dimension(buttonBlockWidth, secondaryButtonHeight));
+        middleMenuRow.setPreferredSize(new Dimension(buttonBlockWidth, secondaryButtonHeight));
+        middleMenuRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JButton aboutButton = landingAboutButtonImage != null
                 ? createLandingImageButton(landingAboutButtonImage,
-                        LANDING_SECONDARY_BUTTON_WIDTH, LANDING_SECONDARY_BUTTON_HEIGHT, "ABOUT")
+                        secondaryButtonWidth, secondaryButtonHeight, "ABOUT")
                 : createLandingPlaceholderButton("ABOUT");
         aboutButton.addActionListener(event -> JOptionPane.showMessageDialog(
                 frame,
@@ -228,7 +233,7 @@ final class GameWindowGraphics {
                 JOptionPane.INFORMATION_MESSAGE));
         JButton loadButton = landingLoadButtonImage != null
                 ? createLandingImageButton(landingLoadButtonImage,
-                        LANDING_SECONDARY_BUTTON_WIDTH, LANDING_SECONDARY_BUTTON_HEIGHT, "LOAD")
+                        secondaryButtonWidth, secondaryButtonHeight, "LOAD")
                 : createLandingPlaceholderButton("LOAD");
         loadButton.addActionListener(event -> JOptionPane.showMessageDialog(
                 frame,
@@ -238,14 +243,15 @@ final class GameWindowGraphics {
         middleMenuRow.add(aboutButton);
         middleMenuRow.add(loadButton);
 
-        JPanel bottomMenuRow = new JPanel(new GridLayout(1, 2, 28, 0));
+        JPanel bottomMenuRow = new JPanel(new GridLayout(1, 2, 1, 0));
         bottomMenuRow.setOpaque(false);
-        bottomMenuRow.setMaximumSize(new Dimension(380, 82));
-        bottomMenuRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+        bottomMenuRow.setMaximumSize(new Dimension(buttonBlockWidth, secondaryButtonHeight));
+        bottomMenuRow.setPreferredSize(new Dimension(buttonBlockWidth, secondaryButtonHeight));
+        bottomMenuRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JButton optionsButton = landingOptionsButtonImage != null
                 ? createLandingImageButton(landingOptionsButtonImage,
-                        LANDING_SECONDARY_BUTTON_WIDTH, LANDING_SECONDARY_BUTTON_HEIGHT, "OPTIONS")
+                        secondaryButtonWidth, secondaryButtonHeight, "OPTIONS")
                 : createLandingPlaceholderButton("OPTIONS");
         optionsButton.addActionListener(event -> JOptionPane.showMessageDialog(
                 frame,
@@ -255,16 +261,16 @@ final class GameWindowGraphics {
 
         JButton exitButton = landingExitButtonImage != null
                 ? createLandingImageButton(landingExitButtonImage,
-                        LANDING_SECONDARY_BUTTON_WIDTH, LANDING_SECONDARY_BUTTON_HEIGHT, "EXIT")
+                        secondaryButtonWidth, secondaryButtonHeight, "EXIT")
                 : createLandingPlaceholderButton("EXIT");
         exitButton.addActionListener(event -> onExit.run());
         bottomMenuRow.add(optionsButton);
         bottomMenuRow.add(exitButton);
 
         content.add(topMenuRow);
-        content.add(Box.createVerticalStrut(0));
+        content.add(Box.createVerticalStrut(-20));
         content.add(middleMenuRow);
-        content.add(Box.createVerticalStrut(8));
+        content.add(Box.createVerticalStrut(-10));
         content.add(bottomMenuRow);
         content.add(Box.createVerticalGlue());
 
@@ -273,8 +279,8 @@ final class GameWindowGraphics {
         constraints.gridy = 0;
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
-        constraints.anchor = GridBagConstraints.SOUTH;
-        constraints.insets = new Insets(0, 0, 8, 0);
+        constraints.anchor = GridBagConstraints.SOUTHWEST;
+        constraints.insets = new Insets(0, 70, 35, 0);
         panel.add(content, constraints);
         return panel;
     }
@@ -484,25 +490,40 @@ final class GameWindowGraphics {
 
         String[][] frameCandidates = {
                 {
-                        "/com/ror/models/assets/images/main-screen-background.png",
-                        "src/com/ror/models/assets/images/main-screen-background.png",
-                        "assets/images/main-screen-background.png",
-                        "/com/ror/models/assets/images/landing-background-source.jpg",
-                        "src/com/ror/models/assets/images/landing-background-source.jpg",
-                        "assets/images/landing-background-source.jpg",
-                        "/com/ror/models/assets/images/title.png",
-                        "src/com/ror/models/assets/images/title.png",
-                        "assets/images/title.png"
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-1.png",
                 },
                 {
-                        "/com/ror/models/assets/images/main-screen-background-2.png",
-                        "src/com/ror/models/assets/images/main-screen-background-2.png",
-                        "assets/images/main-screen-background-2.png"
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-2.png",
                 },
                 {
-                        "/com/ror/models/assets/images/main-screen-background-3.png",
-                        "src/com/ror/models/assets/images/main-screen-background-3.png",
-                        "assets/images/main-screen-background-3.png"
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-3.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-4.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-5.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-6.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-7.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-8.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-9.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-10.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-11.png",
+                },
+                {
+                        "src/com/ror/models/assets/images/mainscreen/main-screen-background-12.png",
                 }
         };
 
@@ -545,6 +566,13 @@ final class GameWindowGraphics {
         }
 
         return null;
+    }
+
+    private BufferedImage loadLandingButtonImage(String fileName) {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/ui/" + fileName,
+                "src/com/ror/models/assets/images/ui/" + fileName,
+                "assets/images/ui/" + fileName);
     }
 
     private BufferedImage prepareUiButtonImage(String fileName) {
