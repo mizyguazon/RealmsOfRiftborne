@@ -21,6 +21,10 @@ final class GameWindowGraphics {
     private static final String HERO_IMAGE_DIRECTORY = "assets/images/heroes/";
     private static final int LANDING_SECONDARY_BUTTON_WIDTH = 170;
     private static final int LANDING_SECONDARY_BUTTON_HEIGHT = 78;
+    private static final Color BUTTON_PRIMARY = new Color(0x0B1033);
+    private static final Color BUTTON_HOVER = new Color(0x1A2159);
+    private static final Color BUTTON_PRESSED = new Color(0x06081F);
+    private static final Color BUTTON_BORDER = new Color(0x2B356E);
 
     private Font headingFont = new Font("Serif", Font.BOLD, 28);
     private Font bodyFont = new Font("SansSerif", Font.PLAIN, 14);
@@ -102,12 +106,12 @@ final class GameWindowGraphics {
     }
 
     JButton createPrimaryButton(String text) {
-        return createStyledButton(text, primaryButtonSkin, new Color(118, 81, 53),
+        return createStyledButton(text, primaryButtonSkin, BUTTON_PRIMARY,
                 Color.WHITE, getBodyFont(14f).deriveFont(Font.BOLD, 14f), 42);
     }
 
     JButton createSecondaryButton(String text) {
-        return createStyledButton(text, secondaryButtonSkin, new Color(118, 81, 53),
+        return createStyledButton(text, secondaryButtonSkin, BUTTON_PRIMARY,
                 Color.WHITE, getBodyFont(13f).deriveFont(Font.BOLD, 13f), 40);
     }
 
@@ -123,9 +127,9 @@ final class GameWindowGraphics {
                 Graphics2D g2 = (Graphics2D) graphics.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 ButtonModel model = getModel();
-                Color fill = new Color(118, 81, 53);
-                if (model.isPressed()) fill = new Color(96, 65, 42);
-                else if (model.isRollover()) fill = new Color(132, 92, 62);
+                Color fill = BUTTON_PRIMARY;
+                if (model.isPressed()) fill = BUTTON_PRESSED;
+                else if (model.isRollover()) fill = BUTTON_HOVER;
                 g2.setColor(fill);
                 g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 14, 14);
                 g2.dispose();
@@ -136,14 +140,14 @@ final class GameWindowGraphics {
             protected void paintBorder(Graphics graphics) {
                 Graphics2D g2 = (Graphics2D) graphics.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(90, 62, 41));
+                g2.setColor(BUTTON_BORDER);
                 g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 14, 14);
                 g2.dispose();
             }
         };
         button.setFont(getBodyFont(14f).deriveFont(Font.BOLD, 14f));
         button.setForeground(Color.WHITE);
-        button.setBackground(new Color(118, 81, 53));
+        button.setBackground(BUTTON_PRIMARY);
         button.setBorder(BorderFactory.createEmptyBorder(10, 16, 10, 16));
         button.setRolloverEnabled(true);
         button.setContentAreaFilled(false);

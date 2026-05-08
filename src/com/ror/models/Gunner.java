@@ -7,7 +7,7 @@ public class Gunner extends Hero {
 
     public Gunner() {
         super(4000, 535, 600, 125, 150, 1, 
-        "Aria Caelith", "Gunner", "Rusty Dual Pistol", 
+        "Fehld, the Ashened", "Gunner", "Marksman Rifle", 
         "Crimson Barrage", "Frostwind Bullet", "Judgement Phantom", 
         150, 275, 450, 
         1500, 1530, 650);

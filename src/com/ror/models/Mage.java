@@ -7,7 +7,7 @@ public class Mage extends Hero {
 
     public Mage() {
         super(4000, 550, 1000, 180, 90, 1, 
-            "Selene Arclight", "Mage", "Wooden Staff", 
+            "Mleux, the Windwhisperer", "Mage", "Wooden Staff", 
             "Stellar Shard", "Chains of Starlight", "Astral Cataclysm", 
             275, 545, 850, 
             2000, 2500, 570);
