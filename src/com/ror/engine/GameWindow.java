@@ -66,6 +66,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private static final Color COLOR_TEXT_DARK = new Color(46, 31, 20);
     private static final Color COLOR_TEXT_MUTED = new Color(106, 79, 60);
     private static final Color COLOR_BORDER = new Color(145, 114, 91);
+    private static final Color COLOR_BUTTON_PRIMARY = new Color(0x0B1033);
+    private static final Color COLOR_BUTTON_BORDER = new Color(0x2B356E);
     private static final Color COLOR_HERO_HP = new Color(164, 54, 54);
     private static final Color COLOR_HERO_MANA = new Color(52, 92, 156);
     private static final Color COLOR_CHARSEL_BACKGROUND = new Color(227, 221, 212);
@@ -267,16 +269,16 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         headerExitButton.setFocusPainted(false);
         headerExitButton.setContentAreaFilled(false);
         headerExitButton.setOpaque(false);
-        headerExitButton.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 1));
+        headerExitButton.setBorder(BorderFactory.createLineBorder(COLOR_BUTTON_BORDER, 1));
         headerExitButton.setPreferredSize(new Dimension(90, 34));
         headerExitButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent event) {
-                headerExitButton.setBorder(BorderFactory.createLineBorder(new Color(118, 81, 53), 1));
+                headerExitButton.setBorder(BorderFactory.createLineBorder(COLOR_BUTTON_PRIMARY, 1));
             }
             @Override
             public void mouseExited(MouseEvent event) {
-                headerExitButton.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 1));
+                headerExitButton.setBorder(BorderFactory.createLineBorder(COLOR_BUTTON_BORDER, 1));
             }
         });
         headerExitButton.addActionListener(event -> {
