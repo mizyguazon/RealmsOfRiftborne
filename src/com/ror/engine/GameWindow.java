@@ -15,13 +15,10 @@ import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
 
 public class GameWindow implements BattlePanel.BattleActionListener {
-
-    SoundManager sound = new SoundManager();
 
     // Asset directories and screen card names
     private static final String ROOT_LANDING = "landing";
@@ -35,24 +32,11 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private static final String SCREEN_INVENTORY = "inventory";
     private static final String SCREEN_PROFILE = "profile";
     private static final String SCREEN_BATTLE = "battle";
-    private static final String[] REGION_MAP_IMAGE_CANDIDATES = {
-            "/com/ror/models/assets/images/regionmap.png",
-            "src/com/ror/models/assets/images/regionmap.png",
-            "assets/images/regionmap.png"
-    };
 
     private final DecimalFormat statFormat = new DecimalFormat("#,##0");
     private final Random random = new Random();
     private final StatProgress statProgress = new StatProgress();
     private final GameWindowGraphics graphics = new GameWindowGraphics();
-    private final Icon smallHealthPotionIcon = loadItemIcon("small-health-potion.png");
-    private final Icon mediumHealthPotionIcon = loadItemIcon("medium-health-potion.png");
-    private final Icon largeHealthPotionIcon = loadItemIcon("large-health-potion.png");
-    private final Icon smallManaPotionIcon = loadItemIcon("small-mana-potion.png");
-    private final Icon mediumManaPotionIcon = loadItemIcon("medium-mana-potion.png");
-    private final Icon largeManaPotionIcon = loadItemIcon("large-mana-potion.png");
-    private final Icon shopkeeperPrincipalIcon = loadPixelUiIcon("shopkeeper-principal.png", 380, 380);
-    private final BufferedImage shopBackgroundImage = graphics.loadUIImage("shop-background.jpg");
 
     // Legacy console area components
     private final JTextArea outputArea = new JTextArea();
@@ -193,7 +177,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         frame.setVisible(true);
             System.out.println("DEBUG: Working Directory = " + System.getProperty("user.dir"));
         showLandingScreen();
-        sound.play("src/com/ror/models/assets/sounds/titleScreen.wav"); 
+        SoundManager.playMusic("src/com/ror/models/assets/sounds/titleScreen.wav");
     }
 
     // -------------------------------------------------------------------------
@@ -216,6 +200,15 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         rootPanel.add(buildLandingScreen(), ROOT_LANDING);
         rootPanel.add(buildGameShell(), ROOT_GAME);
         window.setLocationRelativeTo(null);
+
+        window.addWindowListener(new java.awt.event.WindowAdapter() {
+        @Override
+        public void windowClosing(java.awt.event.WindowEvent e) {
+            System.out.println("Closing game... stopping audio.");
+            SoundManager.shutdownSound();
+            System.exit(0);
+        }
+    });
 
         return window;
     }
@@ -514,7 +507,12 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         JPanel mapCard = createCardPanel();
         mapCard.setLayout(new BorderLayout(10, 10));
         mapCard.add(createHeading("Region Map"), BorderLayout.NORTH);
-        mapCard.add(createRegionMapLabel(), BorderLayout.CENTER);
+
+        JPanel mapPlaceholder = new JPanel();
+        mapPlaceholder.setBackground(new Color(22, 26, 24));
+        mapPlaceholder.setPreferredSize(new Dimension(760, 420));
+        mapPlaceholder.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 2));
+        mapCard.add(mapPlaceholder, BorderLayout.CENTER);
 
         JPanel destinations = createCardPanel();
         destinations.setLayout(new BoxLayout(destinations, BoxLayout.Y_AXIS));
@@ -534,7 +532,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                 subtitleLabel.setText("Explore Mystvale Academy.");
                 showScreen(SCREEN_ACADEMY);
                 if (firstVisit) {
-                    playNarrationSequence("Academy Narration", buildAcademyNarration());
+                    playNarrationSequence("Academy Narration", Narration.buildAcademyNarration());
                 }
             }
         });
@@ -697,66 +695,35 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private JPanel buildShopScreen() {
-        JPanel mainPanel = createShopBackgroundPanel();
-        mainPanel.setLayout(new BorderLayout());
+        JPanel content = createCardPanel();
 
-        JPanel header = createCardPanel();
-        header.setBackground(new Color(239, 235, 228, 220));
-        JLabel shopTitle = createHeading("Shop");
-        shopTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
-        header.add(shopTitle);
-        header.add(Box.createVerticalStrut(6));
-        JLabel descriptionLabel = createBody("Buy potions here without leaving the academy screen.");
-        descriptionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        header.add(descriptionLabel);
-        header.add(Box.createVerticalStrut(10));
+        content.add(createHeading("Shop"));
+        content.add(Box.createVerticalStrut(6));
+        content.add(createBody("Buy potions here without leaving the academy screen."));
+        content.add(Box.createVerticalStrut(10));
 
         shopGoldLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         shopGoldLabel.setForeground(COLOR_TEXT_DARK);
-        header.add(shopGoldLabel);
-        header.add(Box.createVerticalStrut(6));
+        content.add(shopGoldLabel);
+        content.add(Box.createVerticalStrut(6));
 
         shopStatusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         shopStatusLabel.setForeground(COLOR_TEXT_MUTED);
-        header.add(shopStatusLabel);
+        content.add(shopStatusLabel);
+        content.add(Box.createVerticalStrut(12));
 
-        mainPanel.add(header, BorderLayout.NORTH);
-
-        JPanel contentWrapper = new JPanel(new GridLayout(1, 2, 20, 0));
-        contentWrapper.setOpaque(false);
-        contentWrapper.setBorder(BorderFactory.createEmptyBorder(12, 20, 20, 20));
-
-        JPanel leftPanel = new JPanel();
-        leftPanel.setOpaque(false);
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.add(Box.createVerticalGlue());
-        leftPanel.add(createShopkeeperDisplay());
-        leftPanel.add(Box.createVerticalGlue());
-
-        JPanel rightPanel = new JPanel();
-        rightPanel.setOpaque(false);
-        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-
-        rightPanel.add(createShopRow("Small Health Potion", 450, 0, smallHealthPotionIcon));
-        rightPanel.add(Box.createVerticalStrut(6));
-        rightPanel.add(createShopRow("Medium Health Potion", 1350, 1, mediumHealthPotionIcon));
-        rightPanel.add(Box.createVerticalStrut(6));
-        rightPanel.add(createShopRow("Large Health Potion", 2750, 2, largeHealthPotionIcon));
-        rightPanel.add(Box.createVerticalStrut(6));
-        rightPanel.add(createShopRow("Small Mana Potion", 450, 3, smallManaPotionIcon));
-        rightPanel.add(Box.createVerticalStrut(6));
-        rightPanel.add(createShopRow("Medium Mana Potion", 1350, 4, mediumManaPotionIcon));
-        rightPanel.add(Box.createVerticalStrut(6));
-        rightPanel.add(createShopRow("Large Mana Potion", 2750, 5, largeManaPotionIcon));
-        rightPanel.add(Box.createVerticalGlue());
-
-        contentWrapper.add(leftPanel);
-        contentWrapper.add(rightPanel);
-
-        JPanel centerContent = new JPanel(new BorderLayout());
-        centerContent.setOpaque(false);
-        centerContent.add(contentWrapper, BorderLayout.CENTER);
-        mainPanel.add(centerContent, BorderLayout.CENTER);
+        content.add(createShopRow("Small Health Potion", 450, 0));
+        content.add(Box.createVerticalStrut(6));
+        content.add(createShopRow("Medium Health Potion", 1350, 1));
+        content.add(Box.createVerticalStrut(6));
+        content.add(createShopRow("Large Health Potion", 2750, 2));
+        content.add(Box.createVerticalStrut(6));
+        content.add(createShopRow("Small Mana Potion", 450, 3));
+        content.add(Box.createVerticalStrut(6));
+        content.add(createShopRow("Medium Mana Potion", 1350, 4));
+        content.add(Box.createVerticalStrut(6));
+        content.add(createShopRow("Large Mana Potion", 2750, 5));
+        content.add(Box.createVerticalStrut(14));
 
         JButton bottomBackButton = createSecondaryButton("Back to Academy");
         bottomBackButton.addActionListener(event -> {
@@ -764,25 +731,17 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             refreshHeroDashboard();
             showScreen(SCREEN_ACADEMY);
         });
-        bottomBackButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JPanel footerPanel = new JPanel();
-        footerPanel.setOpaque(false);
-        footerPanel.setLayout(new BoxLayout(footerPanel, BoxLayout.Y_AXIS));
-        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        footerPanel.add(bottomBackButton);
+        content.add(bottomBackButton);
+        content.add(Box.createVerticalGlue());
 
-        mainPanel.add(footerPanel, BorderLayout.SOUTH);
-
-        JScrollPane scrollPane = new JScrollPane(mainPanel);
+        JScrollPane scrollPane = new JScrollPane(content);
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(COLOR_BACKGROUND);
+        panel.setBackground(COLOR_PANEL);
         panel.add(scrollPane, BorderLayout.CENTER);
         return panel;
     }
@@ -796,17 +755,17 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         panel.add(inventorySummary);
         panel.add(Box.createVerticalStrut(14));
 
-        panel.add(createInventoryRow("Small Health Potion", smallHealthCount, () -> usePotion("SH"), smallHealthPotionIcon));
+        panel.add(createInventoryRow("Small Health Potion", smallHealthCount, () -> usePotion("SH")));
         panel.add(Box.createVerticalStrut(8));
-        panel.add(createInventoryRow("Medium Health Potion", mediumHealthCount, () -> usePotion("MH"), mediumHealthPotionIcon));
+        panel.add(createInventoryRow("Medium Health Potion", mediumHealthCount, () -> usePotion("MH")));
         panel.add(Box.createVerticalStrut(8));
-        panel.add(createInventoryRow("Large Health Potion", largeHealthCount, () -> usePotion("LH"), largeHealthPotionIcon));
+        panel.add(createInventoryRow("Large Health Potion", largeHealthCount, () -> usePotion("LH")));
         panel.add(Box.createVerticalStrut(8));
-        panel.add(createInventoryRow("Small Mana Potion", smallManaCount, () -> usePotion("SM"), smallManaPotionIcon));
+        panel.add(createInventoryRow("Small Mana Potion", smallManaCount, () -> usePotion("SM")));
         panel.add(Box.createVerticalStrut(8));
-        panel.add(createInventoryRow("Medium Mana Potion", mediumManaCount, () -> usePotion("MM"), mediumManaPotionIcon));
+        panel.add(createInventoryRow("Medium Mana Potion", mediumManaCount, () -> usePotion("MM")));
         panel.add(Box.createVerticalStrut(8));
-        panel.add(createInventoryRow("Large Mana Potion", largeManaCount, () -> usePotion("LM"), largeManaPotionIcon));
+        panel.add(createInventoryRow("Large Mana Potion", largeManaCount, () -> usePotion("LM")));
         panel.add(Box.createVerticalStrut(18));
 
         JButton backButton = createSecondaryButton("Back to Main Menu");
@@ -1019,12 +978,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     // -------------------------------------------------------------------------
 
     private JPanel createInventoryRow(String name, JLabel countLabel, Runnable action) {
-        return createInventoryRow(name, countLabel, action, null);
-    }
-
-    private JPanel createInventoryRow(String name, JLabel countLabel, Runnable action, Icon icon) {
         JPanel row = new JPanel(new BorderLayout(12, 0));
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, icon == null ? 42 : 56));
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
         row.setBackground(COLOR_PANEL);
         row.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(COLOR_BORDER, 1),
@@ -1035,11 +990,6 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         countLabel.setForeground(COLOR_TEXT_DARK);
         countLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        JPanel left = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
-        left.setOpaque(false);
-        if (icon != null) left.add(new JLabel(icon));
-        left.add(nameLabel);
-
         JButton useButton = createSecondaryButton("Use");
         useButton.setPreferredSize(new Dimension(84, 30));
         useButton.addActionListener(event -> action.run());
@@ -1049,183 +999,37 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         right.add(countLabel);
         right.add(useButton);
 
-        row.add(left, BorderLayout.CENTER);
+        row.add(nameLabel, BorderLayout.CENTER);
         row.add(right, BorderLayout.EAST);
         return row;
     }
 
     private JPanel createShopRow(String name, int price, int itemIndex) {
-        return createShopRow(name, price, itemIndex, null);
-    }
+        JPanel row = new JPanel(new BorderLayout(10, 6));
+        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 100));
+        row.setBackground(COLOR_PANEL);
+        row.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_BORDER, 1),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
 
-    private JPanel createShopRow(String name, int price, int itemIndex, Icon icon) {
-        JPanel row = new JPanel(new BorderLayout(10, 6)) {
-            @Override
-            protected void paintComponent(Graphics graphicsContext) {
-                Graphics2D g2 = (Graphics2D) graphicsContext.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                g2.setColor(new Color(43, 31, 58, 222));
-                g2.fillRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
-                g2.setColor(new Color(208, 172, 101, 230));
-                g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 8, 8);
-                g2.dispose();
-                super.paintComponent(graphicsContext);
-            }
-        };
-        row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
-        row.setOpaque(false);
-        row.setBorder(BorderFactory.createEmptyBorder(8, 10, 8, 10));
+        JLabel nameLabel = new JLabel(name + "  |  " + statFormat.format(price) + " gold each");
+        nameLabel.setForeground(COLOR_TEXT_DARK);
+        row.add(nameLabel, BorderLayout.NORTH);
 
-        JLabel nameLabel = new JLabel(name);
-        nameLabel.setForeground(new Color(250, 240, 218));
-        nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-        JLabel priceLabel = new JLabel(statFormat.format(price) + " gold");
-        priceLabel.setForeground(new Color(224, 198, 132));
-        priceLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-
-        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 8, 0));
-        titlePanel.setOpaque(false);
-        titlePanel.add(nameLabel);
-        titlePanel.add(priceLabel);
-
-        JPanel header = new JPanel();
-        header.setOpaque(false);
-        header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-        header.setBorder(BorderFactory.createEmptyBorder(0, 0, 6, 0));
-        header.setPreferredSize(new Dimension(220, 150));
-        header.add(Box.createVerticalGlue());
-        header.add(titlePanel);
-        header.add(Box.createVerticalStrut(8));
-
-        if (icon != null) {
-            Icon potionIcon = icon;
-            if (icon instanceof ImageIcon) {
-                Image image = ((ImageIcon) icon).getImage();
-                Image scaled = image.getScaledInstance(64, 64, Image.SCALE_SMOOTH);
-                potionIcon = new ImageIcon(scaled);
-            }
-            JLabel iconLabel = new JLabel(potionIcon);
-            iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-            iconLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
-            header.add(iconLabel);
-        }
-        header.add(Box.createVerticalGlue());
-
-        row.add(header, BorderLayout.WEST);
-
-        JPanel actions = new JPanel();
-        actions.setLayout(new BoxLayout(actions, BoxLayout.Y_AXIS));
+        JPanel actions = new JPanel(new GridLayout(2, 2, 8, 6));
         actions.setOpaque(false);
 
-        for (int qty : new int[]{ 1, 5 }) {
-            JButton buyButton = createShopBuyButton(qty);
-            
-            buyButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-            buyButton.setPreferredSize(new Dimension(172, 46));
-            buyButton.setMaximumSize(new Dimension(172, 46));
+        for (int qty : new int[]{ 1, 5, 10, 20 }) {
+            JButton buyButton = createSecondaryButton("Buy x" + qty);
+            buyButton.setPreferredSize(new Dimension(150, 34));
+            buyButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 34));
             final int quantity = qty;
             buyButton.addActionListener(event -> buyShopItem(itemIndex, quantity));
             actions.add(buyButton);
-            actions.add(Box.createVerticalStrut(8));
         }
-        actions.remove(actions.getComponentCount() - 1);
 
-        row.add(actions, BorderLayout.EAST);
-        row.setAlignmentX(Component.RIGHT_ALIGNMENT);
-        row.setPreferredSize(new Dimension(430, 120));
-        row.setMaximumSize(new Dimension(430, 120));
+        row.add(actions, BorderLayout.CENTER);
         return row;
-    }
-
-    private JButton createShopBuyButton(int quantity) {
-        BufferedImage buttonImage = graphics.prepareShopButtonImage("Buy x" + quantity + ".png");
-        if (buttonImage == null) {
-            return createSecondaryButton("Buy x" + quantity);
-        }
-
-        JButton button = new JButton("Buy x" + quantity) {
-            @Override
-            protected void paintComponent(Graphics graphicsContext) {
-                Graphics2D g2 = (Graphics2D) graphicsContext.create();
-                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-                ButtonModel model = getModel();
-                int yOffset = model.isArmed() && model.isPressed() ? 1 : 0;
-                int inset = 2;
-                int drawAreaWidth = Math.max(1, getWidth() - (inset * 2));
-                int drawAreaHeight = Math.max(1, getHeight() - (inset * 2) - yOffset);
-                double scale = Math.min(
-                        drawAreaWidth / (double) buttonImage.getWidth(),
-                        drawAreaHeight / (double) buttonImage.getHeight());
-                int drawWidth = Math.max(1, (int) Math.round(buttonImage.getWidth() * scale));
-                int drawHeight = Math.max(1, (int) Math.round(buttonImage.getHeight() * scale));
-                int drawX = (getWidth() - drawWidth) / 2;
-                int drawY = inset + yOffset + ((drawAreaHeight - drawHeight) / 2);
-
-                g2.drawImage(buttonImage, drawX, drawY, drawWidth, drawHeight, null);
-
-                if (model.isRollover()) {
-                    g2.setColor(new Color(255, 255, 255, 28));
-                    g2.fillRoundRect(5, 5 + yOffset, Math.max(0, getWidth() - 10), Math.max(0, getHeight() - 12), 8, 8);
-                }
-
-                g2.dispose();
-            }
-        };
-        button.setContentAreaFilled(false);
-        button.setBorderPainted(false);
-        button.setFocusPainted(false);
-        button.setOpaque(false);
-        button.setRolloverEnabled(true);
-        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        return button;
-    }
-
-    private JPanel createShopkeeperDisplay() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setOpaque(false);
-        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.setMaximumSize(new Dimension(420, 420));
-        panel.setPreferredSize(new Dimension(420, 420));
-
-        JLabel shopkeeperLabel = new JLabel(shopkeeperPrincipalIcon);
-        shopkeeperLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        shopkeeperLabel.setVerticalAlignment(SwingConstants.CENTER);
-        panel.add(shopkeeperLabel, BorderLayout.CENTER);
-        return panel;
-    }
-
-    private JPanel createShopBackgroundPanel() {
-        return new JPanel() {
-            @Override
-            protected void paintComponent(Graphics graphicsContext) {
-                super.paintComponent(graphicsContext);
-                if (shopBackgroundImage == null) {
-                    graphicsContext.setColor(COLOR_PANEL);
-                    graphicsContext.fillRect(0, 0, getWidth(), getHeight());
-                    return;
-                }
-
-                Graphics2D g2 = (Graphics2D) graphicsContext.create();
-                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-                g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-                double scale = Math.max(
-                        getWidth() / (double) shopBackgroundImage.getWidth(),
-                        getHeight() / (double) shopBackgroundImage.getHeight());
-                int drawWidth = (int) Math.ceil(shopBackgroundImage.getWidth() * scale);
-                int drawHeight = (int) Math.ceil(shopBackgroundImage.getHeight() * scale);
-                int drawX = (getWidth() - drawWidth) / 2;
-                int drawY = (getHeight() - drawHeight) / 2;
-
-                g2.drawImage(shopBackgroundImage, drawX, drawY, drawWidth, drawHeight, null);
-                g2.setColor(new Color(12, 15, 24, 92));
-                g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.dispose();
-            }
-        };
     }
 
     private JPanel createStatLine(String label, JLabel value) {
@@ -1389,59 +1193,6 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         return graphics.createHeading(text, COLOR_TEXT_DARK);
     }
 
-    private JLabel createRegionMapLabel() {
-        BufferedImage regionMap = loadFirstAvailableImage(REGION_MAP_IMAGE_CANDIDATES);
-        JLabel mapLabel = regionMap != null
-                ? new JLabel() {
-                    @Override
-                    protected void paintComponent(Graphics g) {
-                        super.paintComponent(g);
-                        g.drawImage(regionMap, 0, 0, getWidth(), getHeight(), null);
-                    }
-                }
-                : new JLabel("Region map unavailable.", SwingConstants.CENTER);
-        mapLabel.setOpaque(true);
-        mapLabel.setBackground(new Color(22, 26, 24));
-        mapLabel.setForeground(COLOR_PANEL);
-        mapLabel.setPreferredSize(new Dimension(760, 420));
-        mapLabel.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 2));
-        mapLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        mapLabel.setVerticalAlignment(SwingConstants.CENTER);
-
-        return mapLabel;
-    }
-
-    private BufferedImage loadFirstAvailableImage(String... candidates) {
-        for (String candidate : candidates) {
-            if (candidate == null || candidate.isEmpty()) {
-                continue;
-            }
-
-            if (candidate.startsWith("/")) {
-                try (InputStream stream = getClass().getResourceAsStream(candidate)) {
-                    if (stream != null) {
-                        BufferedImage image = ImageIO.read(stream);
-                        if (image != null) {
-                            return image;
-                        }
-                    }
-                } catch (IOException ignored) {
-                }
-                continue;
-            }
-
-            try {
-                BufferedImage image = ImageIO.read(new File(candidate));
-                if (image != null) {
-                    return image;
-                }
-            } catch (IOException ignored) {
-            }
-        }
-
-        return null;
-    }
-
     private JLabel createBody(String text) {
         return graphics.createBody(text, COLOR_TEXT_MUTED);
     }
@@ -1481,34 +1232,6 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private BufferedImage loadCharacterPortrait(String title) {
         return graphics.loadCharacterPortrait(title);
-    }
-
-    private Icon loadItemIcon(String fileName) {
-        BufferedImage image = graphics.loadItemImage(fileName);
-        return image == null ? null : new ImageIcon(image);
-    }
-
-    private Icon loadPixelUiIcon(String fileName, int targetWidth, int targetHeight) {
-        BufferedImage image = graphics.loadUIImage(fileName);
-        if (image == null) return null;
-
-        BufferedImage scaled = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = scaled.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        double scale = Math.min(
-                targetWidth / (double) Math.max(1, image.getWidth()),
-                targetHeight / (double) Math.max(1, image.getHeight()));
-        int drawWidth = Math.max(1, (int) Math.round(image.getWidth() * scale));
-        int drawHeight = Math.max(1, (int) Math.round(image.getHeight() * scale));
-        int drawX = (targetWidth - drawWidth) / 2;
-        int drawY = (targetHeight - drawHeight) / 2;
-
-        g2.drawImage(image, drawX, drawY, drawWidth, drawHeight, null);
-        g2.dispose();
-        return new ImageIcon(scaled);
     }
 
     public void setGameFonts(Font heading, Font body) {
@@ -1736,7 +1459,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean firstVisit = !hero.hasVisitedLibrary();
         hero.setVisitedLibrary(true);
-        if (firstVisit) playNarrationSequence("Library Narration", buildLibraryNarration());
+        if (firstVisit) playNarrationSequence("Library Narration", Narration.buildLibraryNarration());
 
         boolean hasQuest1 = !hero.isLibraryQuest1Done();
         boolean hasQuest2 = !hero.isLibraryQuest2Done();
@@ -1793,7 +1516,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean firstVisit = !hero.hasVisitedGym();
         hero.setVisitedGym(true);
-        if (firstVisit) playNarrationSequence("Training Ground", buildTrainingNarration());
+        if (firstVisit) playNarrationSequence("Training Ground", Narration.buildTrainingNarration());
 
         if (hero.hasFinishedAllTraining()) {
             showInfoSync("Training Ground", "Training is already complete.");
@@ -1856,8 +1579,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         boolean firstVisit = !hero.hasVisitedShop();
         hero.setHasVisitedShop(true);
         if (firstVisit) {
-            playNarrationSequence("Shop Narration", buildShopNarration());
-            playNarrationSequence("Shopkeeper", buildShopConversationNarration());
+            playNarrationSequence("Shop Narration", Narration.buildShopNarration());
+            playNarrationSequence("Shopkeeper", Narration.buildShopConversationNarration());
         }
         subtitleLabel.setText("Browse the academy shop.");
         shopStatusLabel.setText("Choose an item and quantity.");
@@ -1908,10 +1631,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean firstVisit = !hero.hasVisitedOffice();
         hero.setVisitedOffice(true);
-        if (firstVisit) playNarrationSequence("Principal's Office", buildPrincipalOfficeNarration());
+        if (firstVisit) playNarrationSequence("Principal's Office", Narration.buildPrincipalOfficeNarration());
 
         if (!hero.hasUnlockedArea1() && hero.canEnterArea1() && hero.hasFinishedAllTraining()) {
-            playNarrationSequence("Eligibility Granted", buildArea1EligibilityNarration());
+            playNarrationSequence("Eligibility Granted", Narration.buildArea1EligibilityNarration());
             hero.setUnlockArea1(true);
             grantRewards(2500, 500, "Eligibility granted: Forest of Reverie unlocked.");
             refreshHeroDashboard();
@@ -1919,7 +1642,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         }
 
         if (!hero.hasUnlockedArea2() && hero.canEnterArea2() && hero.getHaveDefeatedArea1Boss()) {
-            playNarrationSequence("Eligibility Granted", buildArea2EligibilityNarration());
+            playNarrationSequence("Eligibility Granted", Narration.buildArea2EligibilityNarration());
             hero.setUnlockArea2(true);
             grantRewards(2500, 500, "Eligibility granted: Reverie's Edge unlocked.");
             refreshHeroDashboard();
@@ -1927,7 +1650,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         }
 
         if (!hero.hasUnlockedArea3() && hero.canEnterArea3() && hero.getHaveDefeatedArea2Boss()) {
-            playNarrationSequence("Eligibility Granted", buildArea3EligibilityNarration());
+            playNarrationSequence("Eligibility Granted", Narration.buildArea3EligibilityNarration());
             hero.setUnlockArea3(true);
             grantRewards(2500, 500, "Eligibility granted: Forsaken Lands unlocked.");
             refreshHeroDashboard();
@@ -2087,7 +1810,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean firstVisit = !hero.hasVisitedArea1();
         hero.setHasVisitedArea1(true);
-        if (firstVisit) playNarrationSequence("Forest of Reverie", buildArea1Narration());
+        if (firstVisit) playNarrationSequence("Forest of Reverie", Narration.buildArea1Narration());
 
         Entity[] encounters = { new Goblin(), new Slime(), new MudLurker(), new Elderthorn() };
         int[] goldRewards = { 360, 420, 680, 1200 };
@@ -2105,7 +1828,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean firstVisit = !hero.hasVisitedArea2();
         hero.setHasVisitedArea2(true);
-        if (firstVisit) playNarrationSequence("Reverie's Edge", buildArea2Narration());
+        if (firstVisit) playNarrationSequence("Reverie's Edge", Narration.buildArea2Narration());
 
         Entity[] encounters = { new SwampRat(), new VeilSerpent(), new FadingWarden(), new Morgrath() };
         int[] goldRewards = { 520, 620, 900, 1500 };
@@ -2123,7 +1846,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean firstVisit = !hero.hasVisitedArea3();
         hero.setHasVisitedArea3(true);
-        if (firstVisit) playNarrationSequence("Forsaken Lands", buildArea3Narration());
+        if (firstVisit) playNarrationSequence("Forsaken Lands", Narration.buildArea3Narration());
 
         Entity[] encounters = { new ShadowAbyss(), new VoidBeast(), new HollowKing(), new Azrael(), new Kim() };
         int[] goldRewards = { 760, 880, 1300, 2000, 4000 };
@@ -2137,10 +1860,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         int endingChoice = showOptionSync("Final Choice", "Kim Morvain has fallen.\nChoose your fate:", options, options[0]);
 
         if (endingChoice == 0) {
-            playNarrationSequence("Final Ending", buildSacrificeEndingNarration());
+            playNarrationSequence("Final Ending", Narration.buildSacrificeEndingNarration());
             showInfoSync("Ending", "You sacrificed your character and returned to the real world.\nYou cleared the game.");
         } else {
-            playNarrationSequence("Loop Ending", buildLoopEndingNarration());
+            playNarrationSequence("Loop Ending", Narration.buildLoopEndingNarration());
             hero.resetAllProgress();
             hero = null;
             runOnEdtSync(() -> {
@@ -2679,7 +2402,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     // -------------------------------------------------------------------------
     // Narration sequences
-    // -------------------------------------------------------------------------
+    // ------------------------------------------------------------------------- 
 
     private void playNarrationSequence(String title, String[] lines) {
         if (lines == null || lines.length == 0) return;
@@ -2687,129 +2410,6 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             if (line == null || line.isBlank()) continue;
             showNarrationSync(title, line.trim());
         }
-    }
-
-    private String[] buildAcademyNarration() {
-        return new String[] {
-                "The tall gates of Mystvale Academy open with a low groan as you step inside.",
-                "A familiar chill brushes your shoulder. Void appears, flickering softly in the light.",
-                "\"Mystvale is vast,\" the spirit says. \"The Library offers knowledge and quests. The Training Ground forges your strength.\"",
-                "\"The Principal's Office decides your eligibility, and every path beyond the academy comes with danger.\"",
-                "\"Choose your road carefully. Every place here will shape the hero you become.\""
-        };
-    }
-
-    private String[] buildLibraryNarration() {
-        return new String[] {
-                "As you step into the library, the air grows still and heavy with old paper and quiet thought.",
-                "Void flickers into view beside the shelves. \"This is Mystvale's Library. May knowledge guide you.\"",
-                "The spirit fades, leaving only the rustle of unseen pages and the promise of secrets waiting to be uncovered."
-        };
-    }
-
-    private String[] buildTrainingNarration() {
-        return new String[] {
-                "The Training Ground bursts with life: sparring steel, shouted instructions, and the rhythm of practiced movement.",
-                "A tall coach studies your stance with sharp eyes. \"Untaught, but solid. If you want to grow stronger, earn it.\"",
-                "\"Training here isn't just power,\" the coach warns. \"It's control, discipline, and the will to keep going.\""
-        };
-    }
-
-    private String[] buildPrincipalOfficeNarration() {
-        return new String[] {
-                "The doors of the Principal's Office stand tall and unyielding as you approach.",
-                "Golden light spills across the marble floor while the academy crest gleams overhead.",
-                "A secretary stops you before the inner chamber. \"Before seeing Principal Nemeesha, your progress must be verified.\"",
-                "The room falls quiet, as if even the walls are waiting to judge whether you are ready for what comes next."
-        };
-    }
-
-    private String[] buildArea1EligibilityNarration() {
-        return new String[] {
-                "Principal Nemeesha Brightwell nods as you step forward.",
-                "\"You have shown promise,\" she says. \"The Forest of Reverie will now open to you.\"",
-                "\"Do not underestimate what waits there. Even the gentlest woods may hide fangs.\""
-        };
-    }
-
-    private String[] buildArea2EligibilityNarration() {
-        return new String[] {
-                "Principal Nemeesha studies you with a steadier, more serious gaze than before.",
-                "\"Impressive progress. You have earned passage into Reverie's Edge.\"",
-                "\"It is a place that tests patience as much as strength. Keep your focus, or it will swallow you.\""
-        };
-    }
-
-    private String[] buildArea3EligibilityNarration() {
-        return new String[] {
-                "The principal's expression turns solemn as you approach her desk.",
-                "\"Few reach this point,\" she says quietly. \"The Forsaken Lands now await you.\"",
-                "\"Beyond those gates lie trials unlike any you have faced. Walk forward with courage and wisdom.\""
-        };
-    }
-
-    private String[] buildShopNarration() {
-        return new String[] {
-                "Void appears beside the shop door, calm against the academy's hush.",
-                "\"This is the supply shop,\" the spirit says. \"Weapons, potions, and the tools students depend on to survive.\"",
-                "\"Spend with intention. Not everything you need will be offered twice.\""
-        };
-    }
-
-    private String[] buildShopConversationNarration() {
-        return new String[] {
-                "You push open the creaking door, and the scent of herbs and aged wood fills the air.",
-                "A small bell jingles. Behind the counter, a moon-robed shopkeeper lifts her amethyst gaze from an open spellbook.",
-                "\"Welcome to Mystic Curiosities,\" she says. \"I'm Liora Moonveil. Handle the items wisely. They all carry stories.\""
-        };
-    }
-
-    private String[] buildInventoryNarration() {
-        return new String[] {
-                "Void emerges without a sound, its form quiet and steady beside you.",
-                "\"All that you carry tells a story,\" it says. \"Weapons, potions, relics, and the choices you've made so far.\"",
-                "\"Your space is not endless. What you keep reflects what you value. Choose wisely.\""
-        };
-    }
-
-    private String[] buildArea1Narration() {
-        return new String[] {
-                "The trees of the Forest of Reverie rise around you, ancient and watchful.",
-                "Void drifts into view. \"This is the inner forest, where your first true trials begin.\"",
-                "The spirit fades, leaving you alone with the rustle of leaves and the uneasy sense that the forest is already studying you."
-        };
-    }
-
-    private String[] buildArea2Narration() {
-        return new String[] {
-                "The air thickens as you step into Reverie's Edge, where the ground sours and the silence feels wrong.",
-                "Void flickers beside you. \"This region is harsher, crueler, and home to stronger entities. Stay sharp.\"",
-                "When the spirit vanishes, only the mist remains, curling around your path like a warning."
-        };
-    }
-
-    private String[] buildArea3Narration() {
-        return new String[] {
-                "Stone ruins and jagged towers stretch across the Forsaken Lands, vast and unnervingly alive.",
-                "Void appears with an unreadable expression. \"This is the outer region, where the strongest entities gather.\"",
-                "\"At the end of this land waits the heart of your trial. Never let your guard down.\""
-        };
-    }
-
-    private String[] buildSacrificeEndingNarration() {
-        return new String[] {
-                "The silence after Kim Morvain's fall feels almost impossible, as if the academy itself has forgotten how to breathe.",
-                "You make your choice knowing the cost. The path home will open only if something of you is left behind.",
-                "Light gathers, the curse loosens, and Mystvale fades at the edges. Your journey ends with sacrifice, but also with freedom."
-        };
-    }
-
-    private String[] buildLoopEndingNarration() {
-        return new String[] {
-                "For a heartbeat, everything seems still. Then the world bends.",
-                "Corridors shift, shadows stretch, and the academy reforms around you like a memory refusing to end.",
-                "The cycle begins again. Mystvale remains, waiting for you to walk its halls once more."
-        };
     }
 
     // -------------------------------------------------------------------------
