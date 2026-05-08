@@ -182,9 +182,9 @@ public class Narration{
         String[] shopOwner = {
             "You push open the creaking door, and the scent of herbs and aged wood fills the air. Sunlight glints off shelves stacked with mysterious trinkets and glowing vials.",
 
-            "A small bell jingles. Behind the counter, the shopkeeper peers over his spectacles.",
+            "A small bell jingles. Behind the counter, a moon-robed shopkeeper lifts her amethyst gaze from an open spellbook.",
 
-            "\"Ah! A new face,\" he says. \"Welcome to Mystic Curiosities! I\'m Kabang Cobbleton. Handle the items wisely-they have stories.. and secrets.\"",
+            "\"Ah! A new face,\" she says. \"Welcome to Mystic Curiosities! I\'m Liora Moonveil. Handle the items wisely-they have stories.. and secrets.\"",
 
             "You nod, heart racing with curiosity. Your adventure in the shop has begun."
         };
