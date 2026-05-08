@@ -575,6 +575,24 @@ final class GameWindowGraphics {
                 "assets/images/ui/" + fileName);
     }
 
+    BufferedImage loadUIImage(String fileName) {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/ui/" + fileName,
+                "src/com/ror/models/assets/images/ui/" + fileName,
+                "assets/images/ui/" + fileName);
+    }
+
+    BufferedImage loadItemImage(String fileName) {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/items/" + fileName,
+                "src/com/ror/models/assets/images/items/" + fileName,
+                "assets/images/items/" + fileName);
+    }
+
+    BufferedImage prepareShopButtonImage(String fileName) {
+        return prepareUiButtonImage(fileName);
+    }
+
     private BufferedImage prepareUiButtonImage(String fileName) {
         BufferedImage raw = loadFirstAvailableImage(
                 "/com/ror/models/assets/images/ui/" + fileName,
