@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 
 public class AdventurePanel extends JComponent {
+    private static final long serialVersionUID = 1L;
+
     private static final Color OVERLAY_DIM = new Color(12, 10, 18, 165);
     private static final Color DIALOG_BG = new Color(30, 28, 40, 246);
     private static final Color DIALOG_BORDER = new Color(93, 87, 111);
@@ -24,34 +26,42 @@ public class AdventurePanel extends JComponent {
     private final JLabel messageLabel;
     private final JPanel buttonPanel;
     private volatile int selectedIndex = -1;
-    private java.awt.SecondaryLoop secondaryLoop;
+    private transient java.awt.SecondaryLoop secondaryLoop;
     private int defaultOptionIndex = 0;
 
     public AdventurePanel(JFrame window, Font headingFont, Font bodyFont) {
         this.window = window;
         this.headingFont = headingFont != null ? headingFont : new Font("Serif", Font.BOLD, 28);
         this.bodyFont = bodyFont != null ? bodyFont : new Font("SansSerif", Font.PLAIN, 16);
+        dialogBox = new JPanel(new BorderLayout(16, 16));
+        titleLabel = new JLabel("", SwingConstants.CENTER);
+        messageLabel = new JLabel("", SwingConstants.CENTER);
+        buttonPanel = new JPanel();
+    }
+
+    public static AdventurePanel create(JFrame window, Font headingFont, Font bodyFont) {
+        AdventurePanel panel = new AdventurePanel(window, headingFont, bodyFont);
+        panel.initializeComponent();
+        return panel;
+    }
+
+    private void initializeComponent() {
         setOpaque(false);
         setLayout(null);
-
-        dialogBox = new JPanel(new BorderLayout(16, 16));
         dialogBox.setOpaque(true);
         dialogBox.setBackground(DIALOG_BG);
         dialogBox.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(DIALOG_BORDER, 2),
                 BorderFactory.createEmptyBorder(24, 24, 24, 24)));
 
-        titleLabel = new JLabel("", SwingConstants.CENTER);
         titleLabel.setForeground(DIALOG_TEXT);
         titleLabel.setFont(headingFont.deriveFont(Font.BOLD, headingFont.getSize2D()));
 
-        messageLabel = new JLabel("", SwingConstants.CENTER);
         messageLabel.setForeground(DIALOG_TEXT);
         messageLabel.setFont(bodyFont.deriveFont(Font.PLAIN, bodyFont.getSize2D()));
         messageLabel.setVerticalAlignment(SwingConstants.CENTER);
         messageLabel.setOpaque(false);
 
-        buttonPanel = new JPanel();
         buttonPanel.setOpaque(false);
         buttonPanel.setLayout(new BorderLayout());
 

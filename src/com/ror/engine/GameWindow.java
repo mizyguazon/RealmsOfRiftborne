@@ -224,10 +224,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         window.setResizable(false);
         window.setContentPane(rootPanel);
 
-        overlay = new AdventurePanel(window, getHeadingFont(30f), getBodyFont(16f));
+        overlay = AdventurePanel.create(window, getHeadingFont(30f), getBodyFont(16f));
         window.setGlassPane(overlay);
 
-        battlePanel = new BattlePanel(getHeadingFont(30f), getBodyFont(16f), this);
+        battlePanel = BattlePanel.create(getHeadingFont(30f), getBodyFont(16f), this);
 
         rootPanel.add(buildLandingScreen(), ROOT_LANDING);
         rootPanel.add(buildGameShell(), ROOT_GAME);

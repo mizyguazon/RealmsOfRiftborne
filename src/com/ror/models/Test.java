@@ -10,9 +10,7 @@ public class Test extends Hero {
         "Unknown", "Unknown", "Unknown", 
         "Delete", "Perish", "Judgement", 
         0, 0, 0, 
-        999999, 999999, 999999);
-        setMaxHp(999999);
-        setGold(99999999);
+        999999, 999999, 999999, 999999, 99999999);
         this.skillCd1 = 0;
         this.skillCd2 = 0;
         this.skillCdU = 0;

@@ -874,7 +874,9 @@ final class GameWindowGraphics {
     }
 
     private static final class PixelButton extends JButton {
-        private final ButtonSkin skin;
+        private static final long serialVersionUID = 1L;
+
+        private final transient ButtonSkin skin;
         private final Color fallbackColor;
         private boolean rollover;
 
