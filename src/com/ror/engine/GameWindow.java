@@ -1,26 +1,23 @@
 package com.ror.engine;
 
 import com.ror.models.*;
-import com.ror.models.Inventory.Inventory; //God forbid we have two Inventory classes and we import the wrong one by accident
-import com.ror.models.training.StatProgress;
-import com.ror.models.Boss.*;
+import com.ror.models.Boss.*; //God forbid we have two Inventory classes and we import the wrong one by accident
+import com.ror.models.Inventory.Inventory;
 import com.ror.models.Mobs.*;
-import com.ror.models.Entity;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.FontUIResource;
-import javax.imageio.ImageIO;
+import com.ror.models.training.StatProgress;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.plaf.FontUIResource;
 
 public class GameWindow implements BattlePanel.BattleActionListener {
 
@@ -128,6 +125,9 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private final JTextArea storyTextArea = new JTextArea();
     private final JLabel storyTitleLabel = new JLabel("Story");
     private final JLabel storyProgressLabel = new JLabel("Scene 1 / 1");
+    private Timer storyTypewriterTimer;
+    private String currentStoryLine = "";
+    private static final int STORY_TYPEWRITER_DELAY_MS = 14;
 
     private JButton forestButton;
     private JButton swampButton;
@@ -142,6 +142,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private final Object battleActionLock = new Object();
     private volatile Integer pendingBattleAction = null;
+    private final transitions transitionManager = new transitions();
 
     private Hero hero;
     private String[] currentStorySequence = new String[0];
@@ -509,29 +510,52 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         academyButton.addActionListener(event -> {
             if (requireHero()) {
                 boolean firstVisit = !hero.hasVisitedAcademy();
-                hero.setHasVisitedAcademy(true);
-                subtitleLabel.setText("Explore Mystvale Academy.");
-                showScreen(SCREEN_ACADEMY);
-                if (firstVisit) {
-                    playNarrationSequence("Academy Narration", buildAcademyNarration());
-                }
+                transitionManager.runTransition(frame,
+                        () -> {
+                            hero.setHasVisitedAcademy(true);
+                            subtitleLabel.setText("Explore Mystvale Academy.");
+                            showScreen(SCREEN_ACADEMY);
+                        },
+                        () -> {
+                            if (firstVisit) {
+                                playNarrationSequence("Academy Narration", buildAcademyNarration());
+                            }
+                        });
             }
         });
 
         JButton forestButtonLocal = createPrimaryButton("Forest of Reverie");
         forestButtonLocal.setMaximumSize(new Dimension(200, 42));
         forestButtonLocal.setAlignmentX(Component.CENTER_ALIGNMENT);
-        forestButtonLocal.addActionListener(event -> launchArea1());
+        forestButtonLocal.addActionListener(event -> {
+            if (hero != null && hero.hasUnlockedArea1()) {
+                transitionManager.runTransition(frame, null, this::launchArea1);
+            } else {
+                launchArea1();
+            }
+        });
 
         JButton edgeButton = createPrimaryButton("Reverie's Edge");
         edgeButton.setMaximumSize(new Dimension(200, 42));
         edgeButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        edgeButton.addActionListener(event -> launchArea2());
+        edgeButton.addActionListener(event -> {
+            if (hero != null && hero.hasUnlockedArea2()) {
+                transitionManager.runTransition(frame, null, this::launchArea2);
+            } else {
+                launchArea2();
+            }
+        });
 
         JButton forsakenButtonLocal = createPrimaryButton("Forsaken Lands");
         forsakenButtonLocal.setMaximumSize(new Dimension(200, 42));
         forsakenButtonLocal.setAlignmentX(Component.CENTER_ALIGNMENT);
-        forsakenButtonLocal.addActionListener(event -> launchArea3());
+        forsakenButtonLocal.addActionListener(event -> {
+            if (hero != null && hero.hasUnlockedArea3()) {
+                transitionManager.runTransition(frame, null, this::launchArea3);
+            } else {
+                launchArea3();
+            }
+        });
 
         destinations.add(academyButton);
         destinations.add(Box.createVerticalStrut(8));
@@ -595,9 +619,13 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JButton backButton = createSecondaryButton("Back to Main Menu");
         backButton.addActionListener(event -> {
-            subtitleLabel.setText("Adventure overview.");
-            refreshHeroDashboard();
-            showScreen(SCREEN_MAIN);
+            transitionManager.runTransition(frame,
+                    () -> {
+                        subtitleLabel.setText("Adventure overview.");
+                        refreshHeroDashboard();
+                        showScreen(SCREEN_MAIN);
+                    },
+                    null);
         });
 
         panel.add(libraryButton);
@@ -752,9 +780,13 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JButton backButton = createSecondaryButton("Back to Main Menu");
         backButton.addActionListener(event -> {
-            subtitleLabel.setText("Adventure overview.");
-            refreshHeroDashboard();
-            showScreen(SCREEN_MAIN);
+            transitionManager.runTransition(frame,
+                    () -> {
+                        subtitleLabel.setText("Adventure overview.");
+                        refreshHeroDashboard();
+                        showScreen(SCREEN_MAIN);
+                    },
+                    null);
         });
 
         panel.add(backButton);
@@ -792,9 +824,13 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JButton backButton = createSecondaryButton("Back to Main Menu");
         backButton.addActionListener(event -> {
-            subtitleLabel.setText("Adventure overview.");
-            refreshHeroDashboard();
-            showScreen(SCREEN_MAIN);
+            transitionManager.runTransition(frame,
+                    () -> {
+                        subtitleLabel.setText("Adventure overview.");
+                        refreshHeroDashboard();
+                        showScreen(SCREEN_MAIN);
+                    },
+                    null);
         });
 
         panel.add(backButton);
@@ -1594,7 +1630,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         title.setForeground(new Color(255, 238, 216));
         title.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
-        JLabel body = new JLabel("<html><div style='text-align:center;'>Defeat Kim Morvain and escape Mystvale Academy.</div></html>");
+        JLabel body = new JLabel(
+                "<html><div style='text-align:center;'>Defeat Kim Morvain and escape Mystvale Academy.</div></html>");
         body.setFont(getBodyFont(18f));
         body.setForeground(new Color(232, 219, 208));
         body.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1717,8 +1754,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         int safeIndex = Math.max(0, Math.min(currentStoryIndex, currentStorySequence.length - 1));
         storyProgressLabel.setText("Scene " + (safeIndex + 1) + " / " + currentStorySequence.length);
-        storyTextArea.setText(currentStorySequence[safeIndex]);
-        storyTextArea.setCaretPosition(0);
+        startStoryTypewriter(currentStorySequence[safeIndex]);
 
         boolean isLastScene = safeIndex >= currentStorySequence.length - 1;
         storyNextButton.setVisible(!isLastScene);
@@ -1726,6 +1762,11 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private void advanceStoryBeat() {
+        if (storyTypewriterTimer != null && storyTypewriterTimer.isRunning()) {
+            completeStoryTypewriter();
+            return;
+        }
+
         if (currentStoryIndex < currentStorySequence.length - 1) {
             currentStoryIndex++;
             showCurrentStoryBeat();
@@ -1735,10 +1776,49 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private void finishStorySequence(String logMessage) {
+        if (storyTypewriterTimer != null) {
+            storyTypewriterTimer.stop();
+            storyTypewriterTimer = null;
+        }
         subtitleLabel.setText("Adventure overview.");
         refreshHeroDashboard();
         showScreen(SCREEN_MAIN);
         appendLog("\n" + logMessage + "\n");
+    }
+
+    private void startStoryTypewriter(String fullText) {
+        if (storyTypewriterTimer != null) {
+            storyTypewriterTimer.stop();
+        }
+
+        currentStoryLine = fullText == null ? "" : fullText;
+        storyTextArea.setText("");
+        storyTextArea.setCaretPosition(0);
+
+        if (currentStoryLine.isEmpty()) {
+            return;
+        }
+
+        final int[] index = { 0 };
+        storyTypewriterTimer = new Timer(STORY_TYPEWRITER_DELAY_MS, event -> {
+            if (index[0] >= currentStoryLine.length()) {
+                ((Timer) event.getSource()).stop();
+                return;
+            }
+
+            index[0]++;
+            storyTextArea.setText(currentStoryLine.substring(0, index[0]));
+            storyTextArea.setCaretPosition(storyTextArea.getDocument().getLength());
+        });
+        storyTypewriterTimer.start();
+    }
+
+    private void completeStoryTypewriter() {
+        if (storyTypewriterTimer != null) {
+            storyTypewriterTimer.stop();
+        }
+        storyTextArea.setText(currentStoryLine);
+        storyTextArea.setCaretPosition(storyTextArea.getDocument().getLength());
     }
 
     private String[] buildIntroStoryForHero(Hero selectedHero) {
@@ -2422,7 +2502,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private boolean runAreaAdventure(String areaName, Entity[] encounters, int[] goldRewards, int[] xpRewards) {
-        showInfoSync(areaName, "Entering " + areaName + ".\nAll combat is button-based.");
+        showInfoSync(areaName, "Entering " + areaName + "...\nPrepare for battle!");
 
         for (int i = 0; i < encounters.length; i++) {
             Entity enemy = encounters[i];
@@ -2659,10 +2739,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         });
     }
 
-    private void showNarrationSync(String title, String message) {
+    private void showNarrationSync(String title, String message, boolean fadeIn, boolean fadeOut) {
         runOnEdtSync(() -> {
             if (overlay != null) {
-                overlay.showMessage(title, message);
+                overlay.showMessageSequence(title, message, fadeIn, fadeOut);
             }
         });
     }
@@ -3218,11 +3298,25 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             return;
         }
 
+        int visibleCount = 0;
+        for (String line : lines) {
+            if (line != null && !line.isBlank()) {
+                visibleCount++;
+            }
+        }
+        if (visibleCount == 0) {
+            return;
+        }
+
+        int shown = 0;
         for (String line : lines) {
             if (line == null || line.isBlank()) {
                 continue;
             }
-            showNarrationSync(title, line.trim());
+            boolean fadeIn = shown == 0;
+            boolean fadeOut = shown == visibleCount - 1;
+            showNarrationSync(title, line.trim(), fadeIn, fadeOut);
+            shown++;
         }
     }
 

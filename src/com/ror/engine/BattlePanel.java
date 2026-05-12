@@ -2,7 +2,6 @@ package com.ror.engine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 
 public class BattlePanel extends JPanel {
     // Battle-related fields moved from GameWindow
