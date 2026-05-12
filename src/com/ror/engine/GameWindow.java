@@ -45,6 +45,14 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private final Icon mediumManaPotionIcon = loadItemIcon("medium-mana-potion.png");
     private final Icon largeManaPotionIcon = loadItemIcon("large-mana-potion.png");
     private final Icon shopkeeperPrincipalIcon = loadPixelUiIcon("shopkeeper-principal.png", 380, 380);
+    private final BufferedImage adventureOverviewPanelImage =
+            graphics.loadMainScreenImage("adventure-overview-panel.png");
+    private final BufferedImage journeyStatusPanelImage =
+            graphics.loadMainScreenImage("journey-status-panel.png");
+    private final BufferedImage regionMapPanelImage =
+            graphics.loadMainScreenImage("region-map-panel.png");
+    private final BufferedImage travelDestinationsPanelImage =
+            graphics.loadMainScreenImage("travel-destinations-panel.png");
     private final BufferedImage shopBackgroundImage = graphics.loadUIImage("shop-background.jpg");
     private final BufferedImage shopHeaderBackgroundImage = graphics.loadUIImage("shop-header-background.png");
 
@@ -67,9 +75,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     // Theme colors
     private static final Color COLOR_BACKGROUND = new Color(227, 221, 212);
+    private static final Color COLOR_HEADER_BACKGROUND = new Color(0x0A0343);
     private static final Color COLOR_PANEL = new Color(239, 235, 228);
-    private static final Color COLOR_BATTLE_PANEL = new Color(128, 99, 84);
-    private static final Color COLOR_BATTLE_SURFACE = new Color(147, 119, 99);
+    private static final Color COLOR_BATTLE_PANEL = new Color(0x00041B);
+    private static final Color COLOR_BATTLE_SURFACE = new Color(0x00041B);
     private static final Color COLOR_BATTLE_BG = new Color(71, 54, 44);
     private static final Color COLOR_BATTLE_PLACEHOLDER = new Color(125, 100, 88);
     private static final Color COLOR_BATTLE_BORDER = new Color(109, 88, 70);
@@ -255,11 +264,16 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                     g2.dispose();
                     return;
                 }
-                super.paintComponent(graphicsContext);
+
+                Graphics2D g2 = (Graphics2D) graphicsContext.create();
+                g2.setColor(COLOR_HEADER_BACKGROUND);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+
+                g2.dispose();
             }
         };
         gameShellPanel = panel;
-        panel.setBackground(COLOR_BACKGROUND);
+        panel.setBackground(COLOR_HEADER_BACKGROUND);
 
         headerPanel = buildHeader();
         leftPane = buildLeftPane();
@@ -294,19 +308,25 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                 if (COLOR_SHOP_OUTSIDE.equals(getBackground())) {
                     return;
                 }
-                super.paintComponent(graphicsContext);
+
+                Graphics2D g2 = (Graphics2D) graphicsContext.create();
+                g2.setColor(COLOR_HEADER_BACKGROUND);
+                g2.fillRect(0, 0, getWidth(), getHeight());
+
+                g2.dispose();
             }
         };
-        panel.setBorder(BorderFactory.createEmptyBorder(18, 22, 0, 22));
+        panel.setPreferredSize(new Dimension(1280, 112));
+        panel.setBorder(BorderFactory.createEmptyBorder(18, 22, 18, 22));
         defaultHeaderBorder = panel.getBorder();
-        panel.setBackground(COLOR_BACKGROUND);
-        panel.setOpaque(false);
+        panel.setBackground(COLOR_HEADER_BACKGROUND);
+        panel.setOpaque(true);
 
         titleLabel.setFont(getHeadingFont(30f));
-        titleLabel.setForeground(COLOR_TEXT_DARK);
+        titleLabel.setForeground(Color.WHITE);
 
         subtitleLabel.setFont(getBodyFont(15f));
-        subtitleLabel.setForeground(COLOR_TEXT_MUTED);
+        subtitleLabel.setForeground(new Color(210, 224, 255));
 
         JPanel textBlock = new JPanel();
         textBlock.setLayout(new BoxLayout(textBlock, BoxLayout.Y_AXIS));
@@ -342,7 +362,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         headerExitButton = new JButton("Exit");
         headerExitButton.setFont(getBodyFont(13f).deriveFont(Font.BOLD, 13f));
-        headerExitButton.setForeground(COLOR_TEXT_DARK);
+        headerExitButton.setForeground(Color.WHITE);
         headerExitButton.setFocusPainted(false);
         headerExitButton.setContentAreaFilled(false);
         headerExitButton.setOpaque(false);
@@ -384,7 +404,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         panel.setPreferredSize(new Dimension(1220, 720));
         defaultLeftPaneBorder = BorderFactory.createEmptyBorder(0, 22, 22, 22);
         panel.setBorder(defaultLeftPaneBorder);
-        panel.setBackground(COLOR_BACKGROUND);
+        panel.setBackground(COLOR_HEADER_BACKGROUND);
+        panel.setOpaque(false);
 
         screenPanel.setOpaque(false);
         screenPanel.add(buildHomeScreen(), SCREEN_HOME);
@@ -555,26 +576,30 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private JPanel buildMainScreen() {
         JPanel panel = new JPanel(new BorderLayout(12, 12));
-        panel.setBackground(COLOR_PANEL);
+        panel.setBackground(COLOR_HEADER_BACKGROUND);
+        panel.setOpaque(true);
 
         JPanel topRow = new JPanel(new GridLayout(1, 2, 12, 0));
-        topRow.setBackground(COLOR_PANEL);
+        topRow.setOpaque(false);
 
-        JPanel adventPanel = createCardPanel();
+        JPanel adventPanel = createImageCardPanel(adventureOverviewPanelImage);
         adventPanel.setLayout(new BoxLayout(adventPanel, BoxLayout.Y_AXIS));
-        adventPanel.add(createHeading("Adventure Overview"));
+        adventPanel.add(createMainScreenHeading("Adventure Overview"));
         adventPanel.add(Box.createVerticalStrut(10));
         adventPanel.add(buildHeroSummaryCard());
 
-        JPanel statusPanel = createCardPanel();
+        JPanel statusPanel = createImageCardPanel(journeyStatusPanelImage);
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.Y_AXIS));
-        statusPanel.add(createHeading("Journey Status"));
+        statusPanel.add(createMainScreenHeading("Journey Status"));
         statusPanel.add(Box.createVerticalStrut(10));
+        journeyLocationLabel.setForeground(Color.WHITE);
+        journeyCompletionLabel.setForeground(Color.WHITE);
+        journeyObjectivesLabel.setForeground(Color.WHITE);
         statusPanel.add(journeyLocationLabel);
         statusPanel.add(Box.createVerticalStrut(8));
         statusPanel.add(journeyCompletionLabel);
         statusPanel.add(Box.createVerticalStrut(10));
-        statusPanel.add(createHeading("Objectives"));
+        statusPanel.add(createMainScreenHeading("Objectives"));
         statusPanel.add(Box.createVerticalStrut(8));
         statusPanel.add(journeyObjectivesLabel);
 
@@ -584,20 +609,14 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         JPanel midRow = new JPanel(new BorderLayout(12, 12));
         midRow.setOpaque(false);
 
-        JPanel mapCard = createCardPanel();
+        JPanel mapCard = createImageCardPanel(regionMapPanelImage);
         mapCard.setLayout(new BorderLayout(10, 10));
-        mapCard.add(createHeading("Region Map"), BorderLayout.NORTH);
+        mapCard.add(createMainScreenHeading("Region Map"), BorderLayout.NORTH);
 
-        JPanel mapPlaceholder = new JPanel();
-        mapPlaceholder.setBackground(new Color(22, 26, 24));
-        mapPlaceholder.setPreferredSize(new Dimension(760, 420));
-        mapPlaceholder.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 2));
-        mapCard.add(mapPlaceholder, BorderLayout.CENTER);
-
-        JPanel destinations = createCardPanel();
+        JPanel destinations = createImageCardPanel(travelDestinationsPanelImage);
         destinations.setLayout(new BoxLayout(destinations, BoxLayout.Y_AXIS));
 
-        JLabel destinationsTitle = createHeading("Travel Destinations");
+        JLabel destinationsTitle = createMainScreenHeading("Travel Destinations");
         destinationsTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         destinations.add(destinationsTitle);
         destinations.add(Box.createVerticalStrut(22));
@@ -946,19 +965,19 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private JPanel buildHeroSummaryCard() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(COLOR_PANEL);
+        panel.setOpaque(false);
         panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDER, 1),
+                BorderFactory.createLineBorder(new Color(130, 116, 183), 1),
                 BorderFactory.createEmptyBorder(14, 14, 14, 14)));
 
         heroNameValue.setFont(getBodyFont(20f).deriveFont(Font.BOLD, 20f));
-        heroNameValue.setForeground(COLOR_TEXT_DARK);
+        heroNameValue.setForeground(Color.WHITE);
         heroClassValue.setFont(getBodyFont(14f));
-        heroClassValue.setForeground(COLOR_TEXT_MUTED);
+        heroClassValue.setForeground(Color.WHITE);
         heroLevelValue.setFont(getBodyFont(14f));
-        heroLevelValue.setForeground(COLOR_TEXT_MUTED);
+        heroLevelValue.setForeground(Color.WHITE);
         heroGoldValue.setFont(getBodyFont(14f));
-        heroGoldValue.setForeground(COLOR_TEXT_MUTED);
+        heroGoldValue.setForeground(Color.WHITE);
 
         hpBar.setStringPainted(true);
         hpBar.setForeground(COLOR_HERO_HP);
@@ -972,11 +991,11 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JLabel healthText = new JLabel("Health");
         healthText.setFont(getBodyFont(14f).deriveFont(Font.BOLD, 14f));
-        healthText.setForeground(COLOR_TEXT_DARK);
+        healthText.setForeground(Color.WHITE);
 
         JLabel manaText = new JLabel("Mana");
         manaText.setFont(getBodyFont(14f).deriveFont(Font.BOLD, 14f));
-        manaText.setForeground(COLOR_TEXT_DARK);
+        manaText.setForeground(Color.WHITE);
 
         panel.add(heroNameValue);
         panel.add(Box.createVerticalStrut(4));
@@ -1499,6 +1518,34 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         return graphics.createCardPanel(COLOR_BORDER, COLOR_PANEL);
     }
 
+    private JPanel createImageCardPanel(BufferedImage backgroundImage) {
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics graphicsContext) {
+                Graphics2D g2 = (Graphics2D) graphicsContext.create();
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                if (backgroundImage != null) {
+                    g2.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
+                } else {
+                    g2.setColor(COLOR_PANEL);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                }
+                g2.dispose();
+                super.paintComponent(graphicsContext);
+            }
+        };
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
+        return panel;
+    }
+
+    private JLabel createMainScreenHeading(String text) {
+        JLabel label = graphics.createHeading(text, new Color(235, 250, 255));
+        label.setFont(getHeadingFont(24f));
+        return label;
+    }
+
     private Font getHeadingFont(float size) {
         return graphics.getHeadingFont(size);
     }
@@ -1574,6 +1621,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private void updateEnemySprite(Entity enemy) {
         graphics.updateEnemySprite(enemy, battlePanel);
+    }
+
+    private void updateHeroSprite() {
+        graphics.updateHeroSprite(hero, battlePanel);
     }
 
     // -------------------------------------------------------------------------
@@ -2388,6 +2439,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             } else if (enemy.getDisabled() > 0) {
                 battleLog = appendBattleLog(battleLog, enemy.getName() + " is disabled and cannot act.");
             } else {
+                playEnemyAttackAnimation(enemy);
                 battleLog = appendBattleLog(battleLog, performEnemyAction(enemy));
             }
 
@@ -2413,10 +2465,12 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private int chooseBattleAction(Entity enemy, int round, String battleTitle, String battleLog) {
         runOnEdtSync(() -> {
             battlePanel.restoreBattleButtons();
+            battlePanel.setBattleBackgroundForArea(battleTitle);
             battlePanel.getBattleTitleValue().setText(battleTitle);
             battlePanel.getBattleRoundValue().setText("Round " + round);
             battlePanel.getBattleHeroNameValue().setText(hero.getName());
             battlePanel.getBattleEnemyNameValue().setText(enemy.getName());
+            updateHeroSprite();
             updateEnemySprite(enemy);
             updateBattleBars(enemy);
             battlePanel.getBattleLogArea().setText(truncateBattleLog(battleLog));
@@ -2488,20 +2542,26 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         int enemyStunBefore = enemy.getStunned();
 
         switch (choice) {
-            case 0 -> hero.basicAttack(hero, enemy);
+            case 0 -> {
+                playHeroAttackAnimation();
+                hero.basicAttack(hero, enemy);
+            }
             case 1 -> {
                 if (hero.getMana() < hero.scaledCost(hero.getManaCostSkill1())) return "INVALID:Not enough mana for Skill 1.";
                 if (hero.getCooldown1() > 0) return "INVALID:Skill 1 is on cooldown (" + hero.getCooldown1() + ").";
+                playHeroSkill1Animation();
                 hero.skill1(hero, enemy);
             }
             case 2 -> {
                 if (hero.getMana() < hero.scaledCost(hero.getManaCostSkill2())) return "INVALID:Not enough mana for Skill 2.";
                 if (hero.getCooldown2() > 0) return "INVALID:Skill 2 is on cooldown (" + hero.getCooldown2() + ").";
+                playHeroSkill2Animation();
                 hero.skill2(hero, enemy);
             }
             case 3 -> {
                 if (hero.getMana() < hero.scaledCost(hero.getManaCostUltimate())) return "INVALID:Not enough mana for Ultimate.";
                 if (hero.getCooldownU() > 0) return "INVALID:Ultimate is on cooldown (" + hero.getCooldownU() + ").";
+                playHeroUltimateAnimation();
                 hero.ultimate(hero, enemy);
             }
             default -> { return "INVALID:Invalid action."; }
@@ -2543,6 +2603,88 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         if (stunned) text += " You are stunned.";
         if (poisoned) text += " You are poisoned.";
         return text;
+    }
+
+    private void playEnemyAttackAnimation(Entity enemy) {
+        int[] offsets = { -70, -130, -70 };
+        for (int frameIndex = 0; frameIndex < 3; frameIndex++) {
+            final int currentFrame = frameIndex;
+            final int currentOffset = offsets[frameIndex];
+            final boolean[] frameShown = { false };
+            runOnEdtSync(() -> {
+                battlePanel.setEnemySpriteOffsetX(currentOffset);
+                frameShown[0] = graphics.updateEnemyAttackFrame(enemy, battlePanel, currentFrame);
+            });
+            if (!frameShown[0]) {
+                runOnEdtSync(() -> battlePanel.setEnemySpriteOffsetX(0));
+                return;
+            }
+            sleepQuietly(120);
+        }
+
+        runOnEdtSync(() -> {
+            battlePanel.setEnemySpriteOffsetX(0);
+            updateEnemySprite(enemy);
+        });
+        sleepQuietly(80);
+    }
+
+    private void playHeroSkill1Animation() {
+        playHeroSkillAnimation(1);
+    }
+
+    private void playHeroSkill2Animation() {
+        playHeroSkillAnimation(2);
+    }
+
+    private void playHeroUltimateAnimation() {
+        playHeroActionAnimation(3);
+    }
+
+    private void playHeroAttackAnimation() {
+        playHeroActionAnimation(0);
+    }
+
+    private void playHeroSkillAnimation(int skillNumber) {
+        playHeroActionAnimation(skillNumber);
+    }
+
+    private void playHeroActionAnimation(int actionNumber) {
+        int[] offsets = { 70, 130, 70 };
+        for (int frameIndex = 0; frameIndex < 3; frameIndex++) {
+            final int currentFrame = frameIndex;
+            final int currentOffset = offsets[frameIndex];
+            final boolean[] frameShown = { false };
+            runOnEdtSync(() -> {
+                battlePanel.setHeroSpriteOffsetX(currentOffset);
+                frameShown[0] = switch (actionNumber) {
+                    case 0 -> graphics.updateHeroAttackFrame(hero, battlePanel, currentFrame);
+                    case 1 -> graphics.updateHeroSkill1Frame(hero, battlePanel, currentFrame);
+                    case 2 -> graphics.updateHeroSkill2Frame(hero, battlePanel, currentFrame);
+                    case 3 -> graphics.updateHeroUltimateFrame(hero, battlePanel, currentFrame);
+                    default -> false;
+                };
+            });
+            if (!frameShown[0]) {
+                runOnEdtSync(() -> battlePanel.setHeroSpriteOffsetX(0));
+                return;
+            }
+            sleepQuietly(120);
+        }
+
+        runOnEdtSync(() -> {
+            battlePanel.setHeroSpriteOffsetX(0);
+            updateHeroSprite();
+        });
+        sleepQuietly(60);
+    }
+
+    private void sleepQuietly(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private int selectEnemyAction(Entity enemy) {
@@ -2857,38 +2999,39 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean isBattleScreen = SCREEN_BATTLE.equals(screenName);
         boolean isShopScreen = SCREEN_SHOP.equals(screenName);
+        Color normalScreenBackground = COLOR_HEADER_BACKGROUND;
         if (headerPanel != null) headerPanel.setVisible(!isBattleScreen);
         if (gameShellPanel != null) {
-            gameShellPanel.setBackground(isShopScreen ? COLOR_SHOP_OUTSIDE : COLOR_BACKGROUND);
+            gameShellPanel.setBackground(isShopScreen ? COLOR_SHOP_OUTSIDE : normalScreenBackground);
         }
         if (headerExitButton != null) {
             boolean hideExit = SCREEN_CHARACTER.equals(screenName) || SCREEN_STORY.equals(screenName);
             headerExitButton.setVisible(!hideExit);
-            headerExitButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
+            headerExitButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : Color.WHITE);
             headerExitButton.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
         }
         if (headerBackButton != null) {
             headerBackButton.setVisible(isShopScreen);
-            headerBackButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
+            headerBackButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : Color.WHITE);
             headerBackButton.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
         }
         if (headerPanel != null) {
-            headerPanel.setBackground(isShopScreen ? COLOR_SHOP_OUTSIDE : COLOR_BACKGROUND);
+            headerPanel.setBackground(isShopScreen ? COLOR_SHOP_OUTSIDE : COLOR_HEADER_BACKGROUND);
             headerPanel.setOpaque(!isShopScreen);
             headerPanel.setBorder(isShopScreen
                     ? BorderFactory.createEmptyBorder(18, 22, 14, 22)
                     : defaultHeaderBorder);
         }
-        titleLabel.setForeground(isShopScreen ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
-        subtitleLabel.setForeground(isShopScreen ? COLOR_SHOP_TEXT_MUTED : COLOR_TEXT_MUTED);
+        titleLabel.setForeground(isShopScreen ? COLOR_SHOP_TEXT : Color.WHITE);
+        subtitleLabel.setForeground(isShopScreen ? COLOR_SHOP_TEXT_MUTED : new Color(210, 224, 255));
         if (leftPane != null) {
-            leftPane.setBackground(isBattleScreen ? COLOR_BATTLE_PANEL : isShopScreen ? COLOR_SHOP_OUTSIDE : COLOR_BACKGROUND);
+            leftPane.setBackground(isBattleScreen ? COLOR_BATTLE_PANEL : isShopScreen ? COLOR_SHOP_OUTSIDE : normalScreenBackground);
             leftPane.setOpaque(!isShopScreen);
             leftPane.setBorder(isBattleScreen ? BorderFactory.createEmptyBorder() : defaultLeftPaneBorder);
         }
         if (screenPanel != null) {
             screenPanel.setOpaque(isBattleScreen);
-            screenPanel.setBackground(isBattleScreen ? COLOR_BATTLE_PANEL : isShopScreen ? COLOR_SHOP_OUTSIDE : COLOR_BACKGROUND);
+            screenPanel.setBackground(isBattleScreen ? COLOR_BATTLE_PANEL : isShopScreen ? COLOR_SHOP_OUTSIDE : normalScreenBackground);
         }
     }
 

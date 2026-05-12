@@ -1,7 +1,12 @@
 package com.ror.engine;
 
 import com.ror.models.Entity;
+import com.ror.models.Hero;
+import com.ror.models.Boss.Elderthorn;
 import com.ror.models.Mobs.Goblin;
+import com.ror.models.Mobs.MudLurker;
+import com.ror.models.Mobs.Slime;
+import com.ror.models.Swordsman;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -354,7 +359,7 @@ final class GameWindowGraphics {
             BufferedImage placeholder = loadImageAsset(ENEMY_IMAGE_DIRECTORY + "placeholder.png");
             if (placeholder != null) {
                 battlePanel.getBattleEnemySpriteLabel().setText("");
-                battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(placeholder, 96, 96));
+                battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(placeholder, 72, 72));
             } else {
                 battlePanel.getBattleEnemySpriteLabel().setIcon(null);
                 battlePanel.getBattleEnemySpriteLabel().setText("");
@@ -362,7 +367,75 @@ final class GameWindowGraphics {
             return;
         }
         battlePanel.getBattleEnemySpriteLabel().setText("");
-        battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, 96, 96));
+        battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemySpriteSize(enemy), getEnemySpriteSize(enemy)));
+    }
+
+    void updateHeroSprite(Hero hero, BattlePanel battlePanel) {
+        BufferedImage sprite = loadHeroBattleSprite(hero);
+        if (sprite == null) {
+            battlePanel.getBattleHeroSpriteLabel().setIcon(null);
+            battlePanel.getBattleHeroSpriteLabel().setText("");
+            return;
+        }
+
+        battlePanel.getBattleHeroSpriteLabel().setText("");
+        battlePanel.getBattleHeroSpriteLabel().setIcon(createScaledSpriteIcon(sprite, getHeroSpriteSize(hero), getHeroSpriteSize(hero)));
+    }
+
+    boolean updateHeroSkill1Frame(Hero hero, BattlePanel battlePanel, int frameIndex) {
+        return updateHeroActionFrame(hero, battlePanel, "Neo-Skill1.png", frameIndex);
+    }
+
+    boolean updateHeroSkill2Frame(Hero hero, BattlePanel battlePanel, int frameIndex) {
+        return updateHeroActionFrame(hero, battlePanel, "Neo-Skill2.png", frameIndex);
+    }
+
+    boolean updateHeroAttackFrame(Hero hero, BattlePanel battlePanel, int frameIndex) {
+        return updateHeroActionFrame(hero, battlePanel, "Neo-Attack.png", frameIndex);
+    }
+
+    boolean updateHeroUltimateFrame(Hero hero, BattlePanel battlePanel, int frameIndex) {
+        return updateHeroActionFrame(hero, battlePanel, "Neo-Ultimate.png", frameIndex);
+    }
+
+    private boolean updateHeroActionFrame(Hero hero, BattlePanel battlePanel, String sheetName, int frameIndex) {
+        BufferedImage sprite = loadHeroActionFrame(hero, sheetName, frameIndex);
+        if (sprite == null) {
+            return false;
+        }
+
+        battlePanel.getBattleHeroSpriteLabel().setText("");
+        battlePanel.getBattleHeroSpriteLabel().setIcon(createScaledSpriteIcon(sprite, getHeroSkillSpriteSize(hero), getHeroSkillSpriteSize(hero)));
+        return true;
+    }
+
+    boolean updateEnemyAttackFrame(Entity enemy, BattlePanel battlePanel, int frameIndex) {
+        BufferedImage sprite = loadEnemyAttackFrame(enemy, frameIndex);
+        if (sprite == null) {
+            return false;
+        }
+
+        battlePanel.getBattleEnemySpriteLabel().setText("");
+        battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemySpriteSize(enemy), getEnemySpriteSize(enemy)));
+        return true;
+    }
+
+    private int getEnemySpriteSize(Entity enemy) {
+        if (enemy instanceof Goblin) return 132;
+        if (enemy instanceof Slime) return 132;
+        if (enemy instanceof MudLurker) return 145;
+        if (enemy instanceof Elderthorn) return 150;
+        return 96;
+    }
+
+    private int getHeroSpriteSize(Hero hero) {
+        if (hero instanceof Swordsman) return 140;
+        return 96;
+    }
+
+    private int getHeroSkillSpriteSize(Hero hero) {
+        if (hero instanceof Swordsman) return 190;
+        return 128;
     }
 
     private JButton createStyledButton(String text, ButtonSkin skin, Color fallbackColor,
@@ -598,6 +671,13 @@ final class GameWindowGraphics {
                 "assets/images/ui/" + fileName);
     }
 
+    BufferedImage loadMainScreenImage(String fileName) {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/mainscreen/" + fileName,
+                "src/com/ror/models/assets/images/mainscreen/" + fileName,
+                "assets/images/mainscreen/" + fileName);
+    }
+
     BufferedImage loadItemImage(String fileName) {
         return loadFirstAvailableImage(
                 "/com/ror/models/assets/images/items/" + fileName,
@@ -749,7 +829,11 @@ final class GameWindowGraphics {
 
         boolean chromaGreen = green >= 150 && red <= 120 && blue <= 120 && (green - red) >= 40;
         boolean screenshotWhite = red >= 245 && green >= 245 && blue >= 245;
-        return chromaGreen || screenshotWhite;
+        boolean checkerLight = red >= 190 && green >= 190 && blue >= 190
+                && Math.abs(red - green) <= 18
+                && Math.abs(red - blue) <= 18
+                && Math.abs(green - blue) <= 18;
+        return chromaGreen || screenshotWhite || checkerLight;
     }
 
     private Icon createScaledSpriteIcon(BufferedImage sprite, int targetWidth, int targetHeight) {
@@ -836,8 +920,73 @@ final class GameWindowGraphics {
 
     private BufferedImage loadEnemySprite(Entity enemy) {
         if (enemy == null) return null;
-        if (enemy instanceof Goblin) return loadImageAsset(ENEMY_IMAGE_DIRECTORY + "goblin.png");
+        if (enemy instanceof Goblin) return loadEnemyImage("goblin.png");
+        if (enemy instanceof Slime) return loadEnemyImage("slime.png");
+        if (enemy instanceof MudLurker) return loadEnemyImage("mudlurker.png");
+        if (enemy instanceof Elderthorn) return loadEnemyImage("elderthorn.png");
         return null;
+    }
+
+    private BufferedImage loadEnemyAttackFrame(Entity enemy, int frameIndex) {
+        if (enemy instanceof Goblin || enemy instanceof Slime) {
+            String[] frames = { "goblin-frame2.png", "goblin-frame3.png", "goblin-frame4.png" };
+            if (frameIndex >= 0 && frameIndex < frames.length) {
+                return loadEnemyImage(frames[frameIndex]);
+            }
+        }
+        if (enemy instanceof Elderthorn) {
+            String[] frames = { "elderthorn-frame2.png", "elderthorn-frame3.png", "elderthorn-frame4.png" };
+            if (frameIndex >= 0 && frameIndex < frames.length) {
+                return loadEnemyImage(frames[frameIndex]);
+            }
+        }
+        if (enemy instanceof MudLurker) {
+            String[] frames = { "mudlurker-frame2.png", "mudlurker-frame3.png", "mudlurker-frame4.png" };
+            if (frameIndex >= 0 && frameIndex < frames.length) {
+                return loadEnemyImage(frames[frameIndex]);
+            }
+        }
+        return null;
+    }
+
+    private BufferedImage loadEnemyImage(String fileName) {
+        BufferedImage image = loadFirstAvailableImage(
+                "/com/ror/models/assets/images/enemies/" + fileName,
+                "src/com/ror/models/assets/images/enemies/" + fileName,
+                ENEMY_IMAGE_DIRECTORY + fileName);
+        return image == null ? null : removeCornerBackground(image);
+    }
+
+    private BufferedImage loadHeroBattleSprite(Hero hero) {
+        if (hero instanceof Swordsman) {
+            return loadHeroImage("neo/Neo-idle.png");
+        }
+        return null;
+    }
+
+    private BufferedImage loadHeroActionFrame(Hero hero, String sheetName, int frameIndex) {
+        if (hero instanceof Swordsman) {
+            BufferedImage sheet = loadHeroImage("neo/skills/" + sheetName);
+            if (sheet == null) {
+                return null;
+            }
+
+            int frameCount = 3;
+            if (frameIndex < 0 || frameIndex >= frameCount) {
+                return null;
+            }
+
+            int frameWidth = sheet.getWidth() / frameCount;
+            return sheet.getSubimage(frameIndex * frameWidth, 0, frameWidth, sheet.getHeight());
+        }
+        return null;
+    }
+
+    private BufferedImage loadHeroImage(String path) {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/heroes/" + path,
+                "src/com/ror/models/assets/images/heroes/" + path,
+                HERO_IMAGE_DIRECTORY + path);
     }
 
     private ButtonSkin loadButtonSkin(String baseName) {

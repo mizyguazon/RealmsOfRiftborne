@@ -1,8 +1,12 @@
 package com.ror.engine;
 
 import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class BattlePanel extends JPanel {
     // Battle-related fields moved from GameWindow
@@ -14,7 +18,7 @@ public class BattlePanel extends JPanel {
     private final JLabel battleHeroSpriteLabel = new JLabel(
             new ImageIcon("src/com/ror/models/assets/images/heroes/placeholder.png"));
     private final JLabel battleEnemySpriteLabel = new JLabel(
-            new ImageIcon("src/com/ror/models/assets/images/enemies/placeholder.png"));
+            createBattleSpriteIcon("src/com/ror/models/assets/images/enemies/goblin.png", 72));
     private final JProgressBar battleHeroHpBar = new JProgressBar();
     private final JProgressBar battleHeroManaBar = new JProgressBar();
     private final JProgressBar battleEnemyHpBar = new JProgressBar();
@@ -23,6 +27,7 @@ public class BattlePanel extends JPanel {
     private JPanel battleActionCards;
     private JPanel battleButtonsPanel;
     private JPanel battleImagePanel;
+    private JPanel battleSpriteStrip;
     private JButton battleBasicButton;
     private JButton battlePotionButton;
     private JButton battleRunButton;
@@ -30,29 +35,37 @@ public class BattlePanel extends JPanel {
     private JButton battleSkill2Button;
     private JButton battleUltimateButton;
     private boolean battleButtonsVisible = true;
+    private int heroSpriteOffsetX = 0;
+    private int enemySpriteOffsetX = 0;
 
     // Colors
-    private static final Color COLOR_BATTLE_PANEL = new Color(128, 99, 84);
-    private static final Color COLOR_BATTLE_SCREEN_BG = new Color(239, 235, 228);
-    private static final Color COLOR_BATTLE_SURFACE = new Color(147, 119, 99);
-    private static final Color COLOR_BATTLE_SURFACE_HOVER = new Color(161, 132, 110);
-    private static final Color COLOR_BATTLE_SURFACE_PRESSED = new Color(126, 101, 84);
-    private static final Color COLOR_BATTLE_SURFACE_DISABLED = new Color(132, 118, 107);
-    private static final Color COLOR_BATTLE_BG = new Color(71, 54, 44);
-    private static final Color COLOR_BATTLE_PLACEHOLDER = new Color(125, 100, 88);
-    private static final Color COLOR_BATTLE_BORDER = new Color(109, 88, 70);
-    private static final Color COLOR_BATTLE_TITLE = new Color(46, 31, 20);
-    private static final Color COLOR_BATTLE_INFO_SURFACE = new Color(239, 235, 228);
-    private static final Color COLOR_BATTLE_INFO_TEXT = new Color(46, 31, 20);
+    private static final Color COLOR_BATTLE_PANEL = new Color(0x00041B);
+    private static final Color COLOR_BATTLE_SCREEN_BG = new Color(0x00041B);
+    private static final Color COLOR_BATTLE_SURFACE = new Color(0x00041B);
+    private static final Color COLOR_BATTLE_SURFACE_HOVER = new Color(0x06144A);
+    private static final Color COLOR_BATTLE_SURFACE_PRESSED = new Color(0x00020F);
+    private static final Color COLOR_BATTLE_SURFACE_DISABLED = new Color(0x11162A);
+    private static final Color COLOR_BATTLE_BG = new Color(0x00041B);
+    private static final Color COLOR_BATTLE_PLACEHOLDER = new Color(0x00041B);
+    private static final Color COLOR_BATTLE_BORDER = new Color(20, 49, 126);
+    private static final Color COLOR_BATTLE_BUTTON_AREA = new Color(0, 2, 14);
+    private static final Color COLOR_BATTLE_BUTTON_BORDER = new Color(20, 49, 126);
+    private static final Color COLOR_BATTLE_TITLE = Color.WHITE;
+    private static final Color COLOR_BATTLE_INFO_SURFACE = new Color(0x00041B);
+    private static final Color COLOR_BATTLE_INFO_TEXT = Color.WHITE;
     private static final Color COLOR_TEXT_DARK = Color.WHITE;
     private static final Color COLOR_TEXT_MUTED = Color.WHITE;
     private static final Color COLOR_BORDER = Color.decode("#4D5B9E");
     private static final Color COLOR_HERO_HP = new Color(164, 54, 54);
     private static final Color COLOR_HERO_MANA = new Color(52, 92, 156);
+    private static final String COMBAT_IMAGE_DIRECTORY = "src/com/ror/models/assets/images/combat/";
+    private static final String FOREST_REVERIE_BATTLE_BACKGROUND = "forest_reverie_battle_background_panel.png";
+    private static final String ENEMY_SUMMARY_PANEL = "enemy_summary_panel.png";
 
     private final Font headingFont;
     private final Font bodyFont;
     private final BattleActionListener actionListener;
+    private BufferedImage battleArenaBackgroundImage;
 
     public interface BattleActionListener {
         void onBattleAction(int action);
@@ -84,9 +97,9 @@ public class BattlePanel extends JPanel {
         topRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 160));
 
         JPanel enemySummary = createEnemySummaryPanel();
-        enemySummary.setPreferredSize(new Dimension(660, 108));
-        enemySummary.setMinimumSize(new Dimension(660, 108));
-        enemySummary.setMaximumSize(new Dimension(660, 108));
+        enemySummary.setPreferredSize(new Dimension(760, 118));
+        enemySummary.setMinimumSize(new Dimension(760, 118));
+        enemySummary.setMaximumSize(new Dimension(760, 118));
 
         JPanel titleWrap = new JPanel(new FlowLayout(FlowLayout.LEFT, 22, 10));
         titleWrap.setOpaque(false);
@@ -124,11 +137,11 @@ public class BattlePanel extends JPanel {
 
         battleButtonsPanel = new JPanel(new GridLayout(1, 3, 18, 0));
         battleButtonsPanel.setOpaque(true);
-        battleButtonsPanel.setBackground(COLOR_BATTLE_PANEL);
+        battleButtonsPanel.setBackground(COLOR_BATTLE_BUTTON_AREA);
         battleButtonsPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BATTLE_BORDER, 1),
+                BorderFactory.createLineBorder(COLOR_BATTLE_BUTTON_BORDER, 1),
                 BorderFactory.createEmptyBorder(14, 14, 14, 14)));
-        battleButtonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 88));
+        battleButtonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 108));
         battleButtonsPanel.add(battleBasicButton);
         battleButtonsPanel.add(battlePotionButton);
         battleButtonsPanel.add(battleRunButton);
@@ -136,9 +149,9 @@ public class BattlePanel extends JPanel {
         JPanel attackPanel = new JPanel();
         attackPanel.setLayout(new BoxLayout(attackPanel, BoxLayout.Y_AXIS));
         attackPanel.setOpaque(true);
-        attackPanel.setBackground(COLOR_BATTLE_PANEL);
+        attackPanel.setBackground(COLOR_BATTLE_BUTTON_AREA);
         attackPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BATTLE_BORDER, 1),
+                BorderFactory.createLineBorder(COLOR_BATTLE_BUTTON_BORDER, 1),
                 BorderFactory.createEmptyBorder(16, 16, 16, 16)));
         JPanel attackRow = new JPanel(new GridLayout(1, 3, 18, 0));
         attackRow.setOpaque(false);
@@ -151,7 +164,7 @@ public class BattlePanel extends JPanel {
         attackPanel.add(Box.createVerticalStrut(16));
         JPanel ultimateRow = new JPanel(new GridLayout(1, 1));
         ultimateRow.setOpaque(false);
-        battleUltimateButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 56));
+        battleUltimateButton.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
         ultimateRow.add(battleUltimateButton);
         attackPanel.add(ultimateRow);
 
@@ -192,7 +205,36 @@ public class BattlePanel extends JPanel {
         return bodyFont.deriveFont(size);
     }
 
+    private static Icon createBattleSpriteIcon(String path, int size) {
+        try {
+            BufferedImage sprite = ImageIO.read(new File(path));
+            BufferedImage scaled = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D graphics2D = scaled.createGraphics();
+            graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                    RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+
+            int drawWidth = sprite.getWidth();
+            int drawHeight = sprite.getHeight();
+            double scale = Math.min((double) size / drawWidth, (double) size / drawHeight);
+            int scaledWidth = Math.max(1, (int) Math.round(drawWidth * scale));
+            int scaledHeight = Math.max(1, (int) Math.round(drawHeight * scale));
+            int x = (size - scaledWidth) / 2;
+            int y = (size - scaledHeight) / 2;
+
+            graphics2D.drawImage(sprite, x, y, scaledWidth, scaledHeight, null);
+            graphics2D.dispose();
+            return new ImageIcon(scaled);
+        } catch (IOException exception) {
+            return null;
+        }
+    }
+
     private JButton createBattleButton(String text) {
+        BufferedImage image = loadBattleButtonImage(text);
+        if (image != null) {
+            return createImageBattleButton(text, image, getBattleButtonSourceBounds(text, image));
+        }
+
         JButton button = new JButton(text) {
             @Override
             protected void paintComponent(Graphics graphics) {
@@ -232,6 +274,85 @@ public class BattlePanel extends JPanel {
         button.setOpaque(false);
         button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 56));
         return button;
+    }
+
+    private JButton createImageBattleButton(String text, BufferedImage image, Rectangle sourceBounds) {
+        JButton button = new JButton() {
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                Graphics2D graphics2D = (Graphics2D) graphics.create();
+                graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
+                        RenderingHints.VALUE_RENDER_QUALITY);
+                graphics2D.drawImage(image,
+                        0, 0, getWidth(), getHeight(),
+                        sourceBounds.x, sourceBounds.y,
+                        sourceBounds.x + sourceBounds.width,
+                        sourceBounds.y + sourceBounds.height,
+                        null);
+
+                ButtonModel model = getModel();
+                if (!model.isEnabled()) {
+                    graphics2D.setColor(new Color(5, 7, 15, 135));
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                } else if (model.isPressed()) {
+                    graphics2D.setColor(new Color(0, 0, 0, 65));
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                } else if (model.isRollover()) {
+                    graphics2D.setColor(new Color(40, 121, 255, 28));
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                }
+                graphics2D.dispose();
+            }
+        };
+        button.setName(text);
+        button.getAccessibleContext().setAccessibleName(text);
+        button.setBorder(BorderFactory.createEmptyBorder());
+        button.setFocusPainted(false);
+        button.setRolloverEnabled(true);
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
+        button.setPreferredSize(new Dimension(image.getWidth(), 78));
+        return button;
+    }
+
+    private Rectangle getBattleButtonSourceBounds(String text, BufferedImage image) {
+        return switch (text) {
+            case "Fight", "Inventory", "Run" -> new Rectangle(0, 0, image.getWidth(), image.getHeight());
+            case "Attack" -> new Rectangle(6, 12, 298, 153);
+            case "Skill 1" -> new Rectangle(0, 12, 277, 153);
+            case "Skill 2" -> new Rectangle(0, 12, 321, 153);
+            case "Ultimate" -> new Rectangle(6, 0, 970, 128);
+            default -> new Rectangle(0, 0, image.getWidth(), image.getHeight());
+        };
+    }
+
+    private BufferedImage loadBattleButtonImage(String text) {
+        String fileName = switch (text) {
+            case "Fight" -> "fight_button_panel.png";
+            case "Inventory" -> "inventory_button_panel.png";
+            case "Run" -> "run_button_panel.png";
+            case "Attack" -> "attack_button_panel.png";
+            case "Skill 1" -> "skill1_button_panel.png";
+            case "Skill 2" -> "skill2_button_panel.png";
+            case "Ultimate" -> "ultimate_button_panel.png";
+            default -> null;
+        };
+        if (fileName == null) {
+            return null;
+        }
+
+        return loadCombatImage(fileName);
+    }
+
+    private BufferedImage loadCombatImage(String fileName) {
+        try {
+            return ImageIO.read(new File(COMBAT_IMAGE_DIRECTORY + fileName));
+        } catch (IOException exception) {
+            return null;
+        }
     }
 
     private JPanel createBattleSummaryCard(String label, JLabel name, JProgressBar hp, JProgressBar mana) {
@@ -321,19 +442,49 @@ public class BattlePanel extends JPanel {
     private JPanel createBattleArenaPanel() {
         JPanel arena = new JPanel(new BorderLayout());
         arena.setOpaque(true);
-        arena.setBackground(COLOR_BATTLE_BG);
-        arena.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDER, 1),
-                BorderFactory.createEmptyBorder(16, 16, 16, 16)));
-        arena.setPreferredSize(new Dimension(0, 260));
+        arena.setBackground(COLOR_BATTLE_BUTTON_AREA);
+        arena.setBorder(BorderFactory.createLineBorder(COLOR_BATTLE_BUTTON_BORDER, 1));
+        arena.setPreferredSize(new Dimension(0, 300));
 
-        JPanel spriteStrip = new JPanel();
-        spriteStrip.setLayout(new BoxLayout(spriteStrip, BoxLayout.X_AXIS));
+        JPanel spriteStrip = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                super.paintComponent(graphics);
+                if (battleArenaBackgroundImage == null) {
+                    return;
+                }
+
+                Graphics2D graphics2D = (Graphics2D) graphics.create();
+                graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                graphics2D.drawImage(battleArenaBackgroundImage, 0, 0, getWidth(), getHeight(), null);
+                graphics2D.dispose();
+            }
+
+            @Override
+            public void doLayout() {
+                Dimension heroSize = battleHeroSpriteLabel.getPreferredSize();
+                Dimension enemySize = battleEnemySpriteLabel.getPreferredSize();
+                int groundY = Math.max(12, getHeight() - 44);
+                int heroX = Math.max(34, Math.round((getWidth() * 0.44f) - (heroSize.width / 2f)) + heroSpriteOffsetX);
+                int enemyX = Math.max(34, Math.round((getWidth() * 0.56f) - (enemySize.width / 2f)) + enemySpriteOffsetX);
+
+                battleHeroSpriteLabel.setBounds(
+                        heroX,
+                        Math.max(8, groundY - heroSize.height),
+                        heroSize.width,
+                        heroSize.height);
+                battleEnemySpriteLabel.setBounds(
+                        enemyX,
+                        Math.max(8, groundY - enemySize.height),
+                        enemySize.width,
+                        enemySize.height);
+            }
+        };
+        battleSpriteStrip = spriteStrip;
+        spriteStrip.setLayout(null);
         spriteStrip.setOpaque(true);
-        spriteStrip.setBackground(COLOR_BATTLE_PLACEHOLDER);
-        spriteStrip.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BATTLE_BORDER, 1),
-                BorderFactory.createEmptyBorder(8, 16, 8, 16)));
+        spriteStrip.setBackground(COLOR_BATTLE_BUTTON_AREA);
 
         battleHeroSpriteLabel.setHorizontalAlignment(SwingConstants.LEFT);
         battleHeroSpriteLabel.setVerticalAlignment(SwingConstants.CENTER);
@@ -341,7 +492,6 @@ public class BattlePanel extends JPanel {
         battleEnemySpriteLabel.setVerticalAlignment(SwingConstants.CENTER);
 
         spriteStrip.add(battleHeroSpriteLabel);
-        spriteStrip.add(Box.createHorizontalGlue());
         spriteStrip.add(battleEnemySpriteLabel);
         arena.add(spriteStrip, BorderLayout.CENTER);
 
@@ -349,15 +499,28 @@ public class BattlePanel extends JPanel {
     }
 
     private JPanel createEnemySummaryPanel() {
-        JPanel card = new JPanel(new BorderLayout(20, 0));
-        card.setOpaque(true);
-        card.setBackground(COLOR_BATTLE_INFO_SURFACE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDER, 1),
-                BorderFactory.createEmptyBorder(10, 14, 10, 14)));
+        BufferedImage backgroundImage = loadCombatImage(ENEMY_SUMMARY_PANEL);
+        JPanel card = new JPanel(new BorderLayout(20, 0)) {
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                Graphics2D graphics2D = (Graphics2D) graphics.create();
+                graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                if (backgroundImage != null) {
+                    graphics2D.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), null);
+                } else {
+                    graphics2D.setColor(COLOR_BATTLE_INFO_SURFACE);
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                }
+                graphics2D.dispose();
+                super.paintComponent(graphics);
+            }
+        };
+        card.setOpaque(false);
+        card.setBorder(BorderFactory.createEmptyBorder(18, 28, 18, 28));
 
         battleEnemyNameValue.setForeground(COLOR_BATTLE_INFO_TEXT);
-        battleEnemyNameValue.setFont(getBodyFont(20f).deriveFont(Font.BOLD, 20f));
+        battleEnemyNameValue.setFont(getBodyFont(22f).deriveFont(Font.BOLD, 22f));
         battleEnemyNameValue.setHorizontalAlignment(SwingConstants.LEFT);
 
         battleEnemyHpBar.setForeground(COLOR_HERO_HP);
@@ -434,6 +597,39 @@ public class BattlePanel extends JPanel {
         battleSkill1Button.setEnabled(enabled);
         battleSkill2Button.setEnabled(enabled);
         battleUltimateButton.setEnabled(enabled);
+    }
+
+    public void setHeroSpriteOffsetX(int offsetX) {
+        heroSpriteOffsetX = offsetX;
+        refreshBattleSpriteLayout();
+    }
+
+    public void setEnemySpriteOffsetX(int offsetX) {
+        enemySpriteOffsetX = offsetX;
+        refreshBattleSpriteLayout();
+    }
+
+    public void resetBattleSpriteOffsets() {
+        heroSpriteOffsetX = 0;
+        enemySpriteOffsetX = 0;
+        refreshBattleSpriteLayout();
+    }
+
+    private void refreshBattleSpriteLayout() {
+        if (battleSpriteStrip != null) {
+            battleSpriteStrip.revalidate();
+            battleSpriteStrip.repaint();
+        }
+    }
+
+    public void setBattleBackgroundForArea(String areaName) {
+        battleArenaBackgroundImage = "Forest of Reverie".equals(areaName)
+                ? loadCombatImage(FOREST_REVERIE_BATTLE_BACKGROUND)
+                : null;
+
+        if (battleSpriteStrip != null) {
+            battleSpriteStrip.repaint();
+        }
     }
 
     // Getters for updating UI
