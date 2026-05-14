@@ -1,0 +1,441 @@
+//From previous project    
+    @Override
+    public void doLayout() {
+        super.doLayout();
+
+        if (exitOverlay != null) {
+            exitOverlay.setBounds(0, 0, getWidth(), getHeight());
+
+            Component popup = null;
+            for (Component c : exitOverlay.getComponents()) {
+                if ("exitWindow".equals(c.getName())) {
+                    popup = c;
+                    break;
+                }
+            }
+
+            if (popup != null) {
+                popup.setLocation(
+                        (exitOverlay.getWidth() - popup.getWidth()) / 2,
+                        (exitOverlay.getHeight() - popup.getHeight()) / 2);
+            }
+        }
+
+        if (storyOverlay != null) {
+            storyOverlay.setBounds(0, 0, getWidth(), getHeight());
+
+            for (Component c : storyOverlay.getComponents()) {
+                if ("storyBox".equals(c.getName())) {
+                    c.setLocation(
+                            (storyOverlay.getWidth() - c.getWidth()) / 2,
+                            (storyOverlay.getHeight() - c.getHeight()) / 2);
+                }
+            }
+        }
+
+        if (tutorialOverlay != null) {
+            tutorialOverlay.setBounds(0, 0, getWidth(), getHeight());
+        }
+
+        if (endOverlay != null) {
+            endOverlay.setBounds(0, 0, getWidth(), getHeight());
+            for (Component c : endOverlay.getComponents()) {
+                if ("endOverlayBox".equals(c.getName())) {
+                    c.setLocation(
+                            (endOverlay.getWidth() - c.getWidth()) / 2,
+                            (endOverlay.getHeight() - c.getHeight()) / 2);
+                }
+            }
+        }
+
+        for (Component c : tutorialOverlay.getComponents()) {
+            if ("tutorialBox".equals(c.getName())) {
+                c.setLocation(
+                        (tutorialOverlay.getWidth() - c.getWidth()) / 2,
+                        (tutorialOverlay.getHeight() - c.getHeight()) / 2);
+            }
+        }
+    }
+
+    // ===============================================//
+    @Override
+    public void addNotify() {
+        super.addNotify();
+
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        if (frame != null && glass == null) {
+            glass = (JPanel) frame.getGlassPane();
+            glass.setLayout(null);
+            glass.setOpaque(false);
+
+            createExitOverlay();
+            createStoryOverlay();
+            createTutorialOverlay();
+            createEndOverlay();
+
+            // battle UI becomes unclickable
+            glass.addMouseListener(new MouseAdapter() {
+            });
+            glass.addMouseMotionListener(new MouseMotionAdapter() {
+            });
+
+            if (glass != null && exitOverlay != null && exitOverlay.getParent() != glass) {
+                glass.add(exitOverlay);
+                exitOverlay.setBounds(0, 0, getWidth(), getHeight());
+                glass.revalidate();
+                glass.repaint();
+            }
+
+            if (glass != null && tutorialOverlay != null && tutorialOverlay.getParent() != glass) {
+                glass.add(tutorialOverlay);
+                tutorialOverlay.setBounds(0, 0, getWidth(), getHeight());
+                glass.revalidate();
+                glass.repaint();
+            }
+
+            if (glass != null && storyOverlay != null && storyOverlay.getParent() != glass) {
+                glass.add(storyOverlay);
+                storyOverlay.setBounds(0, 0, getWidth(), getHeight());
+                glass.revalidate();
+                glass.repaint();
+            }
+
+            if (glass != null && endOverlay != null && endOverlay.getParent() != glass) {
+                glass.add(endOverlay);
+                endOverlay.setBounds(0, 0, getWidth(), getHeight());
+                glass.revalidate();
+                glass.repaint();
+            }
+
+            for (Component c : storyOverlay.getComponents()) {
+                if ("storyBox".equals(c.getName())) {
+                    int px = (storyOverlay.getWidth() - c.getWidth()) / 2;
+                    int py = (storyOverlay.getHeight() - c.getHeight()) / 2;
+                    c.setLocation(px, py);
+                }
+            }
+        }
+    }
+
+    // Effects parts to be transed later
+
+    // With how StoryCont() is structed storyText bounces up and down. Until i find
+    // a fix this remains commented :(
+    // public void startBlinking() {
+    // Timer t = new Timer(500, e -> {
+    // storyContinue.setVisible(!storyContinue.isVisible());
+    // });
+    // t.start();
+    // }
+
+    // Typewriter eff, still need minor fixes in storyOverlay so no jumpy effs
+    // TODO: Test setPreferredsize() on overlay, u never know ;)
+    private void typeText(String fullText) {
+        if (storyTypeTimer != null && storyTypeTimer.isRunning()) {
+            storyTypeTimer.stop();
+        }
+
+        storyFullText = fullText;
+        isStoryTyping = true;
+
+        String header = "<html><div style='text-align:center'>";
+        String footer = "</div></html>";
+        String inner = fullText.replace("\n", "<br>");
+
+        final char[] chars = inner.toCharArray();
+        final StringBuilder current = new StringBuilder();
+
+        storyTypeTimer = new Timer(20, null);
+        storyTypeTimer.addActionListener(e -> {
+            if (current.length() < chars.length) {
+                current.append(chars[current.length()]);
+                storyText.setText(header + current + footer);
+            } else {
+                storyTypeTimer.stop();
+                storyContinue.setVisible(true);
+                isStoryTyping = false;
+            }
+        });
+        storyTypeTimer.start();
+    }
+        private void createEndOverlay() {
+        endOverlay = new JPanel(null);
+        endOverlay.setBackground(new Color(0, 0, 0, 180));
+        endOverlay.setVisible(false);
+
+        JPanel box = new JPanel(new BorderLayout());
+        box.setBackground(Color.BLACK);
+        box.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+        box.setBounds(0, 0, 760, 220);
+        box.setName("endOverlayBox");
+
+        endText = new JLabel("", SwingConstants.CENTER);
+        endText.setForeground(Color.WHITE);
+        endText.setFont(GameFonts.pixelFont.deriveFont(32f));
+        endText.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+
+        JLabel prompt = new JLabel("Press any key or click to return to menu", SwingConstants.CENTER);
+        prompt.setForeground(Color.WHITE);
+        prompt.setFont(GameFonts.pixelFont.deriveFont(18f));
+        prompt.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
+
+        box.add(endText, BorderLayout.CENTER);
+        box.add(prompt, BorderLayout.SOUTH);
+
+        endOverlay.add(box);
+
+        endOverlay.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                hideEndOverlayAndReturn();
+            }
+        });
+
+        endOverlay.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                hideEndOverlayAndReturn();
+            }
+        });
+
+        endOverlay.setFocusable(true);
+    }
+
+    private void showEndOverlay(String message) {
+        if (glass != null)
+            glass.setVisible(true);
+        if (endOverlay != null) {
+            endText.setText("<html><div style='text-align:center'>" + message.replace("\n", "<br>") + "</div></html>");
+            endOverlay.setBounds(0, 0, getWidth(), getHeight());
+            endOverlay.setVisible(true);
+
+            Component popup = null;
+            for (Component c : endOverlay.getComponents()) {
+                if ("endOverlayBox".equals(c.getName())) {
+                    popup = c;
+                    break;
+                }
+            }
+
+            if (popup != null) {
+                popup.setLocation((endOverlay.getWidth() - popup.getWidth()) / 2,
+                        (endOverlay.getHeight() - popup.getHeight()) / 2);
+            }
+
+            endOverlay.requestFocusInWindow();
+        }
+    }
+
+    private void hideEndOverlayAndReturn() {
+        if (endOverlay != null)
+            endOverlay.setVisible(false);
+        if (storyOverlay != null)
+            storyOverlay.setVisible(false);
+        if (tutorialOverlay != null)
+            tutorialOverlay.setVisible(false);
+        if (exitOverlay != null)
+            exitOverlay.setVisible(false);
+        if (glass != null)
+            glass.setVisible(false);
+
+        JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        if (frame instanceof GameFrame) {
+            ((GameFrame) frame).showMenu();
+        }
+    }
+
+    private void createExitOverlay() {
+
+        exitOverlay = new JPanel();
+        exitOverlay.setLayout(null);
+        exitOverlay.setBackground(new Color(0, 0, 0, 180)); // dark semi-transparent
+        exitOverlay.setVisible(false);
+
+        // container
+        JPanel box = new JPanel(null);
+        box.setBackground(Color.BLACK);
+        box.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        box.setBounds(0, 0, 320, 180);
+
+        box.setName("exitWindow");
+        exitOverlay.add(box);
+
+        JLabel prompt = new JLabel("Exit to Main Menu?", SwingConstants.CENTER);
+        prompt.setForeground(Color.WHITE);
+        prompt.setFont(GameFonts.pixelFont.deriveFont(20f));
+        prompt.setBounds(10, 20, 300, 30);
+        box.add(prompt);
+
+        JButton yes = new JButton("Yes");
+        yes.setFont(GameFonts.pixelFont.deriveFont(18f));
+        yes.setFocusable(false);
+        yes.setForeground(Color.WHITE);
+        yes.setBackground(Color.BLACK);
+        yes.setBounds(40, 90, 100, 40);
+        yes.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        box.add(yes);
+
+        JButton no = new JButton("No");
+        no.setFont(GameFonts.pixelFont.deriveFont(18f));
+        no.setFocusable(false);
+        no.setForeground(Color.WHITE);
+        no.setBackground(Color.BLACK);
+        no.setBounds(180, 90, 100, 40);
+        no.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        box.add(no);
+
+        yes.addActionListener(e -> {
+            exitOverlay.setVisible(false);
+            if (glass != null)
+                glass.setVisible(false);
+
+            JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            if (frame instanceof GameFrame) {
+                ((GameFrame) frame).showMenu();
+            }
+        });
+
+        no.addActionListener(e -> {
+            exitOverlay.setVisible(false);
+            if (glass != null)
+                glass.setVisible(false);
+        });
+    }
+
+    private void showExitOverlay() {
+        if (glass != null) {
+            glass.setVisible(true);
+        }
+
+        exitOverlay.setBounds(0, 0, getWidth(), getHeight());
+        exitOverlay.setVisible(true);
+
+        Component popup = null;
+        for (Component c : exitOverlay.getComponents()) {
+            if ("exitWindow".equals(c.getName())) {
+                popup = c;
+                break;
+            }
+        }
+
+        if (popup != null) {
+            int px = (exitOverlay.getWidth() - popup.getWidth()) / 2;
+            int py = (exitOverlay.getHeight() - popup.getHeight()) / 2;
+            popup.setLocation(Math.max(0, px), Math.max(0, py));
+
+            if (glass != null) {
+                glass.revalidate();
+                glass.repaint();
+            }
+        }
+    }
+
+    private void createStoryOverlay() {
+        storyOverlay = new JPanel(null);
+        storyOverlay.setBackground(new Color(0, 0, 0, 180)); // dark semi-transparent
+        storyOverlay.setVisible(false);
+
+        JPanel box = new JPanel(null);
+        box.setBackground(Color.BLACK);
+        box.setName("storyBox");
+        box.setBounds(0, 0, 520, 300);
+        box.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
+        box.setLayout(new BorderLayout());
+        storyOverlay.add(box);
+
+        storyText = new JLabel("", SwingConstants.CENTER);
+        storyText.setForeground(Color.WHITE);
+        storyText.setFont(GameFonts.pixelFont.deriveFont(32f));
+        storyText.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+
+        box.add(storyText, BorderLayout.CENTER);
+
+        storyContinue = new JLabel("PRESS ANY KEY TO CONTINUE >>", SwingConstants.RIGHT);
+        storyContinue.setOpaque(true);
+        storyContinue.setForeground(Color.WHITE);
+        storyContinue.setBackground(Color.BLACK);
+        storyContinue.setFont(GameFonts.pixelFont.deriveFont(24f));
+        storyContinue.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 20));
+        box.add(storyContinue, BorderLayout.SOUTH);
+
+        storyOverlay.addMouseListener(new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                showNextStoryMessage();
+            }
+
+        });
+
+        storyOverlay.setFocusable(true);
+        storyOverlay.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                showNextStoryMessage();
+            }
+
+        });
+    }
+
+    public void showStoryOverlay(String text) {
+        storyQueue.enqueue(text);
+
+        if (!storyActive) {
+            showNextStoryMessage();
+        }
+    }
+
+    // Sakit sa mata ug ulo bruh
+    // ===============================================//
+    private void showNextStoryMessage() {
+        if (isStoryTyping) {
+            if (storyTypeTimer != null) {
+                storyTypeTimer.stop();
+            }
+            storyText.setText(
+                    "<html><div style='text-align:center'>" + storyFullText.replace("\n", "<br>") + "</div></html>");
+            storyContinue.setVisible(true);
+            isStoryTyping = false;
+            return;
+        }
+
+        if (storyQueue.isEmpty()) {
+            storyActive = false;
+            hideStoryOverlay();
+            return;
+        }
+
+        storyActive = true;
+        String nextText = storyQueue.dequeue();
+
+        if (glass != null)
+            glass.setVisible(true);
+
+        // Typewriter effect for story
+        storyText.setText("");
+        storyContinue.setVisible(false);
+        typeText(nextText);
+
+        storyOverlay.setBounds(0, 0, getWidth(), getHeight());
+        storyOverlay.setVisible(true);
+        storyOverlay.requestFocusInWindow();
+
+        for (Component c : storyOverlay.getComponents()) {
+            if ("storyBox".equals(c.getName())) {
+                int px = (storyOverlay.getWidth() - c.getWidth()) / 2;
+                int py = (storyOverlay.getHeight() - c.getHeight()) / 2;
+                c.setLocation(px, py);
+            }
+        }
+
+        glass.revalidate();
+        glass.repaint();
+    }
+
+    // ===============================================//
+    private void hideStoryOverlay() {
+        storyOverlay.setVisible(false);
+        if (glass != null)
+            glass.setVisible(false);
+    }
