@@ -12,17 +12,11 @@ public class Training {
 
     private static Scanner scanner = new Scanner(System.in);
     private static Random random = new Random();
-    private TrainingMenu trainingMenuHandler;
+    private TrainingMenu trainingMenuHandler = new TrainingMenu(this);
     private TrainingNarration narrationHandler = new TrainingNarration();
     private StatProgress statProgressHandler = new StatProgress();
     private Narration separatorHandler = new Narration();
     private IntroTitle loadHandler = new IntroTitle();
-
-    public void initializeMenuHandler() {
-        if (trainingMenuHandler == null) {
-            trainingMenuHandler = new TrainingMenu(this);
-        }
-    }
 
     public void trainingGround(Hero hero){
 

@@ -14,6 +14,8 @@ public class Mage extends Hero {
         this.skillCd1 = 6;
         this.skillCd2 = 8;
         this.skillCdU = 12;
+
+        setMageCharacterChosen(true); // Javines | plot
     }
 
     DecimalFormat df = new DecimalFormat("#,##0");

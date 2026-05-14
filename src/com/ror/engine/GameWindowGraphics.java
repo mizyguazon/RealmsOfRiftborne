@@ -1,23 +1,7 @@
 package com.ror.engine;
 
 import com.ror.models.Entity;
-import com.ror.models.Hero;
-import com.ror.models.Boss.Elderthorn;
-import com.ror.models.Boss.Morgrath;
-import com.ror.models.Mage;
-import com.ror.models.Mobs.FadingWarden;
 import com.ror.models.Mobs.Goblin;
-import com.ror.models.Mobs.MudLurker;
-import com.ror.models.Mobs.ShadowAbyss;
-import com.ror.models.Mobs.Slime;
-import com.ror.models.Mobs.SwampRat;
-import com.ror.models.Mobs.VeilSerpent;
-import com.ror.models.Mobs.VoidBeast;
-import com.ror.models.Swordsman;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -26,6 +10,9 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 
 final class GameWindowGraphics {
     private static final String UI_IMAGE_DIRECTORY = "assets/images/ui/";
@@ -279,7 +266,9 @@ final class GameWindowGraphics {
                 ? createLandingImageButton(landingExitButtonImage,
                         secondaryButtonWidth, secondaryButtonHeight, "EXIT")
                 : createLandingPlaceholderButton("EXIT");
-        exitButton.addActionListener(event -> onExit.run());
+
+        exitButton.addActionListener(event -> System.exit(0));
+
         bottomMenuRow.add(optionsButton);
         bottomMenuRow.add(exitButton);
 
@@ -366,7 +355,7 @@ final class GameWindowGraphics {
             BufferedImage placeholder = loadImageAsset(ENEMY_IMAGE_DIRECTORY + "placeholder.png");
             if (placeholder != null) {
                 battlePanel.getBattleEnemySpriteLabel().setText("");
-                battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(placeholder, 72, 72));
+                battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(placeholder, 96, 96));
             } else {
                 battlePanel.getBattleEnemySpriteLabel().setIcon(null);
                 battlePanel.getBattleEnemySpriteLabel().setText("");
@@ -374,83 +363,7 @@ final class GameWindowGraphics {
             return;
         }
         battlePanel.getBattleEnemySpriteLabel().setText("");
-        battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemySpriteSize(enemy), getEnemySpriteSize(enemy)));
-    }
-
-    void updateHeroSprite(Hero hero, BattlePanel battlePanel) {
-        BufferedImage sprite = loadHeroBattleSprite(hero);
-        if (sprite == null) {
-            battlePanel.getBattleHeroSpriteLabel().setIcon(null);
-            battlePanel.getBattleHeroSpriteLabel().setText("");
-            return;
-        }
-
-        battlePanel.getBattleHeroSpriteLabel().setText("");
-        battlePanel.getBattleHeroSpriteLabel().setIcon(createScaledSpriteIcon(sprite, getHeroSpriteSize(hero), getHeroSpriteSize(hero)));
-    }
-
-    boolean updateHeroSkill1Frame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        return updateHeroActionFrame(hero, battlePanel, "Neo-Skill1.png", frameIndex);
-    }
-
-    boolean updateHeroSkill2Frame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        String sheetName = hero instanceof Mage ? "Mleux-Skill2.png" : "Neo-Skill2.png";
-        return updateHeroActionFrame(hero, battlePanel, sheetName, frameIndex);
-    }
-
-    boolean updateHeroAttackFrame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        return updateHeroActionFrame(hero, battlePanel, "Neo-Attack.png", frameIndex);
-    }
-
-    boolean updateHeroUltimateFrame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        return updateHeroActionFrame(hero, battlePanel, "Neo-Ultimate.png", frameIndex);
-    }
-
-    private boolean updateHeroActionFrame(Hero hero, BattlePanel battlePanel, String sheetName, int frameIndex) {
-        BufferedImage sprite = loadHeroActionFrame(hero, sheetName, frameIndex);
-        if (sprite == null) {
-            return false;
-        }
-
-        battlePanel.getBattleHeroSpriteLabel().setText("");
-        battlePanel.getBattleHeroSpriteLabel().setIcon(createScaledSpriteIcon(sprite, getHeroSkillSpriteSize(hero), getHeroSkillSpriteSize(hero)));
-        return true;
-    }
-
-    boolean updateEnemyAttackFrame(Entity enemy, BattlePanel battlePanel, int frameIndex) {
-        BufferedImage sprite = loadEnemyAttackFrame(enemy, frameIndex);
-        if (sprite == null) {
-            return false;
-        }
-
-        battlePanel.getBattleEnemySpriteLabel().setText("");
-        battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemySpriteSize(enemy), getEnemySpriteSize(enemy)));
-        return true;
-    }
-
-    private int getEnemySpriteSize(Entity enemy) {
-        if (enemy instanceof Goblin) return 132;
-        if (enemy instanceof Slime) return 132;
-        if (enemy instanceof MudLurker) return 145;
-        if (enemy instanceof SwampRat) return 140;
-        if (enemy instanceof VeilSerpent) return 140;
-        if (enemy instanceof ShadowAbyss) return 150;
-        if (enemy instanceof VoidBeast) return 150;
-        if (enemy instanceof FadingWarden) return 150;
-        if (enemy instanceof Elderthorn) return 150;
-        if (enemy instanceof Morgrath) return 155;
-        return 96;
-    }
-
-    private int getHeroSpriteSize(Hero hero) {
-        if (hero instanceof Swordsman) return 140;
-        return 96;
-    }
-
-    private int getHeroSkillSpriteSize(Hero hero) {
-        if (hero instanceof Swordsman) return 190;
-        if (hero instanceof Mage) return 300;
-        return 128;
+        battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, 96, 96));
     }
 
     private JButton createStyledButton(String text, ButtonSkin skin, Color fallbackColor,
@@ -686,13 +599,6 @@ final class GameWindowGraphics {
                 "assets/images/ui/" + fileName);
     }
 
-    BufferedImage loadMainScreenImage(String fileName) {
-        return loadFirstAvailableImage(
-                "/com/ror/models/assets/images/mainscreen/" + fileName,
-                "src/com/ror/models/assets/images/mainscreen/" + fileName,
-                "assets/images/mainscreen/" + fileName);
-    }
-
     BufferedImage loadItemImage(String fileName) {
         return loadFirstAvailableImage(
                 "/com/ror/models/assets/images/items/" + fileName,
@@ -844,11 +750,7 @@ final class GameWindowGraphics {
 
         boolean chromaGreen = green >= 150 && red <= 120 && blue <= 120 && (green - red) >= 40;
         boolean screenshotWhite = red >= 245 && green >= 245 && blue >= 245;
-        boolean checkerLight = red >= 190 && green >= 190 && blue >= 190
-                && Math.abs(red - green) <= 18
-                && Math.abs(red - blue) <= 18
-                && Math.abs(green - blue) <= 18;
-        return chromaGreen || screenshotWhite || checkerLight;
+        return chromaGreen || screenshotWhite;
     }
 
     private Icon createScaledSpriteIcon(BufferedImage sprite, int targetWidth, int targetHeight) {
@@ -935,123 +837,8 @@ final class GameWindowGraphics {
 
     private BufferedImage loadEnemySprite(Entity enemy) {
         if (enemy == null) return null;
-        if (enemy instanceof Goblin) return loadEnemyImage("goblin.png");
-        if (enemy instanceof Slime) return loadEnemyImage("slime.png");
-        if (enemy instanceof MudLurker) return loadEnemyImage("mudlurker.png");
-        if (enemy instanceof SwampRat) return loadEnemyImage("swamprat.png");
-        if (enemy instanceof VeilSerpent) return loadEnemyImage("swamprat.png");
-        if (enemy instanceof ShadowAbyss) return loadEnemyImage("shadowabyss.png");
-        if (enemy instanceof VoidBeast) return loadEnemyImage("voidbeast.png");
-        if (enemy instanceof FadingWarden) return loadEnemyImage("fadingwarden.png");
-        if (enemy instanceof Elderthorn) return loadEnemyImage("elderthorn.png");
-        if (enemy instanceof Morgrath) return loadEnemyImage("morgrath.png");
+        if (enemy instanceof Goblin) return loadImageAsset(ENEMY_IMAGE_DIRECTORY + "goblin.png");
         return null;
-    }
-
-    private BufferedImage loadEnemyAttackFrame(Entity enemy, int frameIndex) {
-        if (enemy instanceof Goblin || enemy instanceof Slime) {
-            String[] frames = { "goblin-frame2.png", "goblin-frame3.png", "goblin-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        if (enemy instanceof Elderthorn) {
-            String[] frames = { "elderthorn-frame2.png", "elderthorn-frame3.png", "elderthorn-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        if (enemy instanceof MudLurker) {
-            String[] frames = { "mudlurker-frame2.png", "mudlurker-frame3.png", "mudlurker-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        if (enemy instanceof SwampRat || enemy instanceof VeilSerpent) {
-            String[] frames = { "swamprat-frame2.png", "swamprat-frame3.png", "swamprat-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        if (enemy instanceof ShadowAbyss) {
-            String[] frames = { "shadowabyss-frame2.png", "shadowabyss-frame3.png", "shadowabyss-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        if (enemy instanceof VoidBeast) {
-            String[] frames = { "voidbeast-frame2.png", "voidbeast-frame3.png", "voidbeast-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        if (enemy instanceof FadingWarden) {
-            String[] frames = { "fadingwarden-frame2.png", "fadingwarden-frame3.png", "fadingwarden-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        if (enemy instanceof Morgrath) {
-            String[] frames = { "morgrath-frame2.png", "morgrath-frame3.png", "morgrath-frame4.png" };
-            if (frameIndex >= 0 && frameIndex < frames.length) {
-                return loadEnemyImage(frames[frameIndex]);
-            }
-        }
-        return null;
-    }
-
-    private BufferedImage loadEnemyImage(String fileName) {
-        BufferedImage image = loadFirstAvailableImage(
-                "/com/ror/models/assets/images/enemies/" + fileName,
-                "src/com/ror/models/assets/images/enemies/" + fileName,
-                ENEMY_IMAGE_DIRECTORY + fileName);
-        return image == null ? null : removeCornerBackground(image);
-    }
-
-    private BufferedImage loadHeroBattleSprite(Hero hero) {
-        if (hero instanceof Swordsman) {
-            return loadHeroImage("neo/Neo-idle.png");
-        }
-        return null;
-    }
-
-    private BufferedImage loadHeroActionFrame(Hero hero, String sheetName, int frameIndex) {
-        if (hero instanceof Swordsman) {
-            BufferedImage sheet = loadHeroImage("neo/skills/" + sheetName);
-            if (sheet == null) {
-                return null;
-            }
-
-            int frameCount = 3;
-            if (frameIndex < 0 || frameIndex >= frameCount) {
-                return null;
-            }
-
-            int frameWidth = sheet.getWidth() / frameCount;
-            return sheet.getSubimage(frameIndex * frameWidth, 0, frameWidth, sheet.getHeight());
-        }
-        if (hero instanceof Mage && sheetName.startsWith("Mleux-")) {
-            BufferedImage sheet = loadHeroImage("mleux/skills/" + sheetName);
-            if (sheet == null) {
-                return null;
-            }
-
-            int frameCount = 3;
-            if (frameIndex < 0 || frameIndex >= frameCount) {
-                return null;
-            }
-
-            int frameWidth = sheet.getWidth() / frameCount;
-            return sheet.getSubimage(frameIndex * frameWidth, 0, frameWidth, sheet.getHeight());
-        }
-        return null;
-    }
-
-    private BufferedImage loadHeroImage(String path) {
-        return loadFirstAvailableImage(
-                "/com/ror/models/assets/images/heroes/" + path,
-                "src/com/ror/models/assets/images/heroes/" + path,
-                HERO_IMAGE_DIRECTORY + path);
     }
 
     private ButtonSkin loadButtonSkin(String baseName) {
@@ -1088,9 +875,7 @@ final class GameWindowGraphics {
     }
 
     private static final class PixelButton extends JButton {
-        private static final long serialVersionUID = 1L;
-
-        private final transient ButtonSkin skin;
+        private final ButtonSkin skin;
         private final Color fallbackColor;
         private boolean rollover;
 

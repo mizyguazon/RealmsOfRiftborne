@@ -2,84 +2,83 @@ package com.ror.utils.sounds;
 
 import java.io.File;
 import java.net.URL;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
+import javax.sound.sampled.*;
 
-public final class SoundManager {
-    private static Clip currentMusicClip;
+public class SoundManager {
+    private SoundManager() {} // instantiation prevention yay
 
-    private SoundManager() {
-    }
+    private static Clip bgmClip;
+    private static Clip sfxClip;
 
-    public static synchronized void play(String path) {
-        Clip clip = createClip(path);
-        if (clip == null) {
-            return;
+    public static void playMusic(String path) { //music loops
+        bgmClip = loadClip(path);
+        if (bgmClip != null) {
+            bgmClip.loop(Clip.LOOP_CONTINUOUSLY);
+            bgmClip.start();
         }
-
-        clip.start();
     }
 
-    public static synchronized void playMusic(String path) {
-        shutdownSound();
-
-        Clip clip = createClip(path);
-        if (clip == null) {
-            return;
+    public static void playSfx(String path) {
+        sfxClip = loadClip(path);
+        if (sfxClip != null) {
+            sfxClip.start();
         }
-
-        currentMusicClip = clip;
-        clip.loop(Clip.LOOP_CONTINUOUSLY);
-        clip.start();
     }
 
-    public static synchronized void shutdownSound() {
-        if (currentMusicClip == null) {
-            return;
-        }
-
-        currentMusicClip.stop();
-        currentMusicClip.close();
-        currentMusicClip = null;
-    }
-
-    private static Clip createClip(String path) {
+    private static Clip loadClip(String path) {
         try {
-            AudioInputStream audioInputStream = loadAudio(path);
-            if (audioInputStream == null) {
+            AudioInputStream ais = null;
+            
+            URL url = SoundManager.class.getResource(path);
+            if (url != null) {
+                ais = AudioSystem.getAudioInputStream(url);
+            } else {
+                String fsPath = path.startsWith("/") ? path.substring(1) : path;
+                File file = new File(fsPath);
+                if (file.exists()) {
+                    ais = AudioSystem.getAudioInputStream(file);
+                }
+            }
+
+            if (ais == null) {
                 System.err.println("AUDIO ERROR: Could not find file at " + path);
                 return null;
             }
 
             Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
+            clip.open(ais);
+            clip.start();
+            
+            //debug thing, the original clip is 15mins long.
+            // if (path.toLowerCase().contains("title")) {
+            //     clip.loop(Clip.LOOP_CONTINUOUSLY);
+            // }
             return clip;
-        } catch (Exception exception) {
+        } catch (Exception e) {
             System.err.println("AUDIO SYSTEM CRASH!");
-            exception.printStackTrace();
+            e.printStackTrace();
             return null;
+        }
+
+        
+    }
+
+    public static void stopMusic() {
+        if (bgmClip != null) {
+            bgmClip.stop();
+            bgmClip.close();
         }
     }
 
-    private static AudioInputStream loadAudio(String path) {
-        try {
-            URL resource = SoundManager.class.getResource(path);
-            if (resource != null) {
-                return AudioSystem.getAudioInputStream(resource);
-            }
-
-            String fileSystemPath = path.startsWith("/") ? path.substring(1) : path;
-            File file = new File(fileSystemPath);
-            if (file.exists()) {
-                return AudioSystem.getAudioInputStream(file);
-            }
-
-            return null;
-        } catch (Exception exception) {
-            System.err.println("AUDIO ERROR: Failed to load " + path);
-            exception.printStackTrace();
-            return null;
+    public static void stopSfx() {
+        if (sfxClip != null) {
+            sfxClip.stop();
+            sfxClip.close();
         }
+    }
+
+    public static void shutdownSound() {
+        stopMusic();
+        stopSfx();
     }
 }
