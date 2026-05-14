@@ -13,7 +13,6 @@ public class AcademyMenu extends Menu{
     public void academyMapMenu(Hero hero) {
         boolean academyMapMenu = true;
         Training trainingGroundHandler = new Training();
-        trainingGroundHandler.initializeMenuHandler();
         LibraryAcademy libraryHandler = new LibraryAcademy();
         PrincipalOffice officeHandler = new PrincipalOffice();
         AcademyMap mapHandler = new AcademyMap();

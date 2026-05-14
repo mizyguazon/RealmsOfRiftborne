@@ -32,16 +32,6 @@ public class Hero {
     }
 
     public Hero(int hp, int attack, int mana, int defense, int speed, int level, String name, String charClass, String weapon, String skill1, String skill2, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostUltimate, int maxAtk, int maxMana, int maxDef) {
-        this(hp, attack, mana, defense, speed, level, name, charClass, weapon, skill1, skill2, ultimate,
-                manaCostSkill1, manaCostSkill2, manaCostUltimate, maxAtk, maxMana, maxDef, 22000, 0);
-    }
-
-    public Hero(int hp, int attack, int mana, int defense, int speed, int level, String name, String charClass, String weapon, String skill1, String skill2, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostUltimate, int maxAtk, int maxMana, int maxDef, int maxHp) {
-        this(hp, attack, mana, defense, speed, level, name, charClass, weapon, skill1, skill2, ultimate,
-                manaCostSkill1, manaCostSkill2, manaCostUltimate, maxAtk, maxMana, maxDef, maxHp, 0);
-    }
-
-    public Hero(int hp, int attack, int mana, int defense, int speed, int level, String name, String charClass, String weapon, String skill1, String skill2, String ultimate, int manaCostSkill1, int manaCostSkill2, int manaCostUltimate, int maxAtk, int maxMana, int maxDef, int maxHp, int gold) {
         this.hp = hp;
         this.attack = attack;
         this.mana = mana;
@@ -57,16 +47,8 @@ public class Hero {
         this.manaCostSkill1 = manaCostSkill1;
         this.manaCostSkill2 = manaCostSkill2;
         this.manaCostUltimate = manaCostUltimate;
-        this.baseHp = hp;
-        this.baseAtk = attack;
-        this.baseMana = mana;
-        this.baseDef = defense;
-        this.maxAtk = maxAtk;
-        this.maxMana = maxMana;
-        this.maxDef = maxDef;
-        this.maxHp = maxHp;
-        this.gold = gold;
-        applyCharacterSelectionFromClass(charClass);
+        setBaseStats(hp, attack, mana, defense);
+        setMaxStats(maxAtk, maxMana, maxDef);
         this.inventory = new Inventory();
     }
 
@@ -917,12 +899,6 @@ public class Hero {
     private boolean swordmanCharacterChosen = false;
     private boolean gunnerCharacterChosen = false;
     private boolean mageCharacterChosen = false;
-
-    private void applyCharacterSelectionFromClass(String charClass) {
-        swordmanCharacterChosen = "Swordsman".equalsIgnoreCase(charClass);
-        gunnerCharacterChosen = "Gunner".equalsIgnoreCase(charClass);
-        mageCharacterChosen = "Mage".equalsIgnoreCase(charClass);
-    }
 
     public void setSwordmanCharacterChosen(boolean done) {
         this.swordmanCharacterChosen = done;

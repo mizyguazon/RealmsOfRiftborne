@@ -1,3 +1,9 @@
-bin/
-out/
-src/**/*.class
+# Ignore all class files
+**/*.class
+
+# Ignore VS Code specific files
+.vscode/
+
+# Ignore OS metadata
+.DS_Store
+Thumbs.db
