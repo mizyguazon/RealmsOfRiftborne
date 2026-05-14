@@ -25,10 +25,14 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.plaf.FontUIResource;
 
 final class GameWindowGraphics {
     private static final String UI_IMAGE_DIRECTORY = "assets/images/ui/";
@@ -173,7 +177,7 @@ final class GameWindowGraphics {
         return button;
     }
 
-    JPanel buildLandingScreen(JFrame frame, Runnable onPlay, Runnable onExit) {
+    JPanel buildLandingScreen(JFrame frame, Runnable onPlay, Runnable onLoad, Runnable onExit) {
         final int playButtonWidth = 448;
         final int playButtonHeight = 133;
         final int secondaryButtonWidth = 225;
@@ -254,11 +258,7 @@ final class GameWindowGraphics {
                 ? createLandingImageButton(landingLoadButtonImage,
                         secondaryButtonWidth, secondaryButtonHeight, "LOAD")
                 : createLandingPlaceholderButton("LOAD");
-        loadButton.addActionListener(event -> JOptionPane.showMessageDialog(
-                frame,
-                "Load is not available yet.",
-                "Load",
-                JOptionPane.INFORMATION_MESSAGE));
+        loadButton.addActionListener(event -> onLoad.run());
         middleMenuRow.add(aboutButton);
         middleMenuRow.add(loadButton);
 
@@ -282,7 +282,9 @@ final class GameWindowGraphics {
                 ? createLandingImageButton(landingExitButtonImage,
                         secondaryButtonWidth, secondaryButtonHeight, "EXIT")
                 : createLandingPlaceholderButton("EXIT");
-        exitButton.addActionListener(event -> onExit.run());
+
+        exitButton.addActionListener(event -> System.exit(0));
+
         bottomMenuRow.add(optionsButton);
         bottomMenuRow.add(exitButton);
 
@@ -369,7 +371,7 @@ final class GameWindowGraphics {
             BufferedImage placeholder = loadImageAsset(ENEMY_IMAGE_DIRECTORY + "placeholder.png");
             if (placeholder != null) {
                 battlePanel.getBattleEnemySpriteLabel().setText("");
-                battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(placeholder, 72, 72));
+                battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(placeholder, 96, 96));
             } else {
                 battlePanel.getBattleEnemySpriteLabel().setIcon(null);
                 battlePanel.getBattleEnemySpriteLabel().setText("");
@@ -604,11 +606,61 @@ final class GameWindowGraphics {
     }
 
     private BufferedImage loadImageAsset(String path) {
-        try {
-            return ImageIO.read(new File(path));
-        } catch (Exception ignored) {
-            return null;
+        String normalizedPath = path.replace('\\', '/');
+        String[] candidates = normalizedPath.startsWith("src/com/ror/models/")
+                ? new String[] {
+                        normalizedPath,
+                        normalizedPath.substring("src/com/ror/models/".length())
+                }
+                : new String[] {
+                        normalizedPath,
+                        "src/com/ror/models/" + normalizedPath
+                };
+
+        for (String candidate : candidates) {
+            String resourcePath = candidate.startsWith("/") ? candidate : "/com/ror/models/" + candidate;
+            try (InputStream stream = getClass().getResourceAsStream(resourcePath)) {
+                if (stream != null) {
+                    BufferedImage image = ImageIO.read(stream);
+                    if (image != null) {
+                        return image;
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+
+            BufferedImage image = loadImageFile(candidate);
+            if (image != null) {
+                return image;
+            }
         }
+
+        return null;
+    }
+
+    private BufferedImage loadImageFile(String path) {
+        String normalizedPath = path.replace('\\', '/');
+        String[] roots = {
+                "",
+                "MystvaleAcademy/"
+        };
+
+        for (String root : roots) {
+            Path candidate = Path.of(root + normalizedPath);
+            if (!Files.exists(candidate)) {
+                continue;
+            }
+
+            try {
+                BufferedImage image = ImageIO.read(candidate.toFile());
+                if (image != null) {
+                    return image;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return null;
     }
 
     private BufferedImage[] loadLandingBackgroundFrames() {
@@ -706,13 +758,6 @@ final class GameWindowGraphics {
                 "/com/ror/models/assets/images/ui/" + fileName,
                 "src/com/ror/models/assets/images/ui/" + fileName,
                 "assets/images/ui/" + fileName);
-    }
-
-    BufferedImage loadMainScreenImage(String fileName) {
-        return loadFirstAvailableImage(
-                "/com/ror/models/assets/images/mainscreen/" + fileName,
-                "src/com/ror/models/assets/images/mainscreen/" + fileName,
-                "assets/images/mainscreen/" + fileName);
     }
 
     BufferedImage loadItemImage(String fileName) {
@@ -866,11 +911,7 @@ final class GameWindowGraphics {
 
         boolean chromaGreen = green >= 150 && red <= 120 && blue <= 120 && (green - red) >= 40;
         boolean screenshotWhite = red >= 245 && green >= 245 && blue >= 245;
-        boolean checkerLight = red >= 190 && green >= 190 && blue >= 190
-                && Math.abs(red - green) <= 18
-                && Math.abs(red - blue) <= 18
-                && Math.abs(green - blue) <= 18;
-        return chromaGreen || screenshotWhite || checkerLight;
+        return chromaGreen || screenshotWhite;
     }
 
     private Icon createScaledSpriteIcon(BufferedImage sprite, int targetWidth, int targetHeight) {

@@ -13,3 +13,11 @@ if (-not $sources) {
 }
 
 javac -d $binDir $sources
+
+$resourceRoot = Join-Path $srcDir "com\ror\models\assets"
+$resourceTarget = Join-Path $binDir "com\ror\models\assets"
+
+if (Test-Path $resourceRoot) {
+    New-Item -ItemType Directory -Force -Path $resourceTarget | Out-Null
+    Copy-Item -Path (Join-Path $resourceRoot "*") -Destination $resourceTarget -Recurse -Force
+}
