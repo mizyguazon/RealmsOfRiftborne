@@ -1,11 +1,11 @@
 package com.ror.engine;
 
+import com.ror.engine.narration.Narration;
 import com.ror.models.*;
 import com.ror.models.Boss.*;
 import com.ror.models.Inventory.Inventory;
 import com.ror.models.Mobs.*;
 import com.ror.models.training.StatProgress;
-import com.ror.engine.narration.Narration;
 import com.ror.utils.sounds.SoundManager;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,7 +13,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.*;
@@ -103,6 +106,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private final JLabel subtitleLabel = new JLabel("GUI RPG");
     private JPanel headerPanel;
     private JButton headerBackButton;
+    private JButton headerSaveButton;
     private JButton headerExitButton;
     private JPanel gameShellPanel;
     private JPanel leftPane;
@@ -164,6 +168,9 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private final JTextArea storyTextArea = new JTextArea();
     private final JLabel storyTitleLabel = new JLabel("Story");
     private final JLabel storyProgressLabel = new JLabel("Scene 1 / 1");
+    private Timer storyTypewriterTimer;
+    private String currentStoryLine = "";
+    private static final int STORY_TYPEWRITER_DELAY_MS = 14;
 
     // Area / quick-choice buttons (assigned during build)
     private JButton forestButton;
@@ -180,6 +187,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     // Battle action synchronization
     private final Object battleActionLock = new Object();
     private volatile Integer pendingBattleAction = null;
+    private final transitions transitionManager = new transitions();
 
     // State
     private Hero hero;
@@ -360,6 +368,27 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             showScreen(SCREEN_ACADEMY);
         });
 
+        headerSaveButton = new JButton("Save");
+        headerSaveButton.setFont(getBodyFont(13f).deriveFont(Font.BOLD, 13f));
+        headerSaveButton.setForeground(COLOR_TEXT_DARK);
+        headerSaveButton.setFocusPainted(false);
+        headerSaveButton.setContentAreaFilled(false);
+        headerSaveButton.setOpaque(false);
+        headerSaveButton.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
+        headerSaveButton.setPreferredSize(new Dimension(90, 34));
+        headerSaveButton.setVisible(false);
+        headerSaveButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent event) {
+                headerSaveButton.setForeground(isShopHeaderActive() ? COLOR_SHOP_TEXT_MUTED : COLOR_TEXT_MUTED);
+            }
+            @Override
+            public void mouseExited(MouseEvent event) {
+                headerSaveButton.setForeground(isShopHeaderActive() ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
+            }
+        });
+        headerSaveButton.addActionListener(event -> saveCurrentGame());
+
         headerExitButton = new JButton("Exit");
         headerExitButton.setFont(getBodyFont(13f).deriveFont(Font.BOLD, 13f));
         headerExitButton.setForeground(Color.WHITE);
@@ -388,6 +417,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         JPanel actions = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         actions.setOpaque(false);
         actions.add(headerBackButton);
+        actions.add(headerSaveButton);
         actions.add(headerExitButton);
 
         panel.add(textBlock, BorderLayout.WEST);
@@ -711,9 +741,13 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JButton backButton = createSecondaryButton("Back to Main Menu");
         backButton.addActionListener(event -> {
-            subtitleLabel.setText("Adventure overview.");
-            refreshHeroDashboard();
-            showScreen(SCREEN_MAIN);
+            transitionManager.runTransition(frame,
+                    () -> {
+                        subtitleLabel.setText("Adventure overview.");
+                        refreshHeroDashboard();
+                        showScreen(SCREEN_MAIN);
+                    },
+                    null);
         });
 
         panel.add(libraryButton);
@@ -907,9 +941,13 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JButton backButton = createSecondaryButton("Back to Main Menu");
         backButton.addActionListener(event -> {
-            subtitleLabel.setText("Adventure overview.");
-            refreshHeroDashboard();
-            showScreen(SCREEN_MAIN);
+            transitionManager.runTransition(frame,
+                    () -> {
+                        subtitleLabel.setText("Adventure overview.");
+                        refreshHeroDashboard();
+                        showScreen(SCREEN_MAIN);
+                    },
+                    null);
         });
 
         panel.add(backButton);
@@ -947,9 +985,13 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JButton backButton = createSecondaryButton("Back to Main Menu");
         backButton.addActionListener(event -> {
-            subtitleLabel.setText("Adventure overview.");
-            refreshHeroDashboard();
-            showScreen(SCREEN_MAIN);
+            transitionManager.runTransition(frame,
+                    () -> {
+                        subtitleLabel.setText("Adventure overview.");
+                        refreshHeroDashboard();
+                        showScreen(SCREEN_MAIN);
+                    },
+                    null);
         });
 
         panel.add(backButton);
@@ -1595,6 +1637,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private JPanel buildLandingScreen() {
         return graphics.buildLandingScreen(frame, this::openCharacterSelectFromLanding,
+                this::loadSavedGame,
                 () -> { if (frame != null) frame.dispose(); });
     }
 
@@ -1656,6 +1699,82 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         refreshProfilePanel();
         appendLog("\nHero selected: " + hero.getName() + " the " + hero.getCharClass() + ".\n");
         beginStoryForHero(true);
+    }
+
+    private void saveCurrentGame() {
+        if (!requireHero()) return;
+
+        try {
+            int slot = chooseSaveSlot();
+            if (slot == -1) return;
+
+            Load.SlotInfo existingSlot = Load.getSlotInfo(slot);
+            if (existingSlot.isOccupied()) {
+                int overwrite = showConfirmSync("Overwrite Save",
+                        existingSlot.getSummary() + "\n\nOverwrite this save?");
+                if (overwrite != JOptionPane.YES_OPTION) return;
+            }
+
+            Load.saveGame(hero, slot);
+            Load.SlotInfo savedSlot = Load.getSlotInfo(slot);
+            showInfoSync("Game Saved", savedSlot.getSummary());
+        } catch (Exception exception) {
+            showWarningSync("Save Failed", exception.getMessage());
+        }
+    }
+
+    private void loadSavedGame() {
+        try {
+            int slot = chooseLoadSlot();
+            if (slot == -1) return;
+
+            Hero loadedHero = Load.loadGame(slot);
+            if (loadedHero == null) {
+                showInfoSync("Load Game", "That save slot is empty.");
+                return;
+            }
+
+            hero = loadedHero;
+            inventoryNarrationShown = hero.hasOpenedInventory();
+            currentStorySequence = new String[0];
+            currentStoryIndex = 0;
+            refreshHeroDashboard();
+            refreshInventoryPanel();
+            refreshProfilePanel();
+            subtitleLabel.setText("Adventure overview.");
+            rootLayout.show(rootPanel, ROOT_GAME);
+            showScreen(SCREEN_MAIN);
+            appendLog("\nLoaded save: " + hero.getName() + " the " + hero.getCharClass() + ".\n");
+            showInfoSync("Game Loaded", "Loaded " + hero.getName() + ".");
+        } catch (Exception exception) {
+            showWarningSync("Load Failed", exception.getMessage());
+        }
+    }
+
+    private int chooseSaveSlot() {
+        int choice = showSlotChooserSync("Save Game", "Choose a save slot.", true);
+        return choice >= 0 && choice < Load.SLOT_COUNT ? choice + 1 : -1;
+    }
+
+    private int chooseLoadSlot() {
+        if (!Load.hasSave()) {
+            showInfoSync("Load Game", "No saved game found yet.");
+            return -1;
+        }
+
+        int choice = showSlotChooserSync("Load Game", "Choose a save to load.", false);
+        if (choice < 0 || choice >= Load.SLOT_COUNT) return -1;
+
+        Load.SlotInfo selectedSlot = Load.getSlotInfo(choice + 1);
+        if (!selectedSlot.isOccupied()) {
+            showInfoSync("Load Game", "That save slot is empty.");
+            return -1;
+        }
+        if (!selectedSlot.isReadable()) {
+            showWarningSync("Load Game", "That save slot could not be read.");
+            return -1;
+        }
+        return choice + 1;
     }
 
     private void refreshHeroDashboard() {
@@ -1762,8 +1881,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         }
         int safeIndex = Math.max(0, Math.min(currentStoryIndex, currentStorySequence.length - 1));
         storyProgressLabel.setText("Scene " + (safeIndex + 1) + " / " + currentStorySequence.length);
-        storyTextArea.setText(currentStorySequence[safeIndex]);
-        storyTextArea.setCaretPosition(0);
+        startStoryTypewriter(currentStorySequence[safeIndex]);
 
         boolean isLastScene = safeIndex >= currentStorySequence.length - 1;
         storyNextButton.setVisible(!isLastScene);
@@ -1771,6 +1889,11 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private void advanceStoryBeat() {
+        if (storyTypewriterTimer != null && storyTypewriterTimer.isRunning()) {
+            completeStoryTypewriter();
+            return;
+        }
+
         if (currentStoryIndex < currentStorySequence.length - 1) {
             currentStoryIndex++;
             showCurrentStoryBeat();
@@ -1780,10 +1903,49 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private void finishStorySequence(String logMessage) {
+        if (storyTypewriterTimer != null) {
+            storyTypewriterTimer.stop();
+            storyTypewriterTimer = null;
+        }
         subtitleLabel.setText("Adventure overview.");
         refreshHeroDashboard();
         showScreen(SCREEN_MAIN);
         appendLog("\n" + logMessage + "\n");
+    }
+
+    private void startStoryTypewriter(String fullText) {
+        if (storyTypewriterTimer != null) {
+            storyTypewriterTimer.stop();
+        }
+
+        currentStoryLine = fullText == null ? "" : fullText;
+        storyTextArea.setText("");
+        storyTextArea.setCaretPosition(0);
+
+        if (currentStoryLine.isEmpty()) {
+            return;
+        }
+
+        final int[] index = { 0 };
+        storyTypewriterTimer = new Timer(STORY_TYPEWRITER_DELAY_MS, event -> {
+            if (index[0] >= currentStoryLine.length()) {
+                ((Timer) event.getSource()).stop();
+                return;
+            }
+
+            index[0]++;
+            storyTextArea.setText(currentStoryLine.substring(0, index[0]));
+            storyTextArea.setCaretPosition(storyTextArea.getDocument().getLength());
+        });
+        storyTypewriterTimer.start();
+    }
+
+    private void completeStoryTypewriter() {
+        if (storyTypewriterTimer != null) {
+            storyTypewriterTimer.stop();
+        }
+        storyTextArea.setText(currentStoryLine);
+        storyTextArea.setCaretPosition(storyTextArea.getDocument().getLength());
     }
 
     private String[] buildIntroStoryForHero(Hero selectedHero) {
@@ -2274,6 +2436,18 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         worker.start();
     }
 
+    private void runTravelTransitionSync() {
+        if (frame == null) return;
+
+        CountDownLatch transitionFinished = new CountDownLatch(1);
+        SwingUtilities.invokeLater(() -> transitionManager.runTransition(frame, null, transitionFinished::countDown));
+        try {
+            transitionFinished.await();
+        } catch (InterruptedException exception) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
     // -------------------------------------------------------------------------
     // Area adventures
     // -------------------------------------------------------------------------
@@ -2284,6 +2458,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         boolean firstVisit = !hero.hasVisitedArea1();
         hero.setHasVisitedArea1(true);
         if (firstVisit) playNarrationSequence("Forest of Reverie", Narration.buildArea1Narration());
+        runTravelTransitionSync();
 
         Entity[] encounters = { new Goblin(), new Slime(), new MudLurker(), new Elderthorn() };
         int[] goldRewards = { 360, 420, 680, 1200 };
@@ -2302,6 +2477,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         boolean firstVisit = !hero.hasVisitedArea2();
         hero.setHasVisitedArea2(true);
         if (firstVisit) playNarrationSequence("Reverie's Edge", Narration.buildArea2Narration());
+        runTravelTransitionSync();
 
         Entity[] encounters = { new SwampRat(), new VeilSerpent(), new FadingWarden(), new Morgrath() };
         int[] goldRewards = { 520, 620, 900, 1500 };
@@ -2320,6 +2496,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         boolean firstVisit = !hero.hasVisitedArea3();
         hero.setHasVisitedArea3(true);
         if (firstVisit) playNarrationSequence("Forsaken Lands", Narration.buildArea3Narration());
+        runTravelTransitionSync();
 
         Entity[] encounters = { new ShadowAbyss(), new VoidBeast(), new HollowKing(), new Azrael(), new Kim() };
         int[] goldRewards = { 760, 880, 1300, 2000, 4000 };
@@ -2351,10 +2528,14 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private boolean runAreaAdventure(String areaName, Entity[] encounters, int[] goldRewards, int[] xpRewards) {
-        showInfoSync(areaName, "Entering " + areaName + ".\nAll combat is button-based.");
+        if (encounters.length > 0) {
+            showAreaBattleContext(areaName, encounters[0], "Arrived in " + areaName + ".\nPrepare for battle.");
+        }
+        showInfoSync(areaName, "Entering " + areaName + "...\nPrepare for battle!");
 
         for (int i = 0; i < encounters.length; i++) {
             Entity enemy = encounters[i];
+            showAreaBattleContext(areaName, enemy, enemy.getName() + " blocks your path.");
             int proceed = showConfirmSync(areaName, enemy.getName() + "\nStart battle?");
             if (proceed != 0) { showInfoSync(areaName, "Adventure cancelled."); return false; }
 
@@ -2369,6 +2550,25 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         }
 
         return true;
+    }
+
+    private void showAreaBattleContext(String areaName, Entity enemy, String logText) {
+        runOnEdtSync(() -> {
+            enemy.setHpCap(enemy.getHp());
+            enemy.setManaCap(enemy.getMana());
+            battlePanel.restoreBattleButtons();
+            battlePanel.getBattleTitleValue().setText(areaName);
+            battlePanel.getBattleRoundValue().setText("Prepare");
+            battlePanel.getBattleHeroNameValue().setText(hero.getName());
+            battlePanel.getBattleEnemyNameValue().setText(enemy.getName());
+            updateEnemySprite(enemy);
+            updateBattleBars(enemy);
+            battlePanel.getBattleLogArea().setText(logText);
+            battlePanel.getBattleLogArea().setCaretPosition(0);
+            battlePanel.setBattleButtonsEnabled(false);
+            subtitleLabel.setText(areaName);
+            showScreen(SCREEN_BATTLE);
+        });
     }
 
     // -------------------------------------------------------------------------
@@ -2426,21 +2626,20 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
             if (enemy.getHp() <= 0) {
                 enemy.setHp(0);
-                battleLog = appendBattleLog(battleLog, enemy.getName() + " was defeated.");
+                battleLog = enemy.getName() + " was defeated.";
                 showInfoSync(battleTitle, battleLog);
                 restoreHeroBattleState(originalHp, originalMana, originalCooldown1,
                         originalCooldown2, originalCooldownU, originalStun, originalPoison);
                 return BattleOutcome.WON;
             }
 
-            if (enemy.getStunned() > 0) {
-                battleLog = appendBattleLog(battleLog, enemy.getName() + " is stunned and cannot act.");
-            } else if (enemy.getDisabled() > 0) {
-                battleLog = appendBattleLog(battleLog, enemy.getName() + " is disabled and cannot act.");
-            } else {
-                playEnemyAttackAnimation(enemy);
-                battleLog = appendBattleLog(battleLog, performEnemyAction(enemy));
-            }
+            // if (enemy.getStunned() > 0) {
+            //     battleLog = appendBattleLog(battleLog, enemy.getName() + " is stunned and cannot act.");
+            // } else if (enemy.getDisabled() > 0) {
+            //     battleLog = appendBattleLog(battleLog, enemy.getName() + " is disabled and cannot act.");
+            // } else {
+            //     battleLog = appendBattleLog(battleLog, performEnemyAction(enemy));
+            // }
 
             applyEnemyAfterTurnEffects(enemy);
             reduceEnemyCooldowns(enemy);
@@ -2968,11 +3167,24 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     // Narration sequences
     // ------------------------------------------------------------------------- 
 
+    // -------------------------------------------------------------------------
+    // Narration sequences
+    // ------------------------------------------------------------------------- 
+
     private void playNarrationSequence(String title, String[] lines) {
         if (lines == null || lines.length == 0) return;
+
+        List<String> visibleLines = new ArrayList<>();
         for (String line : lines) {
-            if (line == null || line.isBlank()) continue;
-            showNarrationSync(title, line.trim());
+            if (line != null && !line.isBlank()) {
+                visibleLines.add(line.trim());
+            }
+        }
+
+        for (int i = 0; i < visibleLines.size(); i++) {
+            boolean fadeIn = i == 0;
+            boolean fadeOut = i == visibleLines.size() - 1;
+            showNarrationSync(title, visibleLines.get(i), fadeIn, fadeOut);
         }
     }
 
@@ -3008,6 +3220,11 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             headerExitButton.setVisible(!hideExit);
             headerExitButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : Color.WHITE);
             headerExitButton.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
+        }
+        if (headerSaveButton != null) {
+            headerSaveButton.setVisible(SCREEN_MAIN.equals(screenName));
+            headerSaveButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
+            headerSaveButton.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
         }
         if (headerBackButton != null) {
             headerBackButton.setVisible(isShopScreen);
@@ -3055,6 +3272,14 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         runOnEdtSync(() -> { if (overlay != null) overlay.showMessage(title, message); });
     }
 
+    private void showNarrationSync(String title, String message, boolean fadeIn, boolean fadeOut) {
+        runOnEdtSync(() -> {
+            if (overlay != null) {
+                overlay.showMessageSequence(title, message, fadeIn, fadeOut);
+            }
+        });
+    }
+
     private void showWarningSync(String title, String message) {
         runOnEdtSync(() -> { if (overlay != null) overlay.showMessage(title, message); });
     }
@@ -3068,6 +3293,16 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private int showOptionSync(String title, String message, Object[] options, Object initial) {
         final int[] choice = { -1 };
         runOnEdtSync(() -> { if (overlay != null) choice[0] = overlay.showOptions(title, message, options, initial); });
+        return choice[0];
+    }
+
+    private int showSlotChooserSync(String title, String prompt, boolean allowEmptySlots) {
+        final int[] choice = { -1 };
+        runOnEdtSync(() -> {
+            if (overlay != null) {
+                choice[0] = overlay.showSlotChooser(title, prompt, Load.getSlotInfos(), allowEmptySlots);
+            }
+        });
         return choice[0];
     }
 

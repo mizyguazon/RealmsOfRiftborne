@@ -6,8 +6,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import javax.imageio.ImageIO;
@@ -157,7 +158,7 @@ final class GameWindowGraphics {
         return button;
     }
 
-    JPanel buildLandingScreen(JFrame frame, Runnable onPlay, Runnable onExit) {
+    JPanel buildLandingScreen(JFrame frame, Runnable onPlay, Runnable onLoad, Runnable onExit) {
         final int playButtonWidth = 448;
         final int playButtonHeight = 133;
         final int secondaryButtonWidth = 225;
@@ -238,11 +239,7 @@ final class GameWindowGraphics {
                 ? createLandingImageButton(landingLoadButtonImage,
                         secondaryButtonWidth, secondaryButtonHeight, "LOAD")
                 : createLandingPlaceholderButton("LOAD");
-        loadButton.addActionListener(event -> JOptionPane.showMessageDialog(
-                frame,
-                "Load is not available yet.",
-                "Load",
-                JOptionPane.INFORMATION_MESSAGE));
+        loadButton.addActionListener(event -> onLoad.run());
         middleMenuRow.add(aboutButton);
         middleMenuRow.add(loadButton);
 
@@ -495,11 +492,61 @@ final class GameWindowGraphics {
     }
 
     private BufferedImage loadImageAsset(String path) {
-        try {
-            return ImageIO.read(new File(path));
-        } catch (Exception ignored) {
-            return null;
+        String normalizedPath = path.replace('\\', '/');
+        String[] candidates = normalizedPath.startsWith("src/com/ror/models/")
+                ? new String[] {
+                        normalizedPath,
+                        normalizedPath.substring("src/com/ror/models/".length())
+                }
+                : new String[] {
+                        normalizedPath,
+                        "src/com/ror/models/" + normalizedPath
+                };
+
+        for (String candidate : candidates) {
+            String resourcePath = candidate.startsWith("/") ? candidate : "/com/ror/models/" + candidate;
+            try (InputStream stream = getClass().getResourceAsStream(resourcePath)) {
+                if (stream != null) {
+                    BufferedImage image = ImageIO.read(stream);
+                    if (image != null) {
+                        return image;
+                    }
+                }
+            } catch (Exception ignored) {
+            }
+
+            BufferedImage image = loadImageFile(candidate);
+            if (image != null) {
+                return image;
+            }
         }
+
+        return null;
+    }
+
+    private BufferedImage loadImageFile(String path) {
+        String normalizedPath = path.replace('\\', '/');
+        String[] roots = {
+                "",
+                "MystvaleAcademy/"
+        };
+
+        for (String root : roots) {
+            Path candidate = Path.of(root + normalizedPath);
+            if (!Files.exists(candidate)) {
+                continue;
+            }
+
+            try {
+                BufferedImage image = ImageIO.read(candidate.toFile());
+                if (image != null) {
+                    return image;
+                }
+            } catch (Exception ignored) {
+            }
+        }
+
+        return null;
     }
 
     private BufferedImage[] loadLandingBackgroundFrames() {
