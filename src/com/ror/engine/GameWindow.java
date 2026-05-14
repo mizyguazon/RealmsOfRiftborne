@@ -56,6 +56,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             graphics.loadMainScreenImage("region-map-panel.png");
     private final BufferedImage travelDestinationsPanelImage =
             graphics.loadMainScreenImage("travel-destinations-panel.png");
+    private final BufferedImage chooseCharacterBackgroundImage =
+            graphics.loadMainScreenImage("choose-character-background.png");
     private final BufferedImage shopBackgroundImage = graphics.loadUIImage("shop-background.jpg");
     private final BufferedImage shopHeaderBackgroundImage = graphics.loadUIImage("shop-header-background.png");
 
@@ -80,6 +82,11 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private static final Color COLOR_BACKGROUND = new Color(227, 221, 212);
     private static final Color COLOR_HEADER_BACKGROUND = new Color(0x0A0343);
     private static final Color COLOR_PANEL = new Color(239, 235, 228);
+    private static final Color COLOR_ACADEMY_PANEL = new Color(0x050923);
+    private static final Color COLOR_ACADEMY_CARD = new Color(0x07143A);
+    private static final Color COLOR_ACADEMY_BORDER = new Color(0x1F78D6);
+    private static final Color COLOR_ACADEMY_TEXT = new Color(0xF2F7FF);
+    private static final Color COLOR_ACADEMY_TEXT_MUTED = new Color(0x8EDBFF);
     private static final Color COLOR_BATTLE_PANEL = new Color(0x00041B);
     private static final Color COLOR_BATTLE_SURFACE = new Color(0x00041B);
     private static final Color COLOR_BATTLE_BG = new Color(71, 54, 44);
@@ -551,17 +558,29 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private JPanel buildCharacterScreen() {
-        JPanel panel = new JPanel();
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics graphicsContext) {
+                Graphics2D g2 = (Graphics2D) graphicsContext.create();
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                if (chooseCharacterBackgroundImage != null) {
+                    g2.drawImage(chooseCharacterBackgroundImage, 0, 0, getWidth(), getHeight(), null);
+                } else {
+                    g2.setColor(COLOR_CHARSEL_BACKGROUND);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                }
+                g2.dispose();
+                super.paintComponent(graphicsContext);
+            }
+        };
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setOpaque(true);
-        panel.setBackground(COLOR_CHARSEL_BACKGROUND);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDER, 1),
-                BorderFactory.createEmptyBorder(25, 28, 25, 24)));
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(34, 38, 34, 34));
 
         JLabel heading = new JLabel("CHOOSE YOUR HERO");
         heading.setFont(getHeadingFont(26f));
-        heading.setForeground(COLOR_CHARSEL_TEXT_DARK);
+        heading.setForeground(Color.WHITE);
         heading.setAlignmentX(Component.CENTER_ALIGNMENT);
         heading.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -698,30 +717,30 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private JPanel buildAcademyScreen() {
-        JPanel panel = createCardPanel();
+        JPanel panel = graphics.createCardPanel(COLOR_ACADEMY_BORDER, COLOR_ACADEMY_PANEL);
 
-        panel.add(createHeading("Academy (Inside)"));
+        panel.add(createAcademyHeading("Academy (Inside)"));
         panel.add(Box.createVerticalStrut(8));
-        panel.add(createBody("Library, Training Ground, Shop, Principal's Office"));
+        panel.add(createAcademyBody("Library, Training Ground, Shop, Principal's Office"));
         panel.add(Box.createVerticalStrut(18));
 
         JPanel academyMapCard = new JPanel(new BorderLayout(10, 10));
         academyMapCard.setOpaque(true);
-        academyMapCard.setBackground(COLOR_PANEL);
+        academyMapCard.setBackground(COLOR_ACADEMY_CARD);
         academyMapCard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDER, 1),
+                BorderFactory.createLineBorder(COLOR_ACADEMY_BORDER, 1),
                 BorderFactory.createEmptyBorder(12, 12, 12, 12)));
         academyMapCard.setAlignmentX(Component.LEFT_ALIGNMENT);
         academyMapCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
 
-        JLabel academyMapTitle = createHeading("Academy Map");
+        JLabel academyMapTitle = createAcademyHeading("Academy Map");
         academyMapTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         academyMapCard.add(academyMapTitle, BorderLayout.NORTH);
 
         JPanel academyMapPlaceholder = new JPanel();
-        academyMapPlaceholder.setBackground(new Color(22, 26, 24));
+        academyMapPlaceholder.setBackground(new Color(0x020817));
         academyMapPlaceholder.setPreferredSize(new Dimension(900, 180));
-        academyMapPlaceholder.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 2));
+        academyMapPlaceholder.setBorder(BorderFactory.createLineBorder(COLOR_ACADEMY_BORDER, 2));
         academyMapCard.add(academyMapPlaceholder, BorderLayout.CENTER);
 
         panel.add(academyMapCard);
@@ -1609,6 +1628,14 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private JLabel createBody(String text) {
         return graphics.createBody(text, COLOR_TEXT_MUTED);
+    }
+
+    private JLabel createAcademyHeading(String text) {
+        return graphics.createHeading(text, COLOR_ACADEMY_TEXT);
+    }
+
+    private JLabel createAcademyBody(String text) {
+        return graphics.createBody(text, COLOR_ACADEMY_TEXT_MUTED);
     }
 
     // -------------------------------------------------------------------------
@@ -2624,6 +2651,15 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             applyPlayerAfterTurnEffects();
             reducePlayerCooldowns();
 
+            if (willTriggerAzraelRebirth(enemy)) {
+                playEnemyRebirthAnimation(enemy);
+                battleLog = appendBattleLog(battleLog, performAzraelRebirth(enemy));
+                applyEnemyAfterTurnEffects(enemy);
+                reduceEnemyCooldowns(enemy);
+                round++;
+                continue;
+            }
+
             if (enemy.getHp() <= 0) {
                 enemy.setHp(0);
                 battleLog = enemy.getName() + " was defeated.";
@@ -2633,13 +2669,18 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                 return BattleOutcome.WON;
             }
 
-            // if (enemy.getStunned() > 0) {
-            //     battleLog = appendBattleLog(battleLog, enemy.getName() + " is stunned and cannot act.");
-            // } else if (enemy.getDisabled() > 0) {
-            //     battleLog = appendBattleLog(battleLog, enemy.getName() + " is disabled and cannot act.");
-            // } else {
-            //     battleLog = appendBattleLog(battleLog, performEnemyAction(enemy));
-            // }
+            if (enemy.getStunned() > 0) {
+                battleLog = appendBattleLog(battleLog, enemy.getName() + " is stunned and cannot act.");
+            } else if (enemy.getDisabled() > 0) {
+                battleLog = appendBattleLog(battleLog, enemy.getName() + " is disabled and cannot act.");
+            } else {
+                if (willTriggerAzraelRebirth(enemy)) {
+                    playEnemyRebirthAnimation(enemy);
+                } else {
+                    playEnemyAttackAnimation(enemy);
+                }
+                battleLog = appendBattleLog(battleLog, performEnemyAction(enemy));
+            }
 
             applyEnemyAfterTurnEffects(enemy);
             reduceEnemyCooldowns(enemy);
@@ -2677,6 +2718,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             subtitleLabel.setText(battleTitle);
             showScreen(SCREEN_BATTLE);
             battlePanel.setBattleButtonsEnabled(true);
+            battlePanel.updateHeroActionButtonCooldowns(hero);
         });
         return waitForBattleAction();
     }
@@ -2803,6 +2845,25 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         return text;
     }
 
+    private String performAzraelRebirth(Entity enemy) {
+        if (!(enemy instanceof Azrael azrael)) {
+            return enemy.getName() + " returns from the brink.";
+        }
+
+        int hpBefore = azrael.getHp();
+        int manaBefore = azrael.getMana();
+        azrael.skill3(azrael, hero);
+        int restored = Math.max(0, azrael.getHp() - Math.max(0, hpBefore));
+        int manaSpent = Math.max(0, manaBefore - azrael.getMana());
+
+        runOnEdtSync(() -> updateBattleBars(azrael));
+
+        String text = azrael.getName() + " is reborn and restores " + statFormat.format(restored) + " HP.";
+        if (manaSpent > 0) text += " Enemy mana -" + statFormat.format(manaSpent) + ".";
+        text += " Azrael is exhausted.";
+        return text;
+    }
+
     private void playEnemyAttackAnimation(Entity enemy) {
         int[] offsets = { -70, -130, -70 };
         for (int frameIndex = 0; frameIndex < 3; frameIndex++) {
@@ -2825,6 +2886,34 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             updateEnemySprite(enemy);
         });
         sleepQuietly(80);
+    }
+
+    private void playEnemyRebirthAnimation(Entity enemy) {
+        for (int frameIndex = 0; frameIndex < 5; frameIndex++) {
+            final int currentFrame = frameIndex;
+            final boolean[] frameShown = { false };
+            runOnEdtSync(() -> {
+                battlePanel.setEnemySpriteOffsetX(0);
+                frameShown[0] = graphics.updateEnemyRebirthFrame(enemy, battlePanel, currentFrame);
+            });
+            if (!frameShown[0]) {
+                runOnEdtSync(() -> battlePanel.setEnemySpriteOffsetX(0));
+                return;
+            }
+            sleepQuietly(150);
+        }
+
+        runOnEdtSync(() -> {
+            battlePanel.setEnemySpriteOffsetX(0);
+            updateEnemySprite(enemy);
+        });
+        sleepQuietly(100);
+    }
+
+    private boolean willTriggerAzraelRebirth(Entity enemy) {
+        return enemy instanceof Azrael azrael
+                && !azrael.getRevive()
+                && azrael.getHp() < azrael.getHpCap() * 0.3;
     }
 
     private void playHeroSkill1Animation() {

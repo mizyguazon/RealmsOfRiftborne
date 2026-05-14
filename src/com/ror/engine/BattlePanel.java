@@ -1,5 +1,7 @@
 package com.ror.engine;
 
+import com.ror.models.Hero;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -233,6 +235,112 @@ public class BattlePanel extends JPanel {
         return button;
     }
 
+    private JButton createImageBattleButton(String text, BufferedImage image, Rectangle sourceBounds) {
+        JButton button = new JButton() {
+            @Override
+            protected void paintComponent(Graphics graphics) {
+                Graphics2D graphics2D = (Graphics2D) graphics.create();
+                graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                graphics2D.setRenderingHint(RenderingHints.KEY_RENDERING,
+                        RenderingHints.VALUE_RENDER_QUALITY);
+                graphics2D.drawImage(image,
+                        0, 0, getWidth(), getHeight(),
+                        sourceBounds.x, sourceBounds.y,
+                        sourceBounds.x + sourceBounds.width,
+                        sourceBounds.y + sourceBounds.height,
+                        null);
+
+                ButtonModel model = getModel();
+                if (!model.isEnabled()) {
+                    graphics2D.setColor(new Color(5, 7, 15, 135));
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                } else if (model.isPressed()) {
+                    graphics2D.setColor(new Color(0, 0, 0, 65));
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                } else if (model.isRollover()) {
+                    graphics2D.setColor(new Color(40, 121, 255, 28));
+                    graphics2D.fillRect(0, 0, getWidth(), getHeight());
+                }
+                paintButtonStatus(graphics2D, this);
+                graphics2D.dispose();
+            }
+        };
+        button.setText(text);
+        button.setName(text);
+        button.getAccessibleContext().setAccessibleName(text);
+        button.setBorder(BorderFactory.createEmptyBorder());
+        button.setFocusPainted(false);
+        button.setRolloverEnabled(true);
+        button.setContentAreaFilled(false);
+        button.setOpaque(false);
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
+        button.setPreferredSize(new Dimension(image.getWidth(), 78));
+        return button;
+    }
+
+    private void paintButtonStatus(Graphics2D graphics2D, JComponent component) {
+        Object status = component.getClientProperty("battleStatusText");
+        if (!(status instanceof String statusText) || statusText.isBlank()) {
+            return;
+        }
+
+        Font statusFont = getBodyFont(14f).deriveFont(Font.BOLD, 14f);
+        graphics2D.setFont(statusFont);
+        FontMetrics metrics = graphics2D.getFontMetrics(statusFont);
+        int horizontalPadding = 10;
+        int badgeWidth = metrics.stringWidth(statusText) + (horizontalPadding * 2);
+        int badgeHeight = metrics.getHeight() + 6;
+        int badgeX = Math.max(8, component.getWidth() - badgeWidth - 18);
+        int badgeY = Math.max(8, (component.getHeight() - badgeHeight) / 2);
+
+        graphics2D.setColor(new Color(0, 4, 27, 210));
+        graphics2D.fillRoundRect(badgeX, badgeY, badgeWidth, badgeHeight, 12, 12);
+        graphics2D.setColor(new Color(86, 156, 255, 210));
+        graphics2D.drawRoundRect(badgeX, badgeY, badgeWidth - 1, badgeHeight - 1, 12, 12);
+        graphics2D.setColor(Color.WHITE);
+        int textX = badgeX + horizontalPadding;
+        int textY = badgeY + ((badgeHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+        graphics2D.drawString(statusText, textX, textY);
+    }
+
+    private Rectangle getBattleButtonSourceBounds(String text, BufferedImage image) {
+        return switch (text) {
+            case "Fight", "Inventory", "Run" -> new Rectangle(0, 0, image.getWidth(), image.getHeight());
+            case "Attack" -> new Rectangle(6, 12, 298, 153);
+            case "Skill 1" -> new Rectangle(0, 12, 277, 153);
+            case "Skill 2" -> new Rectangle(0, 12, 321, 153);
+            case "Ultimate" -> new Rectangle(6, 0, 970, 128);
+            default -> new Rectangle(0, 0, image.getWidth(), image.getHeight());
+        };
+    }
+
+    private BufferedImage loadBattleButtonImage(String text) {
+        String fileName = switch (text) {
+            case "Fight" -> "fight_button_panel.png";
+            case "Inventory" -> "inventory_button_panel.png";
+            case "Run" -> "run_button_panel.png";
+            case "Attack" -> "attack_button_panel.png";
+            case "Skill 1" -> "skill1_button_panel.png";
+            case "Skill 2" -> "skill2_button_panel.png";
+            case "Ultimate" -> "ultimate_button_panel.png";
+            default -> null;
+        };
+        if (fileName == null) {
+            return null;
+        }
+
+        return loadCombatImage(fileName);
+    }
+
+    private BufferedImage loadCombatImage(String fileName) {
+        try {
+            return ImageIO.read(new File(COMBAT_IMAGE_DIRECTORY + fileName));
+        } catch (IOException exception) {
+            return null;
+        }
+    }
+
     private JPanel createBattleSummaryCard(String label, JLabel name, JProgressBar hp, JProgressBar mana) {
         JPanel card = new JPanel();
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
@@ -433,6 +541,61 @@ public class BattlePanel extends JPanel {
         battleSkill1Button.setEnabled(enabled);
         battleSkill2Button.setEnabled(enabled);
         battleUltimateButton.setEnabled(enabled);
+    }
+
+    public void updateHeroActionButtonCooldowns(Hero hero) {
+        if (hero == null) {
+            return;
+        }
+
+        updateCooldownButton(battleSkill1Button, "Skill 1", hero.getCooldown1());
+        updateCooldownButton(battleSkill2Button, "Skill 2", hero.getCooldown2());
+        updateCooldownButton(battleUltimateButton, "Ultimate", hero.getCooldownU());
+    }
+
+    private void updateCooldownButton(JButton button, String baseText, int cooldown) {
+        int safeCooldown = Math.max(0, cooldown);
+        String statusText = safeCooldown > 0 ? "CD " + safeCooldown : "";
+        button.putClientProperty("battleStatusText", statusText);
+        button.setText(safeCooldown > 0 ? baseText + " (" + statusText + ")" : baseText);
+        button.setEnabled(safeCooldown == 0);
+        button.repaint();
+    }
+
+    public void setHeroSpriteOffsetX(int offsetX) {
+        heroSpriteOffsetX = offsetX;
+        refreshBattleSpriteLayout();
+    }
+
+    public void setEnemySpriteOffsetX(int offsetX) {
+        enemySpriteOffsetX = offsetX;
+        refreshBattleSpriteLayout();
+    }
+
+    public void resetBattleSpriteOffsets() {
+        heroSpriteOffsetX = 0;
+        enemySpriteOffsetX = 0;
+        refreshBattleSpriteLayout();
+    }
+
+    private void refreshBattleSpriteLayout() {
+        if (battleSpriteStrip != null) {
+            battleSpriteStrip.revalidate();
+            battleSpriteStrip.repaint();
+        }
+    }
+
+    public void setBattleBackgroundForArea(String areaName) {
+        battleArenaBackgroundImage = switch (areaName) {
+            case "Forest of Reverie" -> loadCombatImage(FOREST_REVERIE_BATTLE_BACKGROUND);
+            case "Reverie's Edge" -> loadCombatImage(REVERIES_EDGE_BATTLE_BACKGROUND);
+            case "Forsaken Lands" -> loadCombatImage(FORSAKEN_LANDS_BATTLE_BACKGROUND);
+            default -> null;
+        };
+
+        if (battleSpriteStrip != null) {
+            battleSpriteStrip.repaint();
+        }
     }
 
     // Getters for updating UI
