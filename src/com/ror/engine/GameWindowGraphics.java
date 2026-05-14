@@ -1,6 +1,7 @@
 package com.ror.engine;
 
 import com.ror.models.Entity;
+import com.ror.models.Gunner;
 import com.ror.models.Hero;
 import com.ror.models.Boss.Elderthorn;
 import com.ror.models.Boss.Morgrath;
@@ -37,6 +38,12 @@ final class GameWindowGraphics {
     private static final Color BUTTON_HOVER = new Color(0x1A2159);
     private static final Color BUTTON_PRESSED = new Color(0x06081F);
     private static final Color BUTTON_BORDER = new Color(0x2B356E);
+    private static final int[] STORY_WALK_X_OFFSETS_NEO = { 0, -12, -4, -14, -8 };
+    private static final int[] STORY_WALK_Y_OFFSETS_NEO = { 0, 0, 0, 0, 0 };
+    private static final int[] STORY_WALK_X_OFFSETS_MLEUX = { 0, -10, -2, -12, -6 };
+    private static final int[] STORY_WALK_Y_OFFSETS_MLEUX = { 0, 0, 0, 0, 0 };
+    private static final int[] STORY_WALK_X_OFFSETS_FEHLD = { 0, -8, -2, -10 };
+    private static final int[] STORY_WALK_Y_OFFSETS_FEHLD = { 0, 0, 0, 0 };
 
     private Font headingFont = new Font("Serif", Font.BOLD, 28);
     private Font bodyFont = new Font("SansSerif", Font.PLAIN, 14);
@@ -691,6 +698,136 @@ final class GameWindowGraphics {
                 "/com/ror/models/assets/images/mainscreen/" + fileName,
                 "src/com/ror/models/assets/images/mainscreen/" + fileName,
                 "assets/images/mainscreen/" + fileName);
+    }
+
+    BufferedImage loadStorySceneImage(String fileName) {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/ui/" + fileName,
+                "src/com/ror/models/assets/images/ui/" + fileName,
+                "assets/images/ui/" + fileName,
+                "C:/Users/Shayndel Mizy Amaga/Downloads/ChatGPT Image May 15, 2026, 02_30_29 AM.png");
+    }
+
+    BufferedImage loadStoryNarrationBackgroundImage(String fileName) {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/ui/" + fileName,
+                "src/com/ror/models/assets/images/ui/" + fileName,
+                "assets/images/ui/" + fileName,
+                "C:/Users/Shayndel Mizy Amaga/Downloads/narration-screen.png");
+    }
+
+    BufferedImage[] loadStoryHeroWalkFrames(Hero hero) {
+        if (hero instanceof Swordsman) {
+            BufferedImage sheet = loadHeroImage("neo/walking/neo-walk.png");
+            if (sheet == null) {
+                BufferedImage walk1 = loadHeroImage("neo/Neo-walk1.png");
+                BufferedImage walk2 = loadHeroImage("neo/Neo-walk2.png");
+                BufferedImage idle = loadHeroImage("neo/Neo-idle.png");
+                return normalizeStoryFrames(
+                        new BufferedImage[] { walk1, walk2, idle, walk2, walk1 },
+                        STORY_WALK_X_OFFSETS_NEO,
+                        STORY_WALK_Y_OFFSETS_NEO);
+            }
+
+            return loadStoryFramesFromSheet(sheet, STORY_WALK_X_OFFSETS_NEO, STORY_WALK_Y_OFFSETS_NEO);
+        }
+
+        if (hero instanceof Mage) {
+            BufferedImage sheet = loadHeroImage("mleux/walking/mleux-walk.png");
+            if (sheet != null) {
+                return loadStoryFramesFromSheet(sheet, STORY_WALK_X_OFFSETS_MLEUX, STORY_WALK_Y_OFFSETS_MLEUX);
+            }
+        }
+
+        if (hero instanceof Gunner) {
+            BufferedImage sheet = loadHeroImage("fehld/walking/fehld-walk (2).png");
+            if (sheet == null) {
+                sheet = loadHeroImage("fehld/walking/fehld-walk.png");
+            }
+            if (sheet != null) {
+                int frameCount = sheet.getWidth() == 1774 ? 4 : 5;
+                return loadStoryFramesFromSheet(
+                        sheet,
+                        frameCount,
+                        STORY_WALK_X_OFFSETS_FEHLD,
+                        STORY_WALK_Y_OFFSETS_FEHLD);
+            }
+        }
+
+        return new BufferedImage[0];
+    }
+
+    private BufferedImage[] loadStoryFramesFromSheet(BufferedImage sheet, int[] xOffsets, int[] yOffsets) {
+        return loadStoryFramesFromSheet(sheet, 5, xOffsets, yOffsets);
+    }
+
+    private BufferedImage[] loadStoryFramesFromSheet(BufferedImage sheet, int frameCount, int[] xOffsets, int[] yOffsets) {
+        BufferedImage[] frames = new BufferedImage[frameCount];
+        for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+            int startX = (int) Math.round(sheet.getWidth() * (frameIndex / (double) frameCount));
+            int endX = (int) Math.round(sheet.getWidth() * ((frameIndex + 1) / (double) frameCount));
+            int frameWidth = Math.max(1, endX - startX);
+            frames[frameIndex] = sheet.getSubimage(startX, 0, frameWidth, sheet.getHeight());
+        }
+        return normalizeStoryFrames(frames, xOffsets, yOffsets);
+    }
+
+    private BufferedImage[] normalizeStoryFrames(BufferedImage[] frames, int[] xOffsets, int[] yOffsets) {
+        BufferedImage[] normalized = new BufferedImage[frames.length];
+        int maxWidth = 1;
+        int maxHeight = 1;
+
+        for (int i = 0; i < frames.length; i++) {
+            normalized[i] = trimTransparentBounds(frames[i]);
+            if (normalized[i] != null) {
+                maxWidth = Math.max(maxWidth, normalized[i].getWidth());
+                maxHeight = Math.max(maxHeight, normalized[i].getHeight());
+            }
+        }
+
+        for (int i = 0; i < normalized.length; i++) {
+            BufferedImage frame = normalized[i];
+            if (frame == null) continue;
+
+            BufferedImage canvas = new BufferedImage(maxWidth + 32, maxHeight + 16, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = canvas.createGraphics();
+            g2.setComposite(AlphaComposite.SrcOver);
+            int manualXOffset = i < xOffsets.length ? xOffsets[i] : 0;
+            int manualYOffset = i < yOffsets.length ? yOffsets[i] : 0;
+            int drawX = ((canvas.getWidth() - frame.getWidth()) / 2) + manualXOffset;
+            int drawY = (canvas.getHeight() - frame.getHeight()) + manualYOffset;
+            g2.drawImage(frame, drawX, drawY, null);
+            g2.dispose();
+            normalized[i] = canvas;
+        }
+
+        return normalized;
+    }
+
+    private BufferedImage trimTransparentBounds(BufferedImage image) {
+        if (image == null) return null;
+
+        int minX = image.getWidth();
+        int minY = image.getHeight();
+        int maxX = -1;
+        int maxY = -1;
+
+        for (int y = 0; y < image.getHeight(); y++) {
+            for (int x = 0; x < image.getWidth(); x++) {
+                int alpha = (image.getRGB(x, y) >>> 24) & 0xFF;
+                if (alpha <= 10) continue;
+                minX = Math.min(minX, x);
+                minY = Math.min(minY, y);
+                maxX = Math.max(maxX, x);
+                maxY = Math.max(maxY, y);
+            }
+        }
+
+        if (maxX < minX || maxY < minY) {
+            return image;
+        }
+
+        return image.getSubimage(minX, minY, (maxX - minX) + 1, (maxY - minY) + 1);
     }
 
     BufferedImage loadItemImage(String fileName) {
