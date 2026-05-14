@@ -26,6 +26,8 @@ public class AdventurePanel extends JComponent {
     private volatile int selectedIndex = -1;
     private java.awt.SecondaryLoop secondaryLoop;
     private int defaultOptionIndex = 0;
+    private int optionButtonCount = 1;
+    private int optionRowCount = 1;
 
     public AdventurePanel(JFrame window, Font headingFont, Font bodyFont) {
         this.window = window;
@@ -96,7 +98,9 @@ public class AdventurePanel extends JComponent {
     @Override
     public void doLayout() {
         super.doLayout();
-        dialogBox.setSize(Math.min(getWidth() - 120, 680), Math.min(getHeight() - 120, 260));
+        int targetWidth = optionButtonCount > 4 ? 820 : 680;
+        int targetHeight = optionRowCount > 1 ? 330 : 260;
+        dialogBox.setSize(Math.min(getWidth() - 120, targetWidth), Math.min(getHeight() - 120, targetHeight));
         dialogBox.setLocation((getWidth() - dialogBox.getWidth()) / 2, (getHeight() - dialogBox.getHeight()) / 2);
 
         for (Component child : dialogBox.getComponents()) {
@@ -163,12 +167,25 @@ public class AdventurePanel extends JComponent {
 
     private void populateButtons(String[] buttons) {
         buttonPanel.removeAll();
-        JPanel row = new JPanel();
-        row.setOpaque(false);
-        row.setName("buttonRow");
-        row.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 16, 0));
+        optionButtonCount = Math.max(1, buttons.length);
+        int columns = Math.min(4, optionButtonCount);
+        optionRowCount = (int) Math.ceil(optionButtonCount / (double) columns);
+
+        JPanel rows = new JPanel();
+        rows.setOpaque(false);
+        rows.setLayout(new BoxLayout(rows, BoxLayout.Y_AXIS));
+        JPanel currentRow = null;
 
         for (int i = 0; i < buttons.length; i++) {
+            if (i % columns == 0) {
+                if (i > 0) {
+                    rows.add(Box.createVerticalStrut(10));
+                }
+                currentRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 12, 0));
+                currentRow.setOpaque(false);
+                currentRow.setAlignmentX(Component.CENTER_ALIGNMENT);
+                rows.add(currentRow);
+            }
             final int index = i;
             JButton button = new JButton(buttons[i]) {
                 @Override
@@ -206,12 +223,12 @@ public class AdventurePanel extends JComponent {
             button.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
             button.setFocusPainted(false);
             button.setFont(bodyFont.deriveFont(Font.BOLD, Math.max(14f, bodyFont.getSize2D())));
-            button.setPreferredSize(new Dimension(120, 44));
+            button.setPreferredSize(new Dimension(150, 44));
             button.addActionListener(e -> closeOverlay(index));
-            row.add(button);
+            currentRow.add(button);
         }
 
-        buttonPanel.add(row, BorderLayout.CENTER);
+        buttonPanel.add(rows, BorderLayout.CENTER);
         buttonPanel.revalidate();
         buttonPanel.repaint();
     }

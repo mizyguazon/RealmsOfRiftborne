@@ -123,7 +123,7 @@ public class Azrael extends Boss {
         if(getRebirth()){
             // Heal Azrael by max
             int healAmount = getHpCap();
-            setHp(Math.min(getHpCap(), getHp() + healAmount));
+            setHp(getHpCap());
             System.out.println(getName() + " has been reborn and restores " + df.format(healAmount) + " HP!");
             System.out.println(getName() + " is exhausted and regaining his strength ATTACK NOW!!!");
             setDisabled(5);

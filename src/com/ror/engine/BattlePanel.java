@@ -1,5 +1,7 @@
 package com.ror.engine;
 
+import com.ror.models.Hero;
+
 import javax.swing.*;
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -305,9 +307,11 @@ public class BattlePanel extends JPanel {
                     graphics2D.setColor(new Color(40, 121, 255, 28));
                     graphics2D.fillRect(0, 0, getWidth(), getHeight());
                 }
+                paintButtonStatus(graphics2D, this);
                 graphics2D.dispose();
             }
         };
+        button.setText(text);
         button.setName(text);
         button.getAccessibleContext().setAccessibleName(text);
         button.setBorder(BorderFactory.createEmptyBorder());
@@ -318,6 +322,31 @@ public class BattlePanel extends JPanel {
         button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 78));
         button.setPreferredSize(new Dimension(image.getWidth(), 78));
         return button;
+    }
+
+    private void paintButtonStatus(Graphics2D graphics2D, JComponent component) {
+        Object status = component.getClientProperty("battleStatusText");
+        if (!(status instanceof String statusText) || statusText.isBlank()) {
+            return;
+        }
+
+        Font statusFont = getBodyFont(14f).deriveFont(Font.BOLD, 14f);
+        graphics2D.setFont(statusFont);
+        FontMetrics metrics = graphics2D.getFontMetrics(statusFont);
+        int horizontalPadding = 10;
+        int badgeWidth = metrics.stringWidth(statusText) + (horizontalPadding * 2);
+        int badgeHeight = metrics.getHeight() + 6;
+        int badgeX = Math.max(8, component.getWidth() - badgeWidth - 18);
+        int badgeY = Math.max(8, (component.getHeight() - badgeHeight) / 2);
+
+        graphics2D.setColor(new Color(0, 4, 27, 210));
+        graphics2D.fillRoundRect(badgeX, badgeY, badgeWidth, badgeHeight, 12, 12);
+        graphics2D.setColor(new Color(86, 156, 255, 210));
+        graphics2D.drawRoundRect(badgeX, badgeY, badgeWidth - 1, badgeHeight - 1, 12, 12);
+        graphics2D.setColor(Color.WHITE);
+        int textX = badgeX + horizontalPadding;
+        int textY = badgeY + ((badgeHeight - metrics.getHeight()) / 2) + metrics.getAscent();
+        graphics2D.drawString(statusText, textX, textY);
     }
 
     private Rectangle getBattleButtonSourceBounds(String text, BufferedImage image) {
@@ -599,6 +628,25 @@ public class BattlePanel extends JPanel {
         battleSkill1Button.setEnabled(enabled);
         battleSkill2Button.setEnabled(enabled);
         battleUltimateButton.setEnabled(enabled);
+    }
+
+    public void updateHeroActionButtonCooldowns(Hero hero) {
+        if (hero == null) {
+            return;
+        }
+
+        updateCooldownButton(battleSkill1Button, "Skill 1", hero.getCooldown1());
+        updateCooldownButton(battleSkill2Button, "Skill 2", hero.getCooldown2());
+        updateCooldownButton(battleUltimateButton, "Ultimate", hero.getCooldownU());
+    }
+
+    private void updateCooldownButton(JButton button, String baseText, int cooldown) {
+        int safeCooldown = Math.max(0, cooldown);
+        String statusText = safeCooldown > 0 ? "CD " + safeCooldown : "";
+        button.putClientProperty("battleStatusText", statusText);
+        button.setText(safeCooldown > 0 ? baseText + " (" + statusText + ")" : baseText);
+        button.setEnabled(safeCooldown == 0);
+        button.repaint();
     }
 
     public void setHeroSpriteOffsetX(int offsetX) {

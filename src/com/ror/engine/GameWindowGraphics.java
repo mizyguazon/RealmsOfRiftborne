@@ -2,11 +2,14 @@ package com.ror.engine;
 
 import com.ror.models.Entity;
 import com.ror.models.Hero;
+import com.ror.models.Boss.Azrael;
 import com.ror.models.Boss.Elderthorn;
+import com.ror.models.Boss.Kim;
 import com.ror.models.Boss.Morgrath;
 import com.ror.models.Mage;
 import com.ror.models.Mobs.FadingWarden;
 import com.ror.models.Mobs.Goblin;
+import com.ror.models.Mobs.HollowKing;
 import com.ror.models.Mobs.MudLurker;
 import com.ror.models.Mobs.ShadowAbyss;
 import com.ror.models.Mobs.Slime;
@@ -428,6 +431,17 @@ final class GameWindowGraphics {
         return true;
     }
 
+    boolean updateEnemyRebirthFrame(Entity enemy, BattlePanel battlePanel, int frameIndex) {
+        BufferedImage sprite = loadEnemyRebirthFrame(enemy, frameIndex);
+        if (sprite == null) {
+            return false;
+        }
+
+        battlePanel.getBattleEnemySpriteLabel().setText("");
+        battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemyRebirthSpriteSize(enemy), getEnemyRebirthSpriteSize(enemy)));
+        return true;
+    }
+
     private int getEnemySpriteSize(Entity enemy) {
         if (enemy instanceof Goblin) return 132;
         if (enemy instanceof Slime) return 132;
@@ -437,9 +451,17 @@ final class GameWindowGraphics {
         if (enemy instanceof ShadowAbyss) return 150;
         if (enemy instanceof VoidBeast) return 150;
         if (enemy instanceof FadingWarden) return 150;
+        if (enemy instanceof HollowKing) return 150;
         if (enemy instanceof Elderthorn) return 150;
+        if (enemy instanceof Azrael) return 185;
+        if (enemy instanceof Kim) return 185;
         if (enemy instanceof Morgrath) return 155;
         return 96;
+    }
+
+    private int getEnemyRebirthSpriteSize(Entity enemy) {
+        if (enemy instanceof Azrael) return 230;
+        return getEnemySpriteSize(enemy);
     }
 
     private int getHeroSpriteSize(Hero hero) {
@@ -943,7 +965,10 @@ final class GameWindowGraphics {
         if (enemy instanceof ShadowAbyss) return loadEnemyImage("shadowabyss.png");
         if (enemy instanceof VoidBeast) return loadEnemyImage("voidbeast.png");
         if (enemy instanceof FadingWarden) return loadEnemyImage("fadingwarden.png");
+        if (enemy instanceof HollowKing) return loadEnemyImage("hollowking.png");
         if (enemy instanceof Elderthorn) return loadEnemyImage("elderthorn.png");
+        if (enemy instanceof Azrael) return loadEnemyImage("azrael.png");
+        if (enemy instanceof Kim) return loadEnemyImage("kim.png");
         if (enemy instanceof Morgrath) return loadEnemyImage("morgrath.png");
         return null;
     }
@@ -991,8 +1016,42 @@ final class GameWindowGraphics {
                 return loadEnemyImage(frames[frameIndex]);
             }
         }
+        if (enemy instanceof HollowKing) {
+            String[] frames = { "hollowking-frame2.png", "hollowking-frame3.png", "hollowking-frame4.png" };
+            if (frameIndex >= 0 && frameIndex < frames.length) {
+                return loadEnemyImage(frames[frameIndex]);
+            }
+        }
+        if (enemy instanceof Azrael) {
+            String[] frames = { "azrael-frame2.png", "azrael-frame3.png", "azrael-frame4.png" };
+            if (frameIndex >= 0 && frameIndex < frames.length) {
+                return loadEnemyImage(frames[frameIndex]);
+            }
+        }
+        if (enemy instanceof Kim) {
+            String[] frames = { "kim-frame2.png", "kim-frame3.png", "kim-frame4.png" };
+            if (frameIndex >= 0 && frameIndex < frames.length) {
+                return loadEnemyImage(frames[frameIndex]);
+            }
+        }
         if (enemy instanceof Morgrath) {
             String[] frames = { "morgrath-frame2.png", "morgrath-frame3.png", "morgrath-frame4.png" };
+            if (frameIndex >= 0 && frameIndex < frames.length) {
+                return loadEnemyImage(frames[frameIndex]);
+            }
+        }
+        return null;
+    }
+
+    private BufferedImage loadEnemyRebirthFrame(Entity enemy, int frameIndex) {
+        if (enemy instanceof Azrael) {
+            String[] frames = {
+                    "azrael-rebirth-frame1.png",
+                    "azrael-rebirth-frame2.png",
+                    "azrael-rebirth-frame3.png",
+                    "azrael-rebirth-frame4.png",
+                    "azrael-rebirth-frame5.png"
+            };
             if (frameIndex >= 0 && frameIndex < frames.length) {
                 return loadEnemyImage(frames[frameIndex]);
             }
