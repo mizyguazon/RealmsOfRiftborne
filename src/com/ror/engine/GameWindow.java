@@ -60,6 +60,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             graphics.loadMainScreenImage("choose-character-background.png");
     private final BufferedImage shopBackgroundImage = graphics.loadUIImage("shop-background.jpg");
     private final BufferedImage shopHeaderBackgroundImage = graphics.loadUIImage("shop-header-background.png");
+    private final BufferedImage storySceneBackgroundImage = graphics.loadStorySceneImage("story-opening-background.png");
+    private final BufferedImage storyNarrationBackgroundImage =
+            graphics.loadStoryNarrationBackgroundImage("story-narration-background.png");
+    private BufferedImage[] storyHeroWalkFrames = new BufferedImage[0];
 
     // Legacy console area components
     private final JTextArea outputArea = new JTextArea();
@@ -103,6 +107,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private static final Color COLOR_SHOP_BORDER = new Color(93, 87, 111);
     private static final Color COLOR_HERO_HP = new Color(164, 54, 54);
     private static final Color COLOR_HERO_MANA = new Color(52, 92, 156);
+    private static final Color COLOR_STORY_BORDER = new Color(86, 108, 188, 150);
     private static final Color COLOR_CHARSEL_BACKGROUND = new Color(227, 221, 212);
     private static final Color COLOR_CHARSEL_PANEL = new Color(239, 235, 228);
     private static final Color COLOR_CHARSEL_TEXT_DARK = new Color(46, 31, 20);
@@ -175,6 +180,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private final JTextArea storyTextArea = new JTextArea();
     private final JLabel storyTitleLabel = new JLabel("Story");
     private final JLabel storyProgressLabel = new JLabel("Scene 1 / 1");
+    private final JPanel storyScenePreviewPanel = new StoryScenePreviewPanel();
     private Timer storyTypewriterTimer;
     private String currentStoryLine = "";
     private static final int STORY_TYPEWRITER_DELAY_MS = 14;
@@ -783,30 +789,35 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private JPanel buildStoryScreen() {
-        JPanel panel = createCardPanel();
+        JPanel panel = createImageCardPanel(storyNarrationBackgroundImage);
+        panel.setLayout(new BorderLayout(22, 0));
 
         storyTitleLabel.setFont(getHeadingFont(28f));
-        storyTitleLabel.setForeground(COLOR_TEXT_DARK);
+        storyTitleLabel.setForeground(Color.WHITE);
         storyTitleLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 
         storyProgressLabel.setFont(getBodyFont(13f));
-        storyProgressLabel.setForeground(COLOR_TEXT_MUTED);
+        storyProgressLabel.setForeground(new Color(225, 230, 255));
         storyProgressLabel.setAlignmentX(JLabel.LEFT_ALIGNMENT);
 
         storyTextArea.setEditable(false);
         storyTextArea.setLineWrap(true);
         storyTextArea.setWrapStyleWord(true);
         storyTextArea.setFont(getBodyFont(18f));
-        storyTextArea.setBackground(COLOR_PANEL);
-        storyTextArea.setForeground(COLOR_TEXT_DARK);
+        storyTextArea.setBackground(new Color(7, 11, 38, 210));
+        storyTextArea.setForeground(Color.WHITE);
         storyTextArea.setMargin(new Insets(16, 16, 16, 16));
+        storyTextArea.setCaretColor(Color.WHITE);
 
         JScrollPane storyScrollPane = new JScrollPane(storyTextArea);
         storyScrollPane.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-        storyScrollPane.setPreferredSize(new Dimension(920, 360));
-        storyScrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 360));
+        storyScrollPane.setPreferredSize(new Dimension(920, 420));
+        storyScrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 420));
+        storyScrollPane.setOpaque(false);
+        storyScrollPane.getViewport().setOpaque(false);
+        storyScrollPane.getViewport().setBackground(new Color(7, 11, 38, 210));
         storyScrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_BORDER, 1),
+                BorderFactory.createLineBorder(COLOR_STORY_BORDER, 1),
                 BorderFactory.createEmptyBorder(0, 0, 0, 0)));
 
         storyNextButton = createPrimaryButton("Next");
@@ -826,23 +837,161 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             showScreen(SCREEN_CHARACTER);
         });
 
-        JPanel buttonRow = new JPanel(new GridLayout(1, 4, 10, 0));
-        buttonRow.setOpaque(false);
-        buttonRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 42));
-        buttonRow.add(storyNextButton);
-        buttonRow.add(storySkipButton);
-        buttonRow.add(storyStartButton);
-        buttonRow.add(backButton);
+        JPanel leftColumn = new JPanel();
+        leftColumn.setOpaque(false);
+        leftColumn.setLayout(new BoxLayout(leftColumn, BoxLayout.Y_AXIS));
+        leftColumn.setPreferredSize(new Dimension(700, 0));
+        leftColumn.setMinimumSize(new Dimension(700, 0));
 
-        panel.add(storyTitleLabel);
-        panel.add(Box.createVerticalStrut(6));
-        panel.add(storyProgressLabel);
-        panel.add(Box.createVerticalStrut(14));
-        panel.add(storyScrollPane);
-        panel.add(Box.createVerticalStrut(14));
-        panel.add(buttonRow);
-        panel.add(Box.createVerticalGlue());
+        storyScenePreviewPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftColumn.add(storyScenePreviewPanel);
+        leftColumn.add(Box.createVerticalStrut(14));
+
+        JPanel leftButtonRow = new JPanel(new GridLayout(1, 3, 10, 0));
+        leftButtonRow.setOpaque(false);
+        leftButtonRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+        leftButtonRow.setPreferredSize(new Dimension(700, 42));
+        leftButtonRow.setMaximumSize(new Dimension(700, 42));
+        leftButtonRow.add(storyNextButton);
+        leftButtonRow.add(storySkipButton);
+        leftButtonRow.add(storyStartButton);
+        leftColumn.add(leftButtonRow);
+        leftColumn.add(Box.createVerticalGlue());
+
+        JPanel rightColumn = new JPanel();
+        rightColumn.setOpaque(true);
+        rightColumn.setBackground(new Color(5, 10, 36, 150));
+        rightColumn.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(COLOR_STORY_BORDER, 1),
+                BorderFactory.createEmptyBorder(18, 18, 18, 18)));
+        rightColumn.setLayout(new BoxLayout(rightColumn, BoxLayout.Y_AXIS));
+        rightColumn.add(storyTitleLabel);
+        rightColumn.add(Box.createVerticalStrut(6));
+        rightColumn.add(storyProgressLabel);
+        rightColumn.add(Box.createVerticalStrut(14));
+        rightColumn.add(storyScrollPane);
+        rightColumn.add(Box.createVerticalStrut(14));
+        rightColumn.add(backButton);
+        rightColumn.add(Box.createVerticalGlue());
+
+        panel.add(leftColumn, BorderLayout.WEST);
+        panel.add(rightColumn, BorderLayout.CENTER);
         return panel;
+    }
+
+    private final class StoryScenePreviewPanel extends JPanel {
+        private static final float PAN_STEP = 0.0011f;
+        private final Timer panTimer;
+        private final Timer heroFrameTimer;
+        private float panProgress = 0f;
+        private int heroFrameIndex = 0;
+
+        private StoryScenePreviewPanel() {
+            setOpaque(false);
+            setPreferredSize(new Dimension(700, 360));
+            setMinimumSize(new Dimension(700, 300));
+            setMaximumSize(new Dimension(Integer.MAX_VALUE, 360));
+            setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createLineBorder(COLOR_STORY_BORDER, 1),
+                    BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+
+            panTimer = new Timer(33, event -> {
+                panProgress += PAN_STEP;
+                if (panProgress >= 1f) {
+                    panProgress = 1f;
+                    ((Timer) event.getSource()).stop();
+                }
+                repaint();
+            });
+
+            heroFrameTimer = new Timer(140, event -> {
+                if (storyHeroWalkFrames.length == 0) return;
+                heroFrameIndex = (heroFrameIndex + 1) % storyHeroWalkFrames.length;
+                repaint();
+            });
+        }
+
+        @Override
+        public void addNotify() {
+            super.addNotify();
+            panProgress = 0f;
+            heroFrameIndex = 0;
+            panTimer.start();
+            heroFrameTimer.start();
+        }
+
+        @Override
+        public void removeNotify() {
+            panTimer.stop();
+            heroFrameTimer.stop();
+            super.removeNotify();
+        }
+
+        @Override
+        protected void paintComponent(Graphics graphicsContext) {
+            super.paintComponent(graphicsContext);
+            Graphics2D g2 = (Graphics2D) graphicsContext.create();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+            int width = getWidth();
+            int height = getHeight();
+            g2.setColor(new Color(7, 8, 32));
+            g2.fillRect(0, 0, width, height);
+
+            if (storySceneBackgroundImage != null) {
+                double scale = height / (double) storySceneBackgroundImage.getHeight();
+                int drawWidth = (int) Math.ceil(storySceneBackgroundImage.getWidth() * scale);
+                int drawHeight = (int) Math.ceil(storySceneBackgroundImage.getHeight() * scale);
+                int extraWidth = Math.max(0, drawWidth - width);
+                int drawX = extraWidth > 0 ? -Math.round(extraWidth * panProgress) : 0;
+                int drawY = 0;
+                g2.drawImage(storySceneBackgroundImage, drawX, drawY, drawWidth, drawHeight, null);
+            } else {
+                g2.setColor(new Color(225, 225, 235, 170));
+                g2.setFont(getBodyFont(18f));
+                FontMetrics metrics = g2.getFontMetrics();
+                String fallback = "Story scene background not found";
+                int textX = (width - metrics.stringWidth(fallback)) / 2;
+                int textY = (height + metrics.getAscent()) / 2;
+                g2.drawString(fallback, Math.max(18, textX), textY);
+            }
+
+            GradientPaint vignette = new GradientPaint(
+                    0, 0, new Color(5, 6, 24, 24),
+                    0, height, new Color(5, 6, 24, 170));
+            g2.setPaint(vignette);
+            g2.fillRect(0, 0, width, height);
+
+            BufferedImage heroFrame = getCurrentStoryHeroFrame();
+            if (heroFrame != null) {
+                double scale = Math.min(
+                        (width * 0.28) / heroFrame.getWidth(),
+                        (height * 0.48) / heroFrame.getHeight());
+                scale = Math.max(scale, 0.18d);
+                int heroWidth = Math.max(1, (int) Math.round(heroFrame.getWidth() * scale));
+                int heroHeight = Math.max(1, (int) Math.round(heroFrame.getHeight() * scale));
+                int heroAnchorX = width / 2;
+                int heroX = heroAnchorX - (heroWidth / 2);
+                int heroY = height - heroHeight - 18;
+
+                g2.setColor(new Color(0, 0, 0, 140));
+                g2.fillOval(heroAnchorX - (heroWidth / 3), heroY + heroHeight - 8, Math.max(40, heroWidth * 2 / 3), 18);
+
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+                g2.drawImage(heroFrame, heroX, heroY, heroWidth, heroHeight, null);
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            }
+
+            g2.setColor(new Color(255, 255, 255, 36));
+            g2.drawLine(0, height - 56, width, height - 56);
+            g2.dispose();
+        }
+
+        private BufferedImage getCurrentStoryHeroFrame() {
+            if (storyHeroWalkFrames.length == 0) return null;
+            return storyHeroWalkFrames[Math.floorMod(heroFrameIndex, storyHeroWalkFrames.length)];
+        }
     }
 
     private JPanel buildShopScreen() {
@@ -1893,6 +2042,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private void beginStoryForHero(boolean firstTimeSelection) {
         if (hero == null) return;
+        storyHeroWalkFrames = graphics.loadStoryHeroWalkFrames(hero);
         currentStorySequence = buildIntroStoryForHero(hero);
         currentStoryIndex = 0;
         storyTitleLabel.setText(firstTimeSelection ? "Opening Story" : "Storyline Recap");
