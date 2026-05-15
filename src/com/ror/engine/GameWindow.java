@@ -54,6 +54,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             graphics.loadMainScreenImage("journey-status-panel.png");
     private final BufferedImage regionMapPanelImage =
             graphics.loadMainScreenImage("region-map-panel.png");
+    private final BufferedImage academyMapPanelImage =
+            graphics.loadMainScreenImage("academy-map-panel.png");
     private final BufferedImage travelDestinationsPanelImage =
             graphics.loadMainScreenImage("travel-destinations-panel.png");
     private final BufferedImage chooseCharacterBackgroundImage =
@@ -180,7 +182,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     private final JTextArea storyTextArea = new JTextArea();
     private final JLabel storyTitleLabel = new JLabel("Story");
     private final JLabel storyProgressLabel = new JLabel("Scene 1 / 1");
-    private final JPanel storyScenePreviewPanel = new StoryScenePreviewPanel();
+    private final StoryScenePreviewPanel storyScenePreviewPanel = new StoryScenePreviewPanel();
     private Timer storyTypewriterTimer;
     private String currentStoryLine = "";
     private static final int STORY_TYPEWRITER_DELAY_MS = 14;
@@ -254,10 +256,10 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         window.setResizable(false);
         window.setContentPane(rootPanel);
 
-        overlay = AdventurePanel.create(window, getHeadingFont(30f), getBodyFont(16f));
+        overlay = new AdventurePanel(window, getHeadingFont(30f), getBodyFont(16f));
         window.setGlassPane(overlay);
 
-        battlePanel = BattlePanel.create(getHeadingFont(30f), getBodyFont(16f), this);
+        battlePanel = new BattlePanel(getHeadingFont(30f), getBodyFont(16f), this);
 
         rootPanel.add(buildLandingScreen(), ROOT_LANDING);
         rootPanel.add(buildGameShell(), ROOT_GAME);
@@ -383,7 +385,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         headerSaveButton = new JButton("Save");
         headerSaveButton.setFont(getBodyFont(13f).deriveFont(Font.BOLD, 13f));
-        headerSaveButton.setForeground(COLOR_TEXT_DARK);
+        headerSaveButton.setForeground(Color.WHITE);
         headerSaveButton.setFocusPainted(false);
         headerSaveButton.setContentAreaFilled(false);
         headerSaveButton.setOpaque(false);
@@ -397,7 +399,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             }
             @Override
             public void mouseExited(MouseEvent event) {
-                headerSaveButton.setForeground(isShopHeaderActive() ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
+                headerSaveButton.setForeground(isShopHeaderActive() ? COLOR_SHOP_TEXT : Color.WHITE);
             }
         });
         headerSaveButton.addActionListener(event -> saveCurrentGame());
@@ -417,7 +419,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             }
             @Override
             public void mouseExited(MouseEvent event) {
-                headerExitButton.setForeground(isShopHeaderActive() ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
+                headerExitButton.setForeground(isShopHeaderActive() ? COLOR_SHOP_TEXT : Color.WHITE);
             }
         });
         headerExitButton.addActionListener(event -> {
@@ -608,13 +610,13 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         cardsRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 520));
 
         cardsRow.add(createCharacterButton(
-                "Swordsman", "Frontline Fighter",
+                "Swordsman", "Neo", "Frontline Fighter",
                 () -> selectHero(new Swordsman())));
         cardsRow.add(createCharacterButton(
-                "Gunner", "Ranged Attacker",
+                "Gunner", "Fehld", "Ranged Attacker",
                 () -> selectHero(new Gunner())));
         cardsRow.add(createCharacterButton(
-                "Mage", "Spell Caster",
+                "Mage", "Mleux", "Spell Caster",
                 () -> selectHero(new Mage())));
 
         panel.add(cardsRow);
@@ -664,7 +666,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         JPanel midRow = new JPanel(new BorderLayout(12, 12));
         midRow.setOpaque(false);
 
-        JPanel mapCard = createImageCardPanel(regionMapPanelImage);
+        JPanel mapCard = createAnimatedRegionMapPanel();
         mapCard.setLayout(new BorderLayout(10, 10));
 
         JPanel destinations = createImageCardPanel(travelDestinationsPanelImage);
@@ -724,6 +726,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
     private JPanel buildAcademyScreen() {
         JPanel panel = graphics.createCardPanel(COLOR_ACADEMY_BORDER, COLOR_ACADEMY_PANEL);
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         panel.add(createAcademyHeading("Academy (Inside)"));
         panel.add(Box.createVerticalStrut(8));
@@ -733,9 +736,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         JPanel academyMapCard = new JPanel(new BorderLayout(10, 10));
         academyMapCard.setOpaque(true);
         academyMapCard.setBackground(COLOR_ACADEMY_CARD);
-        academyMapCard.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_ACADEMY_BORDER, 1),
-                BorderFactory.createEmptyBorder(12, 12, 12, 12)));
+        academyMapCard.setBorder(BorderFactory.createEmptyBorder(12, 12, 12, 12));
         academyMapCard.setAlignmentX(Component.LEFT_ALIGNMENT);
         academyMapCard.setMaximumSize(new Dimension(Integer.MAX_VALUE, 260));
 
@@ -743,11 +744,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         academyMapTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
         academyMapCard.add(academyMapTitle, BorderLayout.NORTH);
 
-        JPanel academyMapPlaceholder = new JPanel();
-        academyMapPlaceholder.setBackground(new Color(0x020817));
-        academyMapPlaceholder.setPreferredSize(new Dimension(900, 180));
-        academyMapPlaceholder.setBorder(BorderFactory.createLineBorder(COLOR_ACADEMY_BORDER, 2));
-        academyMapCard.add(academyMapPlaceholder, BorderLayout.CENTER);
+        academyMapCard.add(createAcademyRegionMapPanel(), BorderLayout.CENTER);
 
         panel.add(academyMapCard);
         panel.add(Box.createVerticalStrut(18));
@@ -804,21 +801,20 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         storyTextArea.setLineWrap(true);
         storyTextArea.setWrapStyleWord(true);
         storyTextArea.setFont(getBodyFont(18f));
-        storyTextArea.setBackground(new Color(7, 11, 38, 210));
+        storyTextArea.setBackground(new Color(7, 11, 38));
         storyTextArea.setForeground(Color.WHITE);
         storyTextArea.setMargin(new Insets(16, 16, 16, 16));
         storyTextArea.setCaretColor(Color.WHITE);
+        storyTextArea.setOpaque(true);
 
         JScrollPane storyScrollPane = new JScrollPane(storyTextArea);
         storyScrollPane.setAlignmentX(JPanel.LEFT_ALIGNMENT);
         storyScrollPane.setPreferredSize(new Dimension(920, 420));
         storyScrollPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, 420));
         storyScrollPane.setOpaque(false);
-        storyScrollPane.getViewport().setOpaque(false);
-        storyScrollPane.getViewport().setBackground(new Color(7, 11, 38, 210));
-        storyScrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_STORY_BORDER, 1),
-                BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+        storyScrollPane.getViewport().setOpaque(true);
+        storyScrollPane.getViewport().setBackground(new Color(7, 11, 38));
+        storyScrollPane.setBorder(BorderFactory.createEmptyBorder());
 
         storyNextButton = createPrimaryButton("Next");
         storyNextButton.addActionListener(event -> advanceStoryBeat());
@@ -860,9 +856,9 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JPanel rightColumn = new JPanel();
         rightColumn.setOpaque(true);
-        rightColumn.setBackground(new Color(5, 10, 36, 150));
+        rightColumn.setBackground(new Color(5, 10, 36));
         rightColumn.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(COLOR_STORY_BORDER, 1),
+                BorderFactory.createLineBorder(new Color(5, 10, 36), 1),
                 BorderFactory.createEmptyBorder(18, 18, 18, 18)));
         rightColumn.setLayout(new BoxLayout(rightColumn, BoxLayout.Y_AXIS));
         rightColumn.add(storyTitleLabel);
@@ -891,9 +887,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             setPreferredSize(new Dimension(700, 360));
             setMinimumSize(new Dimension(700, 300));
             setMaximumSize(new Dimension(Integer.MAX_VALUE, 360));
-            setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createLineBorder(COLOR_STORY_BORDER, 1),
-                    BorderFactory.createEmptyBorder(0, 0, 0, 0)));
+            setBorder(BorderFactory.createEmptyBorder());
 
             panTimer = new Timer(33, event -> {
                 panProgress += PAN_STEP;
@@ -911,19 +905,30 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             });
         }
 
-        @Override
-        public void addNotify() {
-            super.addNotify();
+        private void startAnimation() {
             panProgress = 0f;
             heroFrameIndex = 0;
+            if (panTimer.isRunning()) {
+                panTimer.stop();
+            }
+            if (heroFrameTimer.isRunning()) {
+                heroFrameTimer.stop();
+            }
             panTimer.start();
-            heroFrameTimer.start();
+            if (storyHeroWalkFrames.length > 0) {
+                heroFrameTimer.start();
+            }
+            repaint();
+        }
+
+        private void stopAnimation() {
+            panTimer.stop();
+            heroFrameTimer.stop();
         }
 
         @Override
         public void removeNotify() {
-            panTimer.stop();
-            heroFrameTimer.stop();
+            stopAnimation();
             super.removeNotify();
         }
 
@@ -958,8 +963,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             }
 
             GradientPaint vignette = new GradientPaint(
-                    0, 0, new Color(5, 6, 24, 24),
-                    0, height, new Color(5, 6, 24, 170));
+                    0, 0, new Color(5, 6, 24, 12),
+                    0, height, new Color(5, 6, 24, 96));
             g2.setPaint(vignette);
             g2.fillRect(0, 0, width, height);
 
@@ -975,6 +980,18 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                 int heroX = heroAnchorX - (heroWidth / 2);
                 int heroY = height - heroHeight - 18;
 
+                RadialGradientPaint spotlight = new RadialGradientPaint(
+                        new Point(heroAnchorX, heroY + (heroHeight / 2)),
+                        Math.max(heroWidth, heroHeight),
+                        new float[] { 0f, 0.45f, 1f },
+                        new Color[] {
+                                new Color(114, 190, 255, 82),
+                                new Color(114, 190, 255, 34),
+                                new Color(114, 190, 255, 0)
+                        });
+                g2.setPaint(spotlight);
+                g2.fillOval(heroX - 28, heroY - 20, heroWidth + 56, heroHeight + 40);
+
                 g2.setColor(new Color(0, 0, 0, 140));
                 g2.fillOval(heroAnchorX - (heroWidth / 3), heroY + heroHeight - 8, Math.max(40, heroWidth * 2 / 3), 18);
 
@@ -982,9 +999,6 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                 g2.drawImage(heroFrame, heroX, heroY, heroWidth, heroHeight, null);
                 g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             }
-
-            g2.setColor(new Color(255, 255, 255, 36));
-            g2.drawLine(0, height - 56, width, height - 56);
             g2.dispose();
         }
 
@@ -1005,48 +1019,32 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
                 g2.setColor(new Color(25, 23, 33, 230));
                 g2.fillRect(0, 0, getWidth(), getHeight());
-                g2.setColor(new Color(255, 255, 255, 14));
-                g2.fillRect(0, getHeight() - 1, getWidth(), 1);
                 g2.dispose();
                 super.paintComponent(graphicsContext);
             }
         };
         header.setOpaque(false);
         header.setLayout(new BoxLayout(header, BoxLayout.Y_AXIS));
-        header.setBorder(BorderFactory.createEmptyBorder(14, 20, 14, 20));
+        header.setBorder(BorderFactory.createEmptyBorder(14, 20, 12, 20));
 
         JLabel shopTitle = createHeading("Shop");
-        shopTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+        shopTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
         shopTitle.setForeground(COLOR_SHOP_TEXT);
         header.add(shopTitle);
-        header.add(Box.createVerticalStrut(6));
+        header.add(Box.createVerticalStrut(8));
 
-        JLabel descriptionLabel = createBody("Select an item to view details or purchase a custom amount.");
-        descriptionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        descriptionLabel.setForeground(COLOR_SHOP_TEXT_MUTED);
-        header.add(descriptionLabel);
-        header.add(Box.createVerticalStrut(10));
-
-        shopGoldLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        shopGoldLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         shopGoldLabel.setForeground(new Color(226, 201, 139));
         header.add(shopGoldLabel);
-        header.add(Box.createVerticalStrut(6));
-
-        shopStatusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        shopStatusLabel.setForeground(COLOR_SHOP_TEXT_MUTED);
-        header.add(shopStatusLabel);
         mainPanel.add(header, BorderLayout.NORTH);
 
-        JPanel contentWrapper = new JPanel(new GridLayout(1, 2, 20, 0));
+        JPanel contentWrapper = new JPanel(new GridLayout(1, 2, 28, 0));
         contentWrapper.setOpaque(false);
-        contentWrapper.setBorder(BorderFactory.createEmptyBorder(12, 20, 20, 20));
+        contentWrapper.setBorder(BorderFactory.createEmptyBorder(16, 28, 24, 28));
 
-        JPanel leftPanel = new JPanel();
+        JPanel leftPanel = new JPanel(new GridBagLayout());
         leftPanel.setOpaque(false);
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.add(Box.createVerticalGlue());
         leftPanel.add(createShopkeeperDisplay());
-        leftPanel.add(Box.createVerticalGlue());
 
         JPanel rightPanel = new JPanel();
         rightPanel.setOpaque(false);
@@ -1065,23 +1063,24 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         rightPanel.add(createShopRow("Large Mana Potion", 2750, 5, largeManaPotionIcon));
         rightPanel.add(Box.createVerticalGlue());
 
-        contentWrapper.add(leftPanel);
-        contentWrapper.add(rightPanel);
-        mainPanel.add(contentWrapper, BorderLayout.CENTER);
+        JScrollPane itemScrollPane = new JScrollPane(rightPanel);
+        itemScrollPane.setBorder(BorderFactory.createEmptyBorder());
+        itemScrollPane.setOpaque(false);
+        itemScrollPane.setBackground(new Color(0, 0, 0, 0));
+        itemScrollPane.getViewport().setOpaque(false);
+        itemScrollPane.getViewport().setBackground(new Color(0, 0, 0, 0));
+        itemScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        itemScrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        itemScrollPane.getVerticalScrollBar().setBackground(COLOR_SHOP_OUTSIDE);
+        itemScrollPane.getHorizontalScrollBar().setBackground(COLOR_SHOP_OUTSIDE);
 
-        JScrollPane scrollPane = new JScrollPane(mainPanel);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        scrollPane.getVerticalScrollBar().setBackground(COLOR_SHOP_OUTSIDE);
-        scrollPane.getHorizontalScrollBar().setBackground(COLOR_SHOP_OUTSIDE);
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        contentWrapper.add(leftPanel);
+        contentWrapper.add(itemScrollPane);
+        mainPanel.add(contentWrapper, BorderLayout.CENTER);
 
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(COLOR_SHOP_OUTSIDE);
-        scrollPane.setBackground(COLOR_SHOP_OUTSIDE);
-        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(mainPanel, BorderLayout.CENTER);
         return panel;
     }
 
@@ -1175,9 +1174,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setOpaque(false);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(130, 116, 183), 1),
-                BorderFactory.createEmptyBorder(14, 14, 14, 14)));
+        panel.setBorder(BorderFactory.createEmptyBorder(14, 14, 14, 14));
 
         heroNameValue.setFont(getBodyFont(20f).deriveFont(Font.BOLD, 20f));
         heroNameValue.setForeground(Color.WHITE);
@@ -1404,13 +1401,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         JPanel pricePanel = new JPanel(new BorderLayout());
         pricePanel.setOpaque(false);
-        pricePanel.setPreferredSize(new Dimension(52, 96));
-
-        JLabel priceLabel = new JLabel(statFormat.format(price));
-        priceLabel.setForeground(new Color(226, 201, 139));
-        priceLabel.setFont(getBodyFont(14f).deriveFont(Font.BOLD, 14f));
-        priceLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        pricePanel.add(priceLabel, BorderLayout.NORTH);
+        pricePanel.setPreferredSize(new Dimension(118, 96));
+        pricePanel.add(createShopPriceTag(price), BorderLayout.NORTH);
         itemPanel.add(pricePanel, BorderLayout.EAST);
         row.add(itemPanel, BorderLayout.CENTER);
 
@@ -1485,16 +1477,60 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private JPanel createShopkeeperDisplay() {
-        JPanel panel = new JPanel(new BorderLayout());
+        final float[] floatPhase = { 0f };
+        JPanel panel = new JPanel(new BorderLayout()) {
+            @Override
+            protected void paintChildren(Graphics graphicsContext) {
+                Graphics2D g2 = (Graphics2D) graphicsContext.create();
+                int floatOffset = Math.round((float) Math.sin(floatPhase[0]) * 10f);
+                g2.translate(0, floatOffset);
+                super.paintChildren(g2);
+                g2.dispose();
+            }
+        };
         panel.setOpaque(false);
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        panel.setPreferredSize(new Dimension(420, 420));
-        panel.setMaximumSize(new Dimension(420, 420));
+        panel.setPreferredSize(new Dimension(520, 520));
+        panel.setMaximumSize(new Dimension(520, 520));
 
-        JLabel shopkeeperLabel = new JLabel(shopkeeperPrincipalIcon);
+        JLabel shopkeeperLabel = new JLabel(scaleIcon(shopkeeperPrincipalIcon, 500, 500));
         shopkeeperLabel.setHorizontalAlignment(SwingConstants.CENTER);
         shopkeeperLabel.setVerticalAlignment(SwingConstants.CENTER);
         panel.add(shopkeeperLabel, BorderLayout.CENTER);
+
+        Timer floatTimer = new Timer(40, event -> {
+            if (!panel.isShowing()) {
+                return;
+            }
+            floatPhase[0] += 0.12f;
+            panel.repaint();
+        });
+        floatTimer.start();
+        panel.addHierarchyListener(event -> {
+            if ((event.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) == 0) {
+                return;
+            }
+            if (panel.isShowing()) {
+                floatTimer.start();
+            } else {
+                floatTimer.stop();
+            }
+        });
+        return panel;
+    }
+
+    private JPanel createShopPriceTag(int price) {
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        panel.setAlignmentX(Component.RIGHT_ALIGNMENT);
+
+        JLabel priceLabel = new JLabel(statFormat.format(price));
+        priceLabel.setForeground(new Color(226, 201, 139));
+        priceLabel.setFont(getBodyFont(15f).deriveFont(Font.BOLD, 15f));
+
+        panel.add(priceLabel);
         return panel;
     }
 
@@ -1607,7 +1643,11 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     // -------------------------------------------------------------------------
 
     private JPanel createCharacterButton(String title, String role, Runnable action) {
-        final BufferedImage portraitImage = loadCharacterPortrait(title);
+        return createCharacterButton(title, title, role, action);
+    }
+
+    private JPanel createCharacterButton(String portraitKey, String title, String role, Runnable action) {
+        final BufferedImage portraitImage = loadCharacterPortrait(portraitKey);
         final boolean[] hovered = { false };
 
         JPanel wrapper = new JPanel(new BorderLayout()) {
@@ -1650,23 +1690,19 @@ public class GameWindow implements BattlePanel.BattleActionListener {
             }
         };
         wrapper.setBackground(COLOR_CHARSEL_PANEL);
-        wrapper.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 1));
+        wrapper.setBorder(BorderFactory.createEmptyBorder());
         wrapper.setPreferredSize(new Dimension(290, 480));
         wrapper.setMinimumSize(new Dimension(290, 480));
         wrapper.setMaximumSize(new Dimension(290, 480));
         wrapper.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent event) {
-                wrapper.setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createLineBorder(new Color(160, 224, 255), 2),
-                        BorderFactory.createEmptyBorder(0, 0, 0, 0)));
                 hovered[0] = true;
                 wrapper.repaint();
             }
 
             @Override
             public void mouseExited(MouseEvent event) {
-                wrapper.setBorder(BorderFactory.createLineBorder(COLOR_BORDER, 1));
                 hovered[0] = false;
                 wrapper.repaint();
             }
@@ -1746,6 +1782,263 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         };
         panel.setOpaque(false);
         panel.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
+        return panel;
+    }
+
+    private JPanel createAnimatedRegionMapPanel() {
+        final float[] animationPhase = { 0f };
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics graphicsContext) {
+                Graphics2D g2 = (Graphics2D) graphicsContext.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+                if (regionMapPanelImage != null) {
+                    g2.drawImage(regionMapPanelImage, 0, 0, getWidth(), getHeight(), null);
+                } else {
+                    g2.setColor(COLOR_PANEL);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                }
+
+                Point forest = scaledPoint(0.155, 0.605);
+                Point lowerRuins = scaledPoint(0.395, 0.72);
+                Point academy = scaledPoint(0.525, 0.41);
+                Point redSpire = scaledPoint(0.755, 0.505);
+                Point violetKeep = scaledPoint(0.935, 0.335);
+
+                float phase = animationPhase[0];
+                drawAnimatedRoute(g2, forest, lowerRuins, phase * 0.9f);
+                drawAnimatedRoute(g2, forest, academy, phase * 0.75f + 0.15f);
+                drawAnimatedRoute(g2, lowerRuins, academy, phase * 0.7f + 0.30f);
+                drawAnimatedRoute(g2, academy, redSpire, phase * 0.8f + 0.45f);
+                drawAnimatedRoute(g2, lowerRuins, redSpire, phase * 0.95f + 0.6f);
+                drawAnimatedRoute(g2, redSpire, violetKeep, phase * 0.85f + 0.2f);
+
+                drawPulseNode(g2, forest, new Color(255, 202, 98), 0.0f, phase);
+                drawPulseNode(g2, lowerRuins, new Color(255, 198, 92), 0.55f, phase);
+                drawPulseNode(g2, academy, new Color(93, 214, 255), 1.1f, phase);
+                drawPulseNode(g2, redSpire, new Color(255, 138, 69), 1.65f, phase);
+                drawPulseNode(g2, violetKeep, new Color(180, 122, 255), 2.2f, phase);
+
+                g2.dispose();
+                super.paintComponent(graphicsContext);
+            }
+
+            private Point scaledPoint(double xRatio, double yRatio) {
+                return new Point((int) Math.round(getWidth() * xRatio),
+                        (int) Math.round(getHeight() * yRatio));
+            }
+
+            private void drawAnimatedRoute(Graphics2D g2, Point start, Point end, float phase) {
+                Stroke previousStroke = g2.getStroke();
+                float dashPhase = (phase - (float) Math.floor(phase)) * 24f;
+                g2.setColor(new Color(255, 244, 191, 80));
+                g2.setStroke(new BasicStroke(2.2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                        1f, new float[] { 7f, 10f }, dashPhase));
+                g2.drawLine(start.x, start.y, end.x, end.y);
+
+                double progress = phase - Math.floor(phase);
+                int sparkX = (int) Math.round(start.x + ((end.x - start.x) * progress));
+                int sparkY = (int) Math.round(start.y + ((end.y - start.y) * progress));
+                RadialGradientPaint spark = new RadialGradientPaint(
+                        new Point(sparkX, sparkY),
+                        14f,
+                        new float[] { 0f, 0.45f, 1f },
+                        new Color[] {
+                                new Color(255, 246, 210, 210),
+                                new Color(255, 223, 132, 120),
+                                new Color(255, 223, 132, 0)
+                        });
+                g2.setPaint(spark);
+                g2.fillOval(sparkX - 14, sparkY - 14, 28, 28);
+                g2.setStroke(previousStroke);
+            }
+
+            private void drawPulseNode(Graphics2D g2, Point center, Color glow, float offset, float phase) {
+                float pulse = 0.5f + (0.5f * (float) Math.sin((phase * 2.8f) + offset));
+                int glowRadius = 20 + Math.round(pulse * 8f);
+                RadialGradientPaint glowPaint = new RadialGradientPaint(
+                        center,
+                        glowRadius,
+                        new float[] { 0f, 0.4f, 1f },
+                        new Color[] {
+                                new Color(glow.getRed(), glow.getGreen(), glow.getBlue(), 180),
+                                new Color(glow.getRed(), glow.getGreen(), glow.getBlue(), 72),
+                                new Color(glow.getRed(), glow.getGreen(), glow.getBlue(), 0)
+                        });
+                g2.setPaint(glowPaint);
+                g2.fillOval(center.x - glowRadius, center.y - glowRadius, glowRadius * 2, glowRadius * 2);
+            }
+        };
+        panel.setOpaque(false);
+        panel.setBorder(BorderFactory.createEmptyBorder(24, 28, 24, 28));
+
+        Timer shimmerTimer = new Timer(50, event -> {
+            if (!panel.isShowing()) {
+                return;
+            }
+            animationPhase[0] += 0.03f;
+            panel.repaint();
+        });
+        shimmerTimer.start();
+        panel.addHierarchyListener(event -> {
+            if ((event.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) == 0) {
+                return;
+            }
+            if (panel.isShowing()) {
+                shimmerTimer.start();
+            } else {
+                shimmerTimer.stop();
+            }
+        });
+        return panel;
+    }
+
+    private JPanel createAcademyRegionMapPanel() {
+        final float[] animationPhase = { 0f };
+        JPanel panel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics graphicsContext) {
+                Graphics2D g2 = (Graphics2D) graphicsContext.create();
+                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+                g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+
+                if (academyMapPanelImage != null) {
+                    g2.drawImage(academyMapPanelImage, 0, 0, getWidth(), getHeight(), null);
+                } else {
+                    GradientPaint fallback = new GradientPaint(0, 0, new Color(7, 20, 50),
+                            0, getHeight(), new Color(2, 8, 24));
+                    g2.setPaint(fallback);
+                    g2.fillRect(0, 0, getWidth(), getHeight());
+                }
+
+                g2.setPaint(new GradientPaint(0, 0, new Color(4, 10, 28, 24),
+                        0, getHeight(), new Color(3, 8, 20, 110)));
+                g2.fillRoundRect(0, 0, getWidth(), getHeight(), 18, 18);
+
+                // Hide baked-in location text so only the custom overlays remain visible.
+                int officeMaskX = (int) Math.round(getWidth() * 0.66);
+                int officeMaskY = (int) Math.round(getHeight() * 0.13);
+                int officeMaskWidth = (int) Math.round(getWidth() * 0.18);
+                int officeMaskHeight = (int) Math.round(getHeight() * 0.07);
+                GradientPaint officeMask = new GradientPaint(
+                        officeMaskX, officeMaskY, new Color(10, 18, 46, 232),
+                        officeMaskX, officeMaskY + officeMaskHeight, new Color(8, 14, 34, 214));
+                g2.setPaint(officeMask);
+                g2.fillRoundRect(officeMaskX, officeMaskY, officeMaskWidth, officeMaskHeight, 10, 10);
+
+                Point academy = scaledPoint(0.48, 0.70);
+                Point forest = scaledPoint(0.16, 0.42);
+                Point edge = scaledPoint(0.62, 0.26);
+                Point forsaken = scaledPoint(0.83, 0.56);
+
+                float phase = animationPhase[0];
+                drawMapRoute(g2, academy, forest, phase * 0.85f);
+                drawMapRoute(g2, academy, edge, phase * 0.75f + 0.2f);
+                drawMapRoute(g2, academy, forsaken, phase * 0.95f + 0.45f);
+
+                drawMapNode(g2, academy.x, academy.y, new Color(88, 208, 255), new Color(31, 108, 255), 0.0f, phase);
+                drawMapNode(g2, forest.x, forest.y, new Color(64, 223, 219), new Color(242, 196, 83), 0.65f, phase);
+                drawMapNode(g2, edge.x, edge.y, new Color(150, 114, 255), new Color(92, 212, 255), 1.15f, phase);
+                drawMapNode(g2, forsaken.x, forsaken.y, new Color(255, 116, 142), new Color(255, 188, 86), 1.75f, phase);
+
+                drawMapLabel(g2, "Forest of Reverie", forest.x - 72, forest.y - 38);
+                drawMapLabel(g2, "Reveries Edge", edge.x - 54, edge.y - 40);
+                drawMapLabel(g2, "Forsaken Lands", forsaken.x - 58, forsaken.y - 40);
+
+                g2.dispose();
+                super.paintComponent(graphicsContext);
+            }
+
+            private Point scaledPoint(double xRatio, double yRatio) {
+                return new Point((int) Math.round(getWidth() * xRatio),
+                        (int) Math.round(getHeight() * yRatio));
+            }
+
+            private void drawMapRoute(Graphics2D g2, Point start, Point end, float phase) {
+                Stroke previousStroke = g2.getStroke();
+                g2.setColor(new Color(236, 222, 177, 168));
+                float dashPhase = (phase - (float) Math.floor(phase)) * 22f;
+                g2.setStroke(new BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND,
+                        1f, new float[] { 7f, 9f }, dashPhase));
+                g2.drawLine(start.x, start.y, end.x, end.y);
+
+                double progress = phase - Math.floor(phase);
+                int sparkX = (int) Math.round(start.x + ((end.x - start.x) * progress));
+                int sparkY = (int) Math.round(start.y + ((end.y - start.y) * progress));
+                RadialGradientPaint spark = new RadialGradientPaint(
+                        new Point(sparkX, sparkY),
+                        12f,
+                        new float[] { 0f, 0.45f, 1f },
+                        new Color[] {
+                                new Color(255, 245, 210, 205),
+                                new Color(255, 221, 128, 110),
+                                new Color(255, 221, 128, 0)
+                        });
+                g2.setPaint(spark);
+                g2.fillOval(sparkX - 12, sparkY - 12, 24, 24);
+                g2.setStroke(previousStroke);
+            }
+
+            private void drawMapNode(Graphics2D g2, int centerX, int centerY, Color glowColor, Color coreColor,
+                    float offset, float phase) {
+                float pulse = 0.5f + (0.5f * (float) Math.sin((phase * 2.8f) + offset));
+                int outerRadius = 18 + Math.round(pulse * 6f);
+                int middleRadius = 13 + Math.round(pulse * 3f);
+                g2.setColor(new Color(glowColor.getRed(), glowColor.getGreen(), glowColor.getBlue(), 55));
+                g2.fillOval(centerX - outerRadius, centerY - outerRadius, outerRadius * 2, outerRadius * 2);
+                g2.setColor(new Color(glowColor.getRed(), glowColor.getGreen(), glowColor.getBlue(), 90));
+                g2.fillOval(centerX - middleRadius, centerY - middleRadius, middleRadius * 2, middleRadius * 2);
+                g2.setColor(coreColor);
+                g2.fillOval(centerX - 8, centerY - 8, 16, 16);
+                g2.setColor(new Color(255, 249, 215, 245));
+                g2.setStroke(new BasicStroke(2f));
+                g2.drawOval(centerX - 10, centerY - 10, 20, 20);
+            }
+
+            private void drawMapLabel(Graphics2D g2, String text, int x, int y) {
+                Font labelFont = getBodyFont(11f).deriveFont(Font.BOLD, 11f);
+                FontMetrics metrics = g2.getFontMetrics(labelFont);
+                int paddingX = 12;
+                int labelWidth = metrics.stringWidth(text) + (paddingX * 2);
+                int labelHeight = 24;
+
+                g2.setColor(new Color(8, 22, 62, 214));
+                g2.fillRoundRect(x, y, labelWidth, labelHeight, 12, 12);
+                g2.setColor(new Color(52, 154, 255, 210));
+                g2.setStroke(new BasicStroke(1.4f));
+                g2.drawRoundRect(x, y, labelWidth, labelHeight, 12, 12);
+
+                g2.setFont(labelFont);
+                g2.setColor(new Color(240, 247, 255));
+                g2.drawString(text, x + paddingX, y + 16);
+            }
+        };
+        panel.setOpaque(false);
+        panel.setPreferredSize(new Dimension(900, 180));
+        panel.setBorder(BorderFactory.createLineBorder(COLOR_ACADEMY_BORDER, 2));
+
+        Timer shimmerTimer = new Timer(50, event -> {
+            if (!panel.isShowing()) {
+                return;
+            }
+            animationPhase[0] += 0.03f;
+            panel.repaint();
+        });
+        shimmerTimer.start();
+        panel.addHierarchyListener(event -> {
+            if ((event.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) == 0) {
+                return;
+            }
+            if (panel.isShowing()) {
+                shimmerTimer.start();
+            } else {
+                shimmerTimer.stop();
+            }
+        });
         return panel;
     }
 
@@ -2139,9 +2432,9 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         if (selectedHero instanceof Swordsman) {
             return new String[] {
                     prologue, academy,
-                    "Kael Solmere carries the burden of a bloodline stained by betrayal. The Solmere family once guarded a forbidden power tied to Kim Morvain, " +
-                    "and the curse left behind still follows their name. Kael enters Mystvale to become stronger, protect the people he loves, and uncover the truth hidden in his family's shadow.",
-                    "For Kael, this journey is not just about defeating enemies. It is about confronting legacy, loyalty, and the darkness woven into his own blood. " +
+                    "Neo Solmere carries the burden of a bloodline stained by betrayal. The Solmere family once guarded a forbidden power tied to Kim Morvain, " +
+                    "and the curse left behind still follows their name. Neo enters Mystvale to become stronger, protect the people he loves, and uncover the truth hidden in his family's shadow.",
+                    "For Neo, this journey is not just about defeating enemies. It is about confronting legacy, loyalty, and the darkness woven into his own blood. " +
                     "Every battle at Mystvale brings him closer to either breaking the curse or becoming part of it."
             };
         }
@@ -2149,8 +2442,8 @@ public class GameWindow implements BattlePanel.BattleActionListener {
         if (selectedHero instanceof Gunner) {
             return new String[] {
                     prologue, academy,
-                    "Aria Caelith was stolen from home and forced into Project LUCENT, a cruel experiment designed by Kim Morvain. " +
-                    "The trials gave Aria terrifying precision and Aether-fueled power, but they also carved pain deep into body and memory.",
+                    "Fehld was stolen from home and forced into Project LUCENT, a cruel experiment designed by Kim Morvain. " +
+                    "The trials gave Fehld terrifying precision and Aether-fueled power, but they also carved pain deep into body and memory.",
                     "Aria arrives in Mystvale carrying anger, survival instinct, and unfinished vengeance. Each step through the academy is a step toward the truth behind Project LUCENT " +
                     "and a reckoning with the man who tried to turn Aria into a weapon."
             };
@@ -2158,7 +2451,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         return new String[] {
                 prologue, academy,
-                "Selene Arclight was born with brilliance in cosmic magic, but her gift drew her into Kim Morvain's schemes. " +
+                "Mleux was born with brilliance in cosmic magic, but her gift drew her into Kim Morvain's schemes. " +
                 "She helped shape dangerous magic before discovering the horror it would unleash. By the time she tried to escape, a curse had already marked her.",
                 "Selene now walks Mystvale with guilt, pride, and a fierce need to set things right. The road ahead is filled with spells, sacrifice, and buried truths. " +
                 "To end Morvain's reign, she must face both the enemy before her and the regret still burning inside."
@@ -3087,7 +3380,9 @@ public class GameWindow implements BattlePanel.BattleActionListener {
     }
 
     private void playHeroActionAnimation(int actionNumber) {
-        int[] offsets = { 70, 130, 70 };
+        int[] offsets = (hero instanceof Mage || hero instanceof Gunner)
+                ? new int[] { 0, 0, 0 }
+                : new int[] { 70, 130, 70 };
         for (int frameIndex = 0; frameIndex < 3; frameIndex++) {
             final int currentFrame = frameIndex;
             final int currentOffset = offsets[frameIndex];
@@ -3449,20 +3744,28 @@ public class GameWindow implements BattlePanel.BattleActionListener {
 
         boolean isBattleScreen = SCREEN_BATTLE.equals(screenName);
         boolean isShopScreen = SCREEN_SHOP.equals(screenName);
+        boolean isStoryScreen = SCREEN_STORY.equals(screenName);
         Color normalScreenBackground = COLOR_HEADER_BACKGROUND;
+        if (isStoryScreen) {
+            storyScenePreviewPanel.startAnimation();
+        } else {
+            storyScenePreviewPanel.stopAnimation();
+        }
         if (headerPanel != null) headerPanel.setVisible(!isBattleScreen);
         if (gameShellPanel != null) {
             gameShellPanel.setBackground(isShopScreen ? COLOR_SHOP_OUTSIDE : normalScreenBackground);
         }
         if (headerExitButton != null) {
-            boolean hideExit = SCREEN_CHARACTER.equals(screenName) || SCREEN_STORY.equals(screenName);
+            boolean hideExit = SCREEN_CHARACTER.equals(screenName)
+                    || SCREEN_STORY.equals(screenName)
+                    || SCREEN_SHOP.equals(screenName);
             headerExitButton.setVisible(!hideExit);
             headerExitButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : Color.WHITE);
             headerExitButton.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
         }
         if (headerSaveButton != null) {
             headerSaveButton.setVisible(SCREEN_MAIN.equals(screenName));
-            headerSaveButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : COLOR_TEXT_DARK);
+            headerSaveButton.setForeground(isShopScreen ? COLOR_SHOP_TEXT : Color.WHITE);
             headerSaveButton.setBorder(BorderFactory.createEmptyBorder(6, 12, 6, 12));
         }
         if (headerBackButton != null) {
@@ -3478,7 +3781,7 @@ public class GameWindow implements BattlePanel.BattleActionListener {
                     : defaultHeaderBorder);
         }
         titleLabel.setForeground(isShopScreen ? COLOR_SHOP_TEXT : Color.WHITE);
-        subtitleLabel.setForeground(isShopScreen ? COLOR_SHOP_TEXT_MUTED : new Color(210, 224, 255));
+        subtitleLabel.setForeground(isShopScreen ? Color.WHITE : new Color(210, 224, 255));
         if (leftPane != null) {
             leftPane.setBackground(isBattleScreen ? COLOR_BATTLE_PANEL : isShopScreen ? COLOR_SHOP_OUTSIDE : normalScreenBackground);
             leftPane.setOpaque(!isShopScreen);

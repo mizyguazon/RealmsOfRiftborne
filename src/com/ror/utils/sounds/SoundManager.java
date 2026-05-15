@@ -9,18 +9,23 @@ public class SoundManager {
 
     private static Clip bgmClip;
     private static Clip sfxClip;
+    private static int masterVolume = 100;
 
     public static void playMusic(String path) { //music loops
+        stopMusic();
         bgmClip = loadClip(path);
         if (bgmClip != null) {
+            applyVolume(bgmClip);
             bgmClip.loop(Clip.LOOP_CONTINUOUSLY);
             bgmClip.start();
         }
     }
 
     public static void playSfx(String path) {
+        stopSfx();
         sfxClip = loadClip(path);
         if (sfxClip != null) {
+            applyVolume(sfxClip);
             sfxClip.start();
         }
     }
@@ -47,7 +52,6 @@ public class SoundManager {
 
             Clip clip = AudioSystem.getClip();
             clip.open(ais);
-            clip.start();
             
             //debug thing, the original clip is 15mins long.
             // if (path.toLowerCase().contains("title")) {
@@ -80,5 +84,34 @@ public class SoundManager {
     public static void shutdownSound() {
         stopMusic();
         stopSfx();
+    }
+
+    public static int getMasterVolume() {
+        return masterVolume;
+    }
+
+    public static void setMasterVolume(int volume) {
+        masterVolume = Math.max(0, Math.min(100, volume));
+        applyVolume(bgmClip);
+        applyVolume(sfxClip);
+    }
+
+    private static void applyVolume(Clip clip) {
+        if (clip == null || !clip.isOpen()) {
+            return;
+        }
+        if (!clip.isControlSupported(FloatControl.Type.MASTER_GAIN)) {
+            return;
+        }
+
+        FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        if (masterVolume <= 0) {
+            gainControl.setValue(gainControl.getMinimum());
+            return;
+        }
+
+        float gain = (float) (20.0 * Math.log10(masterVolume / 100.0));
+        float clampedGain = Math.max(gainControl.getMinimum(), Math.min(gainControl.getMaximum(), gain));
+        gainControl.setValue(clampedGain);
     }
 }

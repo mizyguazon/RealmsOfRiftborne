@@ -18,9 +18,12 @@ import com.ror.models.Mobs.SwampRat;
 import com.ror.models.Mobs.VeilSerpent;
 import com.ror.models.Mobs.VoidBeast;
 import com.ror.models.Swordsman;
+import com.ror.utils.sounds.SoundManager;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ChangeListener;
+import javax.swing.plaf.basic.BasicSliderUI;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -66,6 +69,8 @@ final class GameWindowGraphics {
     private final BufferedImage landingLoadButtonImage;
     private final BufferedImage landingOptionsButtonImage;
     private final BufferedImage landingExitButtonImage;
+    private final BufferedImage landingAboutOverlayImage;
+    private final BufferedImage landingOptionsOverlayImage;
 
     GameWindowGraphics() {
         loadFonts();
@@ -77,6 +82,8 @@ final class GameWindowGraphics {
         landingLoadButtonImage = loadLandingButtonImage("load-button.png");
         landingOptionsButtonImage = loadLandingButtonImage("options-button.png");
         landingExitButtonImage = loadLandingButtonImage("exit-button.png");
+        landingAboutOverlayImage = loadAboutOverlayImage();
+        landingOptionsOverlayImage = loadOptionsOverlayImage();
     }
 
     JPanel createCardPanel(Color borderColor, Color panelColor) {
@@ -192,7 +199,7 @@ final class GameWindowGraphics {
         final int secondaryButtonGap = 18;
         final int buttonBlockWidth = (secondaryButtonWidth * 2) + secondaryButtonGap;
 
-        JPanel panel = new JPanel() {
+        JPanel backgroundPanel = new JPanel() {
             @Override
             protected void paintComponent(Graphics graphics) {
                 super.paintComponent(graphics);
@@ -219,11 +226,11 @@ final class GameWindowGraphics {
             }
         };
 
-        panel.setLayout(new GridBagLayout());
+        backgroundPanel.setLayout(new GridBagLayout());
         if (landingBackgroundFrames.length > 1) {
             Timer frameTimer = new Timer(280, event -> {
                 landingBackgroundIndex = (landingBackgroundIndex + 1) % landingBackgroundFrames.length;
-                panel.repaint();
+                backgroundPanel.repaint();
             });
             frameTimer.start();
         }
@@ -256,11 +263,6 @@ final class GameWindowGraphics {
                 ? createLandingImageButton(landingAboutButtonImage,
                         secondaryButtonWidth, secondaryButtonHeight, "ABOUT")
                 : createLandingPlaceholderButton("ABOUT");
-        aboutButton.addActionListener(event -> JOptionPane.showMessageDialog(
-                frame,
-                "Mystvale Academy RPG\nA story-driven fantasy adventure.",
-                "About",
-                JOptionPane.INFORMATION_MESSAGE));
         JButton loadButton = landingLoadButtonImage != null
                 ? createLandingImageButton(landingLoadButtonImage,
                         secondaryButtonWidth, secondaryButtonHeight, "LOAD")
@@ -279,11 +281,6 @@ final class GameWindowGraphics {
                 ? createLandingImageButton(landingOptionsButtonImage,
                         secondaryButtonWidth, secondaryButtonHeight, "OPTIONS")
                 : createLandingPlaceholderButton("OPTIONS");
-        optionsButton.addActionListener(event -> JOptionPane.showMessageDialog(
-                frame,
-                "Options is not available yet.",
-                "Options",
-                JOptionPane.INFORMATION_MESSAGE));
 
         JButton exitButton = landingExitButtonImage != null
                 ? createLandingImageButton(landingExitButtonImage,
@@ -309,8 +306,318 @@ final class GameWindowGraphics {
         constraints.weighty = 1.0;
         constraints.anchor = GridBagConstraints.SOUTHWEST;
         constraints.insets = new Insets(0, 70, 35, 0);
-        panel.add(content, constraints);
-        return panel;
+        backgroundPanel.add(content, constraints);
+
+        AboutOverlayPanel aboutOverlayPanel = new AboutOverlayPanel(landingAboutOverlayImage);
+        OptionsOverlayPanel optionsOverlayPanel = new OptionsOverlayPanel(landingOptionsOverlayImage);
+        JLayeredPane layeredPane = new JLayeredPane() {
+            @Override
+            public void doLayout() {
+                backgroundPanel.setBounds(0, 0, getWidth(), getHeight());
+                aboutOverlayPanel.setBounds(0, 0, getWidth(), getHeight());
+                optionsOverlayPanel.setBounds(0, 0, getWidth(), getHeight());
+            }
+        };
+        layeredPane.add(backgroundPanel, JLayeredPane.DEFAULT_LAYER);
+        layeredPane.add(aboutOverlayPanel, JLayeredPane.PALETTE_LAYER);
+        layeredPane.add(optionsOverlayPanel, JLayeredPane.PALETTE_LAYER);
+
+        aboutButton.addActionListener(event -> aboutOverlayPanel.showOverlay());
+        optionsButton.addActionListener(event -> optionsOverlayPanel.showOverlay());
+
+        JPanel wrapper = new JPanel(new BorderLayout());
+        wrapper.add(layeredPane, BorderLayout.CENTER);
+        return wrapper;
+    }
+
+    private BufferedImage loadAboutOverlayImage() {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/ui/About.png",
+                "src/com/ror/models/assets/images/ui/About.png",
+                "assets/images/ui/About.png",
+                "C:/Users/Shayndel Mizy Amaga/Downloads/About.png");
+    }
+
+    private BufferedImage loadOptionsOverlayImage() {
+        return loadFirstAvailableImage(
+                "/com/ror/models/assets/images/ui/Option.png",
+                "src/com/ror/models/assets/images/ui/Option.png",
+                "assets/images/ui/Option.png",
+                "C:/Users/Shayndel Mizy Amaga/Downloads/Option.png");
+    }
+
+    private final class AboutOverlayPanel extends JComponent {
+        private static final double MAX_WIDTH_RATIO = 1.0d;
+        private static final double MAX_HEIGHT_RATIO = 1.0d;
+        private static final int ABOUT_IMAGE_BASE_WIDTH = 1280;
+        private static final int ABOUT_IMAGE_BASE_HEIGHT = 720;
+        private static final Rectangle ABOUT_CLOSE_BOX = new Rectangle(1000, 108, 54, 56);
+
+        private final BufferedImage aboutImage;
+        private final Rectangle closeBounds = new Rectangle();
+        private boolean hoveringClose;
+
+        private AboutOverlayPanel(BufferedImage aboutImage) {
+            this.aboutImage = aboutImage;
+            setVisible(false);
+            setOpaque(false);
+
+            MouseAdapter mouseHandler = new MouseAdapter() {
+                @Override
+                public void mouseMoved(MouseEvent event) {
+                    updateHoverState(event.getPoint());
+                }
+
+                @Override
+                public void mouseExited(MouseEvent event) {
+                    hoveringClose = false;
+                    setCursor(Cursor.getDefaultCursor());
+                    repaint();
+                }
+
+                @Override
+                public void mouseClicked(MouseEvent event) {
+                    if (closeBounds.contains(event.getPoint())) {
+                        hideOverlay();
+                    }
+                }
+            };
+            addMouseMotionListener(mouseHandler);
+            addMouseListener(mouseHandler);
+        }
+
+        private void showOverlay() {
+            setVisible(true);
+            requestFocusInWindow();
+            repaint();
+        }
+
+        private void hideOverlay() {
+            setVisible(false);
+            hoveringClose = false;
+            setCursor(Cursor.getDefaultCursor());
+        }
+
+        private void updateHoverState(Point point) {
+            boolean hovering = closeBounds.contains(point);
+            if (hoveringClose == hovering) {
+                return;
+            }
+            hoveringClose = hovering;
+            setCursor(hovering ? Cursor.getPredefinedCursor(Cursor.HAND_CURSOR) : Cursor.getDefaultCursor());
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics graphics) {
+            if (!isVisible()) {
+                return;
+            }
+
+            Graphics2D g2 = (Graphics2D) graphics.create();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.setColor(new Color(0, 0, 0, 185));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+            if (aboutImage == null) {
+                closeBounds.setBounds(0, 0, 0, 0);
+                g2.setColor(Color.WHITE);
+                g2.setFont(getHeadingFont(24f));
+                g2.drawString("About image not found.", Math.max(30, getWidth() / 2 - 120), getHeight() / 2);
+                g2.dispose();
+                return;
+            }
+
+            double scale = Math.min(
+                    Math.min((getWidth() * MAX_WIDTH_RATIO) / aboutImage.getWidth(),
+                            (getHeight() * MAX_HEIGHT_RATIO) / aboutImage.getHeight()),
+                    1d);
+            int drawWidth = Math.max(1, (int) Math.round(aboutImage.getWidth() * scale));
+            int drawHeight = Math.max(1, (int) Math.round(aboutImage.getHeight() * scale));
+            int drawX = (getWidth() - drawWidth) / 2;
+            int drawY = (getHeight() - drawHeight) / 2;
+
+            g2.drawImage(aboutImage, drawX, drawY, drawWidth, drawHeight, null);
+
+            double scaleX = drawWidth / (double) ABOUT_IMAGE_BASE_WIDTH;
+            double scaleY = drawHeight / (double) ABOUT_IMAGE_BASE_HEIGHT;
+            int closeX = drawX + (int) Math.round(ABOUT_CLOSE_BOX.x * scaleX);
+            int closeY = drawY + (int) Math.round(ABOUT_CLOSE_BOX.y * scaleY);
+            int closeWidth = Math.max(20, (int) Math.round(ABOUT_CLOSE_BOX.width * scaleX));
+            int closeHeight = Math.max(20, (int) Math.round(ABOUT_CLOSE_BOX.height * scaleY));
+            closeBounds.setBounds(closeX, closeY, closeWidth, closeHeight);
+
+            g2.dispose();
+        }
+    }
+
+    private final class OptionsOverlayPanel extends JComponent {
+        private static final double MAX_WIDTH_RATIO = 1.0d;
+        private static final double MAX_HEIGHT_RATIO = 1.0d;
+        private static final int OPTIONS_IMAGE_BASE_WIDTH = 1280;
+        private static final int OPTIONS_IMAGE_BASE_HEIGHT = 720;
+        private static final Rectangle OPTIONS_CLOSE_BOX = new Rectangle(1000, 108, 54, 56);
+        private static final Rectangle OPTIONS_SLIDER_BOX = new Rectangle(455, 234, 440, 40);
+        private static final Rectangle OPTIONS_VALUE_BOX = new Rectangle(912, 228, 96, 48);
+
+        private final BufferedImage optionsImage;
+        private final Rectangle closeBounds = new Rectangle();
+        private final JSlider volumeSlider;
+        private final JLabel volumeValueLabel;
+
+        private OptionsOverlayPanel(BufferedImage optionsImage) {
+            this.optionsImage = optionsImage;
+            setVisible(false);
+            setOpaque(false);
+            setLayout(null);
+            setCursor(Cursor.getDefaultCursor());
+
+            volumeSlider = createVolumeSlider();
+            volumeValueLabel = new JLabel("", SwingConstants.CENTER);
+            volumeValueLabel.setOpaque(false);
+            volumeValueLabel.setForeground(new Color(210, 226, 255));
+            volumeValueLabel.setFont(getBodyFont(15f).deriveFont(Font.BOLD, 15f));
+
+            ChangeListener sliderChangeListener = event -> {
+                int volume = volumeSlider.getValue();
+                SoundManager.setMasterVolume(volume);
+                updateVolumeLabel(volume);
+            };
+            volumeSlider.addChangeListener(sliderChangeListener);
+
+            add(volumeSlider);
+            add(volumeValueLabel);
+
+            MouseAdapter mouseHandler = new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent event) {
+                    if (closeBounds.contains(event.getPoint())) {
+                        hideOverlay();
+                    }
+                }
+            };
+            addMouseMotionListener(mouseHandler);
+            addMouseListener(mouseHandler);
+            updateVolumeLabel(SoundManager.getMasterVolume());
+        }
+
+        private JSlider createVolumeSlider() {
+            JSlider slider = new JSlider(0, 100, SoundManager.getMasterVolume());
+            slider.setOpaque(false);
+            slider.setFocusable(false);
+            slider.setPaintTicks(false);
+            slider.setPaintLabels(false);
+            slider.setBorder(BorderFactory.createEmptyBorder());
+            slider.setUI(new BasicSliderUI(slider) {
+                @Override
+                public void paintTrack(Graphics graphics) {
+                    Graphics2D g2 = (Graphics2D) graphics.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    int trackY = trackRect.y + (trackRect.height / 2) - 4;
+                    g2.setColor(new Color(57, 74, 132, 170));
+                    g2.fillRoundRect(trackRect.x, trackY, trackRect.width, 8, 8, 8);
+
+                    int filledWidth = thumbRect.x + (thumbRect.width / 2) - trackRect.x;
+                    g2.setColor(new Color(140, 184, 255, 230));
+                    g2.fillRoundRect(trackRect.x, trackY, Math.max(0, filledWidth), 8, 8, 8);
+                    g2.dispose();
+                }
+
+                @Override
+                public void paintThumb(Graphics graphics) {
+                    Graphics2D g2 = (Graphics2D) graphics.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                    g2.setColor(new Color(228, 243, 255, 245));
+                    g2.fillOval(thumbRect.x, thumbRect.y + 1, thumbRect.width - 1, thumbRect.height - 1);
+                    g2.setColor(new Color(89, 122, 208, 255));
+                    g2.drawOval(thumbRect.x, thumbRect.y + 1, thumbRect.width - 1, thumbRect.height - 1);
+                    g2.dispose();
+                }
+
+                @Override
+                protected Dimension getThumbSize() {
+                    return new Dimension(20, 20);
+                }
+            });
+            return slider;
+        }
+
+        private void updateVolumeLabel(int value) {
+            volumeValueLabel.setText(value + "%");
+        }
+
+        private void showOverlay() {
+            int currentVolume = SoundManager.getMasterVolume();
+            volumeSlider.setValue(currentVolume);
+            updateVolumeLabel(currentVolume);
+            setVisible(true);
+            requestFocusInWindow();
+            repaint();
+        }
+
+        private void hideOverlay() {
+            setVisible(false);
+        }
+
+        @Override
+        protected void paintComponent(Graphics graphics) {
+            if (!isVisible()) {
+                return;
+            }
+
+            Graphics2D g2 = (Graphics2D) graphics.create();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g2.setColor(new Color(0, 0, 0, 185));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+            if (optionsImage == null) {
+                closeBounds.setBounds(0, 0, 0, 0);
+                volumeSlider.setVisible(false);
+                volumeValueLabel.setVisible(false);
+                g2.setColor(Color.WHITE);
+                g2.setFont(getHeadingFont(24f));
+                g2.drawString("Options image not found.", Math.max(30, getWidth() / 2 - 135), getHeight() / 2);
+                g2.dispose();
+                return;
+            }
+
+            double scale = Math.min(
+                    Math.min((getWidth() * MAX_WIDTH_RATIO) / optionsImage.getWidth(),
+                            (getHeight() * MAX_HEIGHT_RATIO) / optionsImage.getHeight()),
+                    1d);
+            int drawWidth = Math.max(1, (int) Math.round(optionsImage.getWidth() * scale));
+            int drawHeight = Math.max(1, (int) Math.round(optionsImage.getHeight() * scale));
+            int drawX = (getWidth() - drawWidth) / 2;
+            int drawY = (getHeight() - drawHeight) / 2;
+
+            g2.drawImage(optionsImage, drawX, drawY, drawWidth, drawHeight, null);
+
+            double scaleX = drawWidth / (double) OPTIONS_IMAGE_BASE_WIDTH;
+            double scaleY = drawHeight / (double) OPTIONS_IMAGE_BASE_HEIGHT;
+            int closeX = drawX + (int) Math.round(OPTIONS_CLOSE_BOX.x * scaleX);
+            int closeY = drawY + (int) Math.round(OPTIONS_CLOSE_BOX.y * scaleY);
+            int closeWidth = Math.max(20, (int) Math.round(OPTIONS_CLOSE_BOX.width * scaleX));
+            int closeHeight = Math.max(20, (int) Math.round(OPTIONS_CLOSE_BOX.height * scaleY));
+            closeBounds.setBounds(closeX, closeY, closeWidth, closeHeight);
+
+            int sliderX = drawX + (int) Math.round(OPTIONS_SLIDER_BOX.x * scaleX);
+            int sliderY = drawY + (int) Math.round(OPTIONS_SLIDER_BOX.y * scaleY);
+            int sliderWidth = Math.max(140, (int) Math.round(OPTIONS_SLIDER_BOX.width * scaleX));
+            int sliderHeight = Math.max(24, (int) Math.round(OPTIONS_SLIDER_BOX.height * scaleY));
+            volumeSlider.setBounds(sliderX, sliderY, sliderWidth, sliderHeight);
+            volumeSlider.setVisible(true);
+
+            int valueX = drawX + (int) Math.round(OPTIONS_VALUE_BOX.x * scaleX);
+            int valueY = drawY + (int) Math.round(OPTIONS_VALUE_BOX.y * scaleY);
+            int valueWidth = Math.max(56, (int) Math.round(OPTIONS_VALUE_BOX.width * scaleX));
+            int valueHeight = Math.max(28, (int) Math.round(OPTIONS_VALUE_BOX.height * scaleY));
+            volumeValueLabel.setBounds(valueX, valueY, valueWidth, valueHeight);
+            volumeValueLabel.setVisible(true);
+
+            g2.dispose();
+        }
     }
 
     BufferedImage loadCharacterPortrait(String title) {
@@ -379,14 +686,17 @@ final class GameWindowGraphics {
             if (placeholder != null) {
                 battlePanel.getBattleEnemySpriteLabel().setText("");
                 battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(placeholder, 96, 96));
+                refreshBattleSpriteLabel(battlePanel.getBattleEnemySpriteLabel());
             } else {
                 battlePanel.getBattleEnemySpriteLabel().setIcon(null);
                 battlePanel.getBattleEnemySpriteLabel().setText("");
+                refreshBattleSpriteLabel(battlePanel.getBattleEnemySpriteLabel());
             }
             return;
         }
         battlePanel.getBattleEnemySpriteLabel().setText("");
         battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemySpriteSize(enemy), getEnemySpriteSize(enemy)));
+        refreshBattleSpriteLabel(battlePanel.getBattleEnemySpriteLabel());
     }
 
     void updateHeroSprite(Hero hero, BattlePanel battlePanel) {
@@ -394,38 +704,57 @@ final class GameWindowGraphics {
         if (sprite == null) {
             battlePanel.getBattleHeroSpriteLabel().setIcon(null);
             battlePanel.getBattleHeroSpriteLabel().setText("");
+            refreshBattleSpriteLabel(battlePanel.getBattleHeroSpriteLabel());
             return;
         }
 
         battlePanel.getBattleHeroSpriteLabel().setText("");
         battlePanel.getBattleHeroSpriteLabel().setIcon(createScaledSpriteIcon(sprite, getHeroSpriteSize(hero), getHeroSpriteSize(hero)));
+        refreshBattleSpriteLabel(battlePanel.getBattleHeroSpriteLabel());
     }
 
     boolean updateHeroSkill1Frame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        return updateHeroActionFrame(hero, battlePanel, "Neo-Skill1.png", frameIndex);
+        String sheetName = hero instanceof Mage
+                ? "Mleux-Skill1.png"
+                : hero instanceof Gunner
+                ? "Fehld-Skill1.png"
+                : "Neo-Skill1.png";
+        return updateHeroActionFrame(hero, battlePanel, sheetName, frameIndex);
     }
 
     boolean updateHeroSkill2Frame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        String sheetName = hero instanceof Mage ? "Mleux-Skill2.png" : "Neo-Skill2.png";
+        String sheetName = hero instanceof Mage
+                ? "Mleux-Skill2.png"
+                : hero instanceof Gunner
+                ? "Fehld-Skill2.png"
+                : "Neo-Skill2.png";
         return updateHeroActionFrame(hero, battlePanel, sheetName, frameIndex);
     }
 
     boolean updateHeroAttackFrame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        return updateHeroActionFrame(hero, battlePanel, "Neo-Attack.png", frameIndex);
+        String sheetName = hero instanceof Mage
+                ? "Mleux-Attack.png"
+                : hero instanceof Gunner
+                ? "Fehld-Attack.png"
+                : "Neo-Attack.png";
+        return updateHeroActionFrame(hero, battlePanel, sheetName, frameIndex);
     }
 
     boolean updateHeroUltimateFrame(Hero hero, BattlePanel battlePanel, int frameIndex) {
-        return updateHeroActionFrame(hero, battlePanel, "Neo-Ultimate.png", frameIndex);
+        String sheetName = hero instanceof Gunner ? "Fehld-Ultimate.png" : "Neo-Ultimate.png";
+        return updateHeroActionFrame(hero, battlePanel, sheetName, frameIndex);
     }
 
     private boolean updateHeroActionFrame(Hero hero, BattlePanel battlePanel, String sheetName, int frameIndex) {
         BufferedImage sprite = loadHeroActionFrame(hero, sheetName, frameIndex);
         if (sprite == null) {
+            updateHeroSprite(hero, battlePanel);
             return false;
         }
 
         battlePanel.getBattleHeroSpriteLabel().setText("");
         battlePanel.getBattleHeroSpriteLabel().setIcon(createScaledSpriteIcon(sprite, getHeroSkillSpriteSize(hero), getHeroSkillSpriteSize(hero)));
+        refreshBattleSpriteLabel(battlePanel.getBattleHeroSpriteLabel());
         return true;
     }
 
@@ -437,6 +766,7 @@ final class GameWindowGraphics {
 
         battlePanel.getBattleEnemySpriteLabel().setText("");
         battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemySpriteSize(enemy), getEnemySpriteSize(enemy)));
+        refreshBattleSpriteLabel(battlePanel.getBattleEnemySpriteLabel());
         return true;
     }
 
@@ -448,7 +778,19 @@ final class GameWindowGraphics {
 
         battlePanel.getBattleEnemySpriteLabel().setText("");
         battlePanel.getBattleEnemySpriteLabel().setIcon(createScaledSpriteIcon(sprite, getEnemyRebirthSpriteSize(enemy), getEnemyRebirthSpriteSize(enemy)));
+        refreshBattleSpriteLabel(battlePanel.getBattleEnemySpriteLabel());
         return true;
+    }
+
+    private void refreshBattleSpriteLabel(JLabel label) {
+        label.setSize(label.getPreferredSize());
+        label.revalidate();
+        label.repaint();
+        Container parent = label.getParent();
+        if (parent != null) {
+            parent.revalidate();
+            parent.repaint();
+        }
     }
 
     private int getEnemySpriteSize(Entity enemy) {
@@ -475,12 +817,15 @@ final class GameWindowGraphics {
 
     private int getHeroSpriteSize(Hero hero) {
         if (hero instanceof Swordsman) return 140;
+        if (hero instanceof Mage) return 300;
+        if (hero instanceof Gunner) return 220;
         return 96;
     }
 
     private int getHeroSkillSpriteSize(Hero hero) {
         if (hero instanceof Swordsman) return 190;
         if (hero instanceof Mage) return 300;
+        if (hero instanceof Gunner) return 220;
         return 128;
     }
 
@@ -878,6 +1223,36 @@ final class GameWindowGraphics {
         return normalized;
     }
 
+    private BufferedImage[] normalizeActionFrames(BufferedImage[] frames) {
+        BufferedImage[] normalized = new BufferedImage[frames.length];
+        int maxWidth = 1;
+        int maxHeight = 1;
+
+        for (int i = 0; i < frames.length; i++) {
+            normalized[i] = trimTransparentBounds(frames[i]);
+            if (normalized[i] != null) {
+                maxWidth = Math.max(maxWidth, normalized[i].getWidth());
+                maxHeight = Math.max(maxHeight, normalized[i].getHeight());
+            }
+        }
+
+        for (int i = 0; i < normalized.length; i++) {
+            BufferedImage frame = normalized[i];
+            if (frame == null) continue;
+
+            BufferedImage canvas = new BufferedImage(maxWidth + 32, maxHeight + 16, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = canvas.createGraphics();
+            g2.setComposite(AlphaComposite.SrcOver);
+            int drawX = (canvas.getWidth() - frame.getWidth()) / 2;
+            int drawY = canvas.getHeight() - frame.getHeight();
+            g2.drawImage(frame, drawX, drawY, null);
+            g2.dispose();
+            normalized[i] = canvas;
+        }
+
+        return normalized;
+    }
+
     private BufferedImage trimTransparentBounds(BufferedImage image) {
         if (image == null) return null;
 
@@ -1254,7 +1629,30 @@ final class GameWindowGraphics {
 
     private BufferedImage loadHeroBattleSprite(Hero hero) {
         if (hero instanceof Swordsman) {
-            return loadHeroImage("neo/Neo-idle.png");
+            BufferedImage idle = loadHeroImage("neo/Neo-idle.png");
+            if (idle != null) {
+                return idle;
+            }
+
+            BufferedImage walkSheet = loadHeroImage("neo/walking/neo-walk.png");
+            if (walkSheet != null) {
+                int frameWidth = Math.max(1, walkSheet.getWidth() / 5);
+                return walkSheet.getSubimage(0, 0, frameWidth, walkSheet.getHeight());
+            }
+        }
+        if (hero instanceof Mage) {
+            return loadHeroImage("mleux/idle.png");
+        }
+        if (hero instanceof Gunner) {
+            BufferedImage walkSheet = loadHeroImage("fehld/walking/fehld-walk (2).png");
+            if (walkSheet == null) {
+                walkSheet = loadHeroImage("fehld/walking/fehld-walk.png");
+            }
+            if (walkSheet != null) {
+                int frameCount = walkSheet.getWidth() == 1774 ? 4 : 5;
+                int frameWidth = Math.max(1, walkSheet.getWidth() / frameCount);
+                return walkSheet.getSubimage(0, 0, frameWidth, walkSheet.getHeight());
+            }
         }
         return null;
     }
@@ -1275,7 +1673,20 @@ final class GameWindowGraphics {
             return sheet.getSubimage(frameIndex * frameWidth, 0, frameWidth, sheet.getHeight());
         }
         if (hero instanceof Mage && sheetName.startsWith("Mleux-")) {
-            BufferedImage sheet = loadHeroImage("mleux/skills/" + sheetName);
+            if ("Mleux-Skill2.png".equals(sheetName)) {
+                BufferedImage[] frames = loadMageSkill2Frames();
+                if (frameIndex < 0 || frameIndex >= frames.length) {
+                    return null;
+                }
+                return frames[frameIndex];
+            }
+
+            String mageSheetPath = "Mleux-Skill1.png".equals(sheetName)
+                    ? "mleux/skills/skill1/skill1main.png"
+                    : "Mleux-Attack.png".equals(sheetName)
+                    ? "mleux/skills/basic attack/basic-attack.png"
+                    : "mleux/skills/" + sheetName;
+            BufferedImage sheet = loadHeroImage(mageSheetPath);
             if (sheet == null) {
                 return null;
             }
@@ -1288,7 +1699,52 @@ final class GameWindowGraphics {
             int frameWidth = sheet.getWidth() / frameCount;
             return sheet.getSubimage(frameIndex * frameWidth, 0, frameWidth, sheet.getHeight());
         }
+        if (hero instanceof Gunner && sheetName.startsWith("Fehld-")) {
+            String gunnerSheetPath = "Fehld-Skill1.png".equals(sheetName)
+                    ? "fehld/skills/skill1/skill1.png"
+                    : "Fehld-Skill2.png".equals(sheetName)
+                    ? "fehld/skills/skill2/skill2.png"
+                    : "Fehld-Attack.png".equals(sheetName)
+                    ? "fehld/skills/basic attack/basic-attack.png"
+                    : "Fehld-Ultimate.png".equals(sheetName)
+                    ? "fehld/skills/ulti/ulti.png"
+                    : null;
+            if (gunnerSheetPath == null) {
+                return null;
+            }
+
+            BufferedImage sheet = loadHeroImage(gunnerSheetPath);
+            if (sheet == null) {
+                return null;
+            }
+
+            BufferedImage[] frames = loadNormalizedFramesFromSheet(sheet, 3);
+            if (frameIndex < 0 || frameIndex >= frames.length) {
+                return null;
+            }
+            return frames[frameIndex];
+        }
         return null;
+    }
+
+    private BufferedImage[] loadMageSkill2Frames() {
+        BufferedImage sheet = loadHeroImage("mleux/skills/skill2/skill2.png");
+        if (sheet == null) {
+            return new BufferedImage[0];
+        }
+
+        return loadNormalizedFramesFromSheet(sheet, 3);
+    }
+
+    private BufferedImage[] loadNormalizedFramesFromSheet(BufferedImage sheet, int frameCount) {
+        BufferedImage[] frames = new BufferedImage[frameCount];
+        for (int frameIndex = 0; frameIndex < frameCount; frameIndex++) {
+            int startX = (int) Math.round(sheet.getWidth() * (frameIndex / (double) frameCount));
+            int endX = (int) Math.round(sheet.getWidth() * ((frameIndex + 1) / (double) frameCount));
+            int frameWidth = Math.max(1, endX - startX);
+            frames[frameIndex] = sheet.getSubimage(startX, 0, frameWidth, sheet.getHeight());
+        }
+        return normalizeActionFrames(frames);
     }
 
     private BufferedImage loadHeroImage(String path) {

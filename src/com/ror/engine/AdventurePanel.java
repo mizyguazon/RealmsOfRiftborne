@@ -15,6 +15,9 @@ public class AdventurePanel extends JComponent {
     private static final Color BUTTON_BG_PRESSED = new Color(24, 22, 34);
     private static final Color BUTTON_BORDER = new Color(120, 255, 225, 110);
     private static final Color BUTTON_TEXT = new Color(246, 239, 221);
+    private static final int MESSAGE_TYPEWRITER_DELAY_MS = 18;
+    private static final int OVERLAY_FADE_DELAY_MS = 16;
+    private static final int OVERLAY_FADE_STEPS = 12;
 
     private final JFrame window;
     private final Font headingFont;
@@ -28,6 +31,13 @@ public class AdventurePanel extends JComponent {
     private int defaultOptionIndex = 0;
     private int optionButtonCount = 1;
     private int optionRowCount = 1;
+    private float renderAlpha = 1f;
+    private boolean slotChooserMode;
+    private boolean closeWithFade = true;
+    private boolean fadeAnimating;
+    private String fullMessage = "";
+    private Timer messageTypewriterTimer;
+    private Timer overlayFadeTimer;
 
     public AdventurePanel(JFrame window, Font headingFont, Font bodyFont) {
         this.window = window;

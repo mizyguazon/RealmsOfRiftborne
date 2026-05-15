@@ -327,10 +327,10 @@ public class Narration{
     public void swordsmanDetails() { // implemented with print delay
         String[] lines = {
             "┌──────────────────────────────────────────────────────────────────────────────┐",
-            "│                         Kael Solmere - The Blade of Dawn                     │",
+            "│                         Neo Solmere - The Blade of Dawn                     │",
             "│                            Player Character Details                          │",
             "├──────────────────────────────────────────────────────────────────────────────┤",
-            "│ Name: Kael Solmere                                                           │",
+            "│ Name: Neo Solmere                                                           │",
             "│ Age: 15                                                                      │",
             "│ Personality: Intense, Brooding, Fiercely Loyal                               │",
             "│ Grade Level: First Year                                                      │",
@@ -372,15 +372,15 @@ public class Narration{
     public void swordsmanBackstory() { // implemented with print delay
         String[] lines = {
             "┌───────────────────────────────────────────────────────────────────────────────┐",
-            "│                       Kael Solmere - The Blade of Dawn                        │",
+            "│                       Neo Solmere - The Blade of Dawn                        │",
             "│                                  Backstory                                    │",
             "├───────────────────────────────────────────────────────────────────────────────┤",
-            "│ Kael Solmere was born into a family burdened with a dark legacy. The Solmeres │",
+            "│ Neo Solmere was born into a family burdened with a dark legacy. The Solmeres │",
             "│ were once the guardians of the Kim Morvain, a forbidden artifact of immense   │",
             "│ power. Centuries ago, a treacherous betrayal shattered the family, scattering │",
             "│ its members and leaving a lingering curse upon their bloodline.               │",
             "│                                                                               │",
-            "│ Now, Kael and his sister Aria are the last heirs. Their path is not only about│",
+            "│ Now, Neo and his sister Aria are the last heirs. Their path is not only about│",
             "│ mastering their extraordinary abilities but also unraveling the secrets       │",
             "│ haunting their family. Bound by loyalty and shared struggle, the siblings     │",
             "│ rely on each other to survive trials, uncover hidden truths, and confront the │",
@@ -404,11 +404,11 @@ public class Narration{
     public void gunnerDetails() { // implemented with print delay
         String[] lines = {
             "┌────────────────────────────────────────────────────────────────────────────────┐",
-            "│                          Aria Caelith - The Void's Eye                         │",
+            "│                          Fehld - The Void's Eye                         │",
             "│                            Player Character Details                            │",
             "├────────────────────────────────────────────────────────────────────────────────┤",
             "│ Age: 15                                                                        │",
-            "│ Personality: Quick-Witted, Resourceful, Fiercely Protective of Kael            │",
+            "│ Personality: Quick-Witted, Resourceful, Fiercely Protective of Neo            │",
             "│ Grade Level: First Year Student                                                │",
             "│ Fun Facts:                                                                     │",
             "│   - Skilled gunner and inventor                                                │",
@@ -449,11 +449,11 @@ public class Narration{
 
         String[] lines = {
             "┌────────────────────────────────────────────────────────┐",
-            "│               Aria Caelith - The Void's Eye            │",
+            "│               Fehld - The Void's Eye            │",
             "│                       Backstory                        │",
             "├────────────────────────────────────────────────────────┤",
             "│                                                        │",
-            "│ Aria Caelith was taken from his home as a child,       │",
+            "│ Fehld was taken from his home as a child,       │",
             "│ abducted during a covert raid led by Kim Morvain.      │",
             "│ Selected for Project LUCENT, he was subjected to       │",
             "│ brutal experiments that fused Aether Pulse energy      │",
@@ -472,7 +472,7 @@ public class Narration{
             "│ from his stolen power.                                 │",
             "│                                                        │",
             "│ In the shadows, his name is both feared and whispered  │",
-            "│  -Aria Caelith, the last experiment who never misses.  │",
+            "│  -Fehld, the last experiment who never misses.  │",
             "│                                                        │",
             "└────────────────────────────────────────────────────────┘",
             "┌──────────────────────────────┐",
@@ -494,7 +494,7 @@ public class Narration{
 
         String[] lines = {
             "┌───────────────────────────────────────────────────────────────────────────────┐",
-            "│                  Selene Arclight - Weaver of Arcane Flames                    │",
+            "│                  Mleux - Weaver of Arcane Flames                    │",
             "│                           Player Character Details                            │",
             "├───────────────────────────────────────────────────────────────────────────────┤",
             "│ Age: 15                                                                       │",
@@ -542,11 +542,11 @@ public class Narration{
 
         String[] lines = {
             "┌────────────────────────────────────────────────────────────────────────────────┐",
-            "│                  Selene Arclight - Weaver of Arcane Flames                     |",
+            "│                  Mleux - Weaver of Arcane Flames                     |",
             "│                                  Backstory                                     │",
             "├────────────────────────────────────────────────────────────────────────────────┤",
             "│                                                                                │",
-            "│ Selene Arclight was born into the prestigious Arclight lineage, her talent in  │",
+            "│ Mleux was born into the prestigious Arclight lineage, her talent in  │",
             "│ cosmic and starlight magic evident from a young age. Morvain recruited her to  │",
             "│ help create the spells and enchantments that fueled Project LUCENT.            │",
             "│                                                                                │",
@@ -558,7 +558,7 @@ public class Narration{
             "│ stop Morvain. Each spell carries the precision of her craft and the weight of  │",
             "│ remorse, guiding her toward the Forsaken Lands where he awaits.                │",
             "│                                                                                │",
-            "│ Her name is spoken with caution and awe—Selene Arclight, the mage whose        │",
+            "│ Her name is spoken with caution and awe—Mleux, the mage whose        │",
             "│ genius became a weapon, and whose vengeance burns brighter than any star.      │",
             "│                                                                                │",
             "└────────────────────────────────────────────────────────────────────────────────┘",

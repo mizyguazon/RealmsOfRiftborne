@@ -123,9 +123,9 @@ public class MagePlot {
             "Principal Nemeesha: \"There is another. Another Solmere. One whose existence ensures the curse continues.\"",
             "Narration: The air thickens. Your heartbeat stutters.",
             "Selene: \"...Another? Who? Who could possibly-\"",
-            "Principal Nemeesha: \"Kael Solmere. The last of the bloodline. And now... the new source of your curse.\"",
+            "Principal Nemeesha: \"Neo Solmere. The last of the bloodline. And now... the new source of your curse.\"",
             "Narration: Your world tilts. The loop, the curse, the return-it all makes sense now.",
-            "Narration: You are not free. Not yet. Not until Kael Solmere falls."
+            "Narration: You are not free. Not yet. Not until Neo Solmere falls."
         };
 
         magePlotNarration(loop);

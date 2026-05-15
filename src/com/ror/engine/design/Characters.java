@@ -37,7 +37,7 @@ public class Characters {
             "",
             "  .         *             .                *           ░░░░░░░░░░░░",
             "      ┌────────────────────────────────────┐      .    ░░░███▓▓▓▓▓▓░░░",
-            "      |   Player Character: Kael Solmere   |           ░░░▓▓▓███▓▓▓▓▓▓░░░",
+            "      |   Player Character: Neo Solmere   |           ░░░▓▓▓███▓▓▓▓▓▓░░░",
             "      └────────────────────────────────────┘   *       ░░░▓▓▓▓▓▓███▓▓▓▓▓▓░░░",
             "          .                    .                          ░░░▓▓▓▓▓▓███▓▓▓▓▓▓░░░",
             "                      *                                      ░░░▓▓▓▓▓▓███▓▓▓▓▓▓░░░",
@@ -94,7 +94,7 @@ public class Characters {
         String[] lines = {
             "    .            *             .         *          █░░░░░███░░░███░░░░░░░░░░░░░░░░░░░░░███░░░░░░",
             "      ┌────────────────────────────────────┐        █░░▓▓▓███▓▓▓███▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓███▓▓▓▓▓▓░░█",
-            "  .   |   Player Character: Aria Caelith   |   .       ░▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░████████▓▓▓▓███▓▓▓░░░",
+            "  .   |   Player Character: Fehld   |   .       ░▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░████████▓▓▓▓███▓▓▓░░░",
             "      └────────────────────────────────────┘           ░░░░░░░░░░░░░░░░░█   ░░░░░░░░░░░░░░░░░░░░░",
             "                                                                            ░░░  ███ ░▓▓▓▓▓░░░",
             "               *        .             .                              *      ░░░      ░▓▓▓▓▓░░░",
@@ -147,7 +147,7 @@ public class Characters {
 
         String[] lines = {
             "           ░░█    ┌────────────────────────────────────┐     █░       .        ",
-            "         ░░░░█    |  Player Character: Selene Arclight |     █░░░░             ",
+            "         ░░░░█    |  Player Character: Mleux |     █░░░░             ",
             "         ░░░░█    └────────────────────────────────────┘     █░░░░      *      ",
             "       ░░░░░░▓           *                                   ▓░░░░░░          *  ",
             "     ░░░░░░░░░░░                                     .     ░░░░░░░░░░░     .         ",
@@ -186,7 +186,7 @@ public class Characters {
         String[] lines = {
             "",
             " .      *   ┌────────────────────────────────────────────────────┐",
-            "      .     |   Player Character: Kael Solmere - Current Stats   |",
+            "      .     |   Player Character: Neo Solmere - Current Stats   |",
             " *          └────────────────────────────────────────────────────┘",
             "░░░░░░░░░░░░> Character Level:   .    " + df.format(hero.getLevel()) + " .   *   .  .   *  ",
             "░░░███▓▓▓▓▓▓░░░> Current Experience:  " + df.format(hero.getExperience()) + " .   *    .   *   ",
@@ -225,7 +225,7 @@ public class Characters {
             "",
             "    .            *             .         *      ",
             "┌────────────────────────────────────────────────────┐    ",
-            "|   Player Character: Aria Caelith - Current Stats   |   .",
+            "|   Player Character: Fehld - Current Stats   |   .",
             "└────────────────────────────────────────────────────┘    ",
             "  *    .       *        .             .        . ",
             "  * > Character Level:     " + df.format(hero.getLevel()) + "   .       *     ",
@@ -263,7 +263,7 @@ public class Characters {
             "",
             "",
             " .   *  ░░█    ┌────────────────────────────────────────────────────┐",
-            "   .  ░░░░█    |  Player Character: Selene Arclight - Current Stats |",
+            "   .  ░░░░█    |  Player Character: Mleux - Current Stats |",
             "      ░░░░█    └────────────────────────────────────────────────────┘",
             " *  ░░░░░░▓           *           .          .               .          ",
             "  ░░░░░░░░░░░                                     .                  ",

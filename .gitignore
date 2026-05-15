@@ -7,3 +7,5 @@
 # Ignore OS metadata
 .DS_Store
 Thumbs.db
+/bin/com/ror/models/assets/fonts
+/bin
